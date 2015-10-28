@@ -1,0 +1,32 @@
+{namespace add.stuff}
+
+/**
+ *
+ */
+{template .createForm}
+    <div id="create-div">
+        <div>
+            <span>URL: <input type="text" name="url"></span>
+            <span id="url_error"></span>
+        </div>
+        <div>
+            <span>Link: <input type="text" name="link"></span>
+            <span id="link_error"></span>
+        </div>
+        <div>
+            <span>(Optional)</span>
+            <span>Group: <input type="text" name="group"></span>
+            <span id="group_error"></span>
+        </div>
+        <div>
+            <span>(Optional)</span>
+            <span>Password: <input type="password" name="password"></span>
+            <span id="password_error"></span>
+        </div>
+        <div>
+            <span>Capatcha: <input type="text" name="captcha"></span>
+            <span id="captcha_error"></span>
+        </div>
+        <button>Add Link</button>
+    </div>
+{/template}
