@@ -69,13 +69,14 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <port>9999</port>
+                    <port>9090</port>
                     <path>/clicky</path>
-                    <tomcatWebXml>${basedir}/src/main/webapp/WEB-INF/web.xml</tomcatWebXml>
-                    <enableNaming>true</enableNaming>
-                    <url>http://localhost:9999/manager/</url>
-                    <username>pojahn</username>
-                    <password>1234</password>
+                    <!--<tomcatWebXml>${basedir}/src/main/webapp/WEB-INF/web.xml</tomcatWebXml>-->
+                    <!--<serverXml>${basedir}/src/main/webapp/WEB-INF/server.xml</serverXml>-->
+                    <!--<enableNaming>true</enableNaming>-->
+                    <!--<url>http://localhost:9999/manager/</url>-->
+                    <!--<username>pojahn</username>-->
+                    <!--<password>1234</password>-->
                 </configuration>
             </plugin>
             <plugin>

@@ -1,5 +1,10 @@
+window.onload = function(){
+    console.log('WINDOW ON LOAD');
+}
+
 $(function(){
-    $('body').add(add.stuff.createForm());
+    console.log('ON LOAD');
+    $('body').html(add.stuff.createForm());
     setSubmitEvent($('#add-link'));
 });
 

@@ -8,19 +8,19 @@ import javax.ws.rs.core.Response;
 public class ViewResource {
 
 //    @GET
-//    @Path("group")
+//    @Path("viewgroup")
 //    public Response viewAll(@FormParam("group") String group,
 //                            @FormParam("password") String password){
 //        Object resp = "lol";
 //
 //        return Response.ok(resp).build();
 //    }
-//
-//    @GET
-//    @Path("url/{url}/view")
-//    public Response viewSingle(@PathParam("url") String url){
-//        Object resp = "lol";
-//
-//        return Response.ok(resp).build();
-//    }
+
+    @GET
+    @Path("{url}/view")
+    public Response viewSingle(@PathParam("url") String url){
+        Object resp = "lol";
+        System.out.println("View Single");
+        return Response.ok(resp).build();
+    }
 }

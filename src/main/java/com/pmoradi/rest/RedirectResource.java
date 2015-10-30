@@ -6,7 +6,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-@Path("url")
+@Path("/")
 @Produces("text/json")
 public class RedirectResource {
 
@@ -14,7 +14,7 @@ public class RedirectResource {
     @Path("{url}")
     public Response redirect(@PathParam("url") String url){
         Object resp = "lol";
-
+        System.out.println("Redirect");
         return Response.ok(resp).build();
     }
 }
