@@ -1,5 +1,5 @@
 target/
 .idea/
 click.count.iml
-soy-compile/soy-compile.iml
-soy-compile/target
+soycompile-maven-plugin/soycompile-maven-plugin.iml
+soycompile-maven-plugin/target

@@ -1,5 +1,6 @@
 package com.pmoradi.test.database.entities;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import com.pmoradi.entities.Click;
 import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;
@@ -9,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,6 +103,26 @@ public class EntityTest {
 
     @Test
     public void testUniqueColumns(){
+        String groupname = UUID.randomUUID().toString();
+        Group group = new Group();
+        group.setGroupName(groupname);
 
+        EntityManager em = Repository.getEntityManagerFactory().createEntityManager();
+        em.getTransaction().begin();
+        em.persist(group);
+        em.getTransaction().commit();
+
+        group = new Group();
+        group.setGroupName(groupname);
+        em.getTransaction().begin();
+        try{
+            em.persist(group);
+            em.getTransaction().commit();
+        }catch(PersistenceException e){
+            em.getTransaction().rollback();
+            Assert.assertTrue(e.getCause().getCause().getClass() == MySQLIntegrityConstraintViolationException.class);
+        }
+
+        em.close();
     }
 }

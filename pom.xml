@@ -18,7 +18,7 @@
     </properties>
 
     <modules>
-        <module>soy-compile</module>
+        <module>soycompile-maven-plugin</module>
     </modules>
 
     <dependencies>
@@ -72,6 +72,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.37</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.pmoradi</groupId>
+            <artifactId>soycompile-maven-plugin</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>click-count</finalName>
@@ -103,26 +109,26 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>com.odiago.maven.plugins</groupId>
-                <artifactId>soy-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <inputFiles>
-                        <directory>${basedir}/src/main/resources/soy</directory>
-                        <includes>
-                            <include>**/*.soy</include>
-                        </includes>
-                    </inputFiles>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>com.odiago.maven.plugins</groupId>-->
+                <!--<artifactId>soy-maven-plugin</artifactId>-->
+                <!--<version>1.0.0</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>compile</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<inputFiles>-->
+                        <!--<directory>${basedir}/src/main/resources/soy</directory>-->
+                        <!--<includes>-->
+                            <!--<include>**/*.soy</include>-->
+                        <!--</includes>-->
+                    <!--</inputFiles>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -156,7 +162,7 @@
 
             <plugin>
                 <groupId>com.pmoradi</groupId>
-                <artifactId>soy-compile</artifactId>
+                <artifactId>soycompile-maven-plugin</artifactId>
                 <version>1.0-SNAPSHOT</version>
                 <executions>
                     <execution>
@@ -174,10 +180,10 @@
 
         </plugins>
     </build>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>soy-maven-plugin</id>
-            <url>http://wibidata.github.com/soy-maven-plugin/repo</url>
-        </pluginRepository>
-    </pluginRepositories>
+    <!--<pluginRepositories>-->
+        <!--<pluginRepository>-->
+            <!--<id>soy-maven-plugin</id>-->
+            <!--<url>http://wibidata.github.com/soy-maven-plugin/repo</url>-->
+        <!--</pluginRepository>-->
+    <!--</pluginRepositories>-->
 </project>
