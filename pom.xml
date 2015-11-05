@@ -4,18 +4,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.pmoradi</groupId>
-    <artifactId>click.count</artifactId>
+    <artifactId>click-count</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <name>${project-name}</name>
     <url>${project-url}</url>
-    <packaging>war</packaging>
+    <packaging>pom</packaging>
 
     <properties>
         <java-version>1.8</java-version>
         <project-name>Click Count</project-name>
-        <project-url>http://maven.apache.org</project-url>
+        <project-url>http://zzzz.zzz</project-url>
     </properties>
+
+    <modules>
+        <module>soy-compile</module>
+    </modules>
 
     <dependencies>
         <dependency>
@@ -70,10 +74,11 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>click.count</finalName>
+        <finalName>click-count</finalName>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
         <plugins>
+
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
@@ -97,6 +102,7 @@
                     <!--<password>1234</password>-->
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>com.odiago.maven.plugins</groupId>
                 <artifactId>soy-maven-plugin</artifactId>
@@ -117,6 +123,7 @@
                     </inputFiles>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -146,6 +153,25 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>com.pmoradi</groupId>
+                <artifactId>soy-compile</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>soy:compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <srcDir>src/main/resources/soy</srcDir>
+                    <destDir>target/generated-js/soy</destDir>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
     <pluginRepositories>
