@@ -12,7 +12,7 @@ function setSubmitEvent($container){
     $container.find('button').click(function(){
         $.ajax({
             type: 'POST',
-            url: 'add',
+            url: 'rest/add',
             data:{
                 url: $container.find("[name='url']").val(),
                 link: $container.find("[name='link']").val(),

@@ -74,9 +74,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.pmoradi</groupId>
-            <artifactId>soycompile-maven-plugin</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.0</version>
         </dependency>
     </dependencies>
     <build>
@@ -91,21 +91,6 @@
                 <configuration>
                     <source>${java-version}</source>
                     <target>${java-version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <port>9090</port>
-                    <path>/clicky</path>
-                    <!--<tomcatWebXml>${basedir}/src/main/webapp/WEB-INF/web.xml</tomcatWebXml>-->
-                    <!--<serverXml>${basedir}/src/main/webapp/WEB-INF/server.xml</serverXml>-->
-                    <!--<enableNaming>true</enableNaming>-->
-                    <!--<url>http://localhost:9999/manager/</url>-->
-                    <!--<username>pojahn</username>-->
-                    <!--<password>1234</password>-->
                 </configuration>
             </plugin>
 
@@ -129,6 +114,23 @@
                     <!--</inputFiles>-->
                 <!--</configuration>-->
             <!--</plugin>-->
+            <plugin>
+                <groupId>com.pmoradi</groupId>
+                <artifactId>soycompile-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>soytransform</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <srcDir>src/main/resources/soy</srcDir>
+                    <destDir>target/scripts</destDir>
+                </configuration>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -142,15 +144,9 @@
                         <configuration>
                             <webResources>
                                 <resource>
-                                    <directory>target/generated-js/soy</directory>
+                                    <directory>target/scripts</directory>
                                     <targetPath>scripts</targetPath>
                                 </resource>
-                                <!--<resource>-->
-                                    <!--<directory>src/main/resources/soy</directory>-->
-                                    <!--<excludes>-->
-                                        <!--<exclude>**/*.soy</exclude>-->
-                                    <!--</excludes>-->
-                                <!--</resource>-->
                             </webResources>
                         </configuration>
                     </execution>
@@ -161,23 +157,14 @@
             </plugin>
 
             <plugin>
-                <groupId>com.pmoradi</groupId>
-                <artifactId>soycompile-maven-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>soy:compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
                 <configuration>
-                    <srcDir>src/main/resources/soy</srcDir>
-                    <destDir>target/generated-js/soy</destDir>
+                    <port>9090</port>
+                    <path>/clicky</path>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
     <!--<pluginRepositories>-->

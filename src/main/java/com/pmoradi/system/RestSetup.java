@@ -13,7 +13,7 @@ public class RestSetup extends ResourceConfig {
         register(new AbstractBinder(){
             @Override
             protected void configure() {
-                bind(Engineering.class).to(Engineering.class);
+                bind(new Engineering()).to(Engineering.class);
             }
         });
     }
