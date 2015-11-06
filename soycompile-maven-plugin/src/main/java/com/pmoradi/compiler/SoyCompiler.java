@@ -27,7 +27,7 @@ public class SoyCompiler {
         findSoys(srcDir, soys);
 
 //        SoyFileSetBuilder soyFileSet = SoyFileSet.builder();
-        
+
         List<SoyFileSet> soyFileSets = soys.stream().map(soyfile -> SoyFileSet.builder().add(soyfile).build()).collect(Collectors.toList());
 //        SoyToJsSrcCompiler.main(getArgs(soys));
     }
