@@ -19,6 +19,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
@@ -27,7 +29,7 @@ import java.util.concurrent.locks.LockSupport;
 public class AddResource {
 
     private static final int CAPTCHA_TIMEOUT = 60000;
-    private static final PassiveExpiringMap<String, Captcha> CAPTCHAS = new PassiveExpiringMap<>(CAPTCHA_TIMEOUT);
+    private static final Map<String, Captcha> CAPTCHAS = Collections.synchronizedMap(new PassiveExpiringMap<>(CAPTCHA_TIMEOUT));
     static{
         Thread cleaner = new Thread(()->{
             while(!Thread.currentThread().isInterrupted()){
@@ -36,9 +38,7 @@ public class AddResource {
                 } catch (InterruptedException e) {
                     return;
                 }
-                synchronized (CAPTCHAS){
-                    CAPTCHAS.isEmpty();
-                }
+                CAPTCHAS.isEmpty();
             }
         });
         cleaner.setDaemon(true);

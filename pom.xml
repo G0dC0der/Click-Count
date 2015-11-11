@@ -7,19 +7,8 @@
     <artifactId>click-count</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>${project-name}</name>
-    <url>${project-url}</url>
-    <packaging>pom</packaging>
-
-    <properties>
-        <java-version>1.8</java-version>
-        <project-name>Click Count</project-name>
-        <project-url>http://zzzz.zzz</project-url>
-    </properties>
-
-    <modules>
-        <module>soycompile-maven-plugin</module>
-    </modules>
+    <name>Click Count</name>
+    <packaging>war</packaging>
 
     <dependencies>
         <dependency>
@@ -78,6 +67,12 @@
             <artifactId>commons-collections4</artifactId>
             <version>4.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.template</groupId>
+            <artifactId>soy</artifactId>
+            <version>2015-04-10</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>click-count</finalName>
@@ -89,47 +84,30 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
                 <configuration>
-                    <source>${java-version}</source>
-                    <target>${java-version}</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
 
-            <!--<plugin>-->
-                <!--<groupId>com.odiago.maven.plugins</groupId>-->
-                <!--<artifactId>soy-maven-plugin</artifactId>-->
-                <!--<version>1.0.0</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<goals>-->
-                            <!--<goal>compile</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <!--<configuration>-->
-                    <!--<inputFiles>-->
-                        <!--<directory>${basedir}/src/main/resources/soy</directory>-->
-                        <!--<includes>-->
-                            <!--<include>**/*.soy</include>-->
-                        <!--</includes>-->
-                    <!--</inputFiles>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
             <plugin>
-                <groupId>com.pmoradi</groupId>
-                <artifactId>soycompile-maven-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.4.0</version>
                 <executions>
                     <execution>
                         <phase>compile</phase>
                         <goals>
-                            <goal>soytransform</goal>
+                            <goal>java</goal>
                         </goals>
+                        <configuration>
+                            <mainClass>com.pmoradi.util.SoyCompiler</mainClass>
+                            <arguments>
+                                <argument>src/main/resources/soy</argument>
+                                <argument>target/scripts</argument>
+                            </arguments>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <srcDir>src/main/resources/soy</srcDir>
-                    <destDir>target/scripts</destDir>
-                </configuration>
             </plugin>
 
             <plugin>
@@ -167,10 +145,4 @@
             </plugin>
         </plugins>
     </build>
-    <!--<pluginRepositories>-->
-        <!--<pluginRepository>-->
-            <!--<id>soy-maven-plugin</id>-->
-            <!--<url>http://wibidata.github.com/soy-maven-plugin/repo</url>-->
-        <!--</pluginRepository>-->
-    <!--</pluginRepositories>-->
 </project>
