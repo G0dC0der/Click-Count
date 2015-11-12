@@ -1,9 +1,4 @@
-window.onload = function(){
-    console.log('WINDOW ON LOAD');
-}
-
 $(function(){
-    console.log('ON LOAD');
     $('body').html(add.stuff.createForm());
     setSubmitEvent($('#add-link'));
 });

@@ -1,17 +1,17 @@
-package com.pmoradi.system;
+package com.pmoradi.util;
 
 import com.pmoradi.dao.ClickDao;
 import com.pmoradi.dao.GroupDao;
 import com.pmoradi.dao.URLDao;
-import com.pmoradi.entities.Group;
+
+import javax.inject.Inject;
 
 public class Engineering {
 
-    public Engineering(){
-        int test = 0;
-    }
-
+    @Inject
     private ClickDao clickDAO;
+    @Inject
     private GroupDao groupDAO;
+    @Inject
     private URLDao urlDAO;
 }

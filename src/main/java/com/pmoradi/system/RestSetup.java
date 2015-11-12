@@ -1,5 +1,9 @@
 package com.pmoradi.system;
 
+import com.pmoradi.dao.ClickDao;
+import com.pmoradi.dao.GroupDao;
+import com.pmoradi.dao.URLDao;
+import com.pmoradi.util.Engineering;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -15,6 +19,9 @@ public class RestSetup extends ResourceConfig {
             @Override
             protected void configure() {
                 bind(Engineering.class).to(Engineering.class).in(Singleton.class);
+                bind(ClickDao.class).to(ClickDao.class).in(Singleton.class);
+                bind(GroupDao.class).to(GroupDao.class).in(Singleton.class);
+                bind(URLDao.class).to(URLDao.class).in(Singleton.class);
             }
         });
     }

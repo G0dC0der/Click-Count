@@ -3,13 +3,13 @@ package com.pmoradi.rest;
 import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.security.Captcha;
-import com.pmoradi.system.Engineering;
-import org.apache.commons.collections4.map.PassiveExpiringMap;
+import com.pmoradi.util.CachedMap;
+import com.pmoradi.util.Engineering;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -19,31 +19,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.LockSupport;
 
 @Path("/")
 @Produces("text/json")
 public class AddResource {
 
-    private static final int CAPTCHA_TIMEOUT = 60000;
-    private static final Map<String, Captcha> CAPTCHAS = Collections.synchronizedMap(new PassiveExpiringMap<>(CAPTCHA_TIMEOUT));
-    static{
-        Thread cleaner = new Thread(()->{
-            while(!Thread.currentThread().isInterrupted()){
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    return;
-                }
-                CAPTCHAS.isEmpty();
-            }
-        });
-        cleaner.setDaemon(true);
-        cleaner.start();
-    }
+    private static final Map<String, Captcha> CAPTCHAS = CachedMap.getCachedMap(60000);
 
     @Inject
     private Engineering engineering;
@@ -51,7 +33,17 @@ public class AddResource {
     @POST
     @Path("add")
     public Response add(@Context HttpServletRequest requestContext, AddInEntry entry){
-        Object resp = "lol";
+        String IP = requestContext.getRemoteAddr();
+        String word = entry.getCaptcha();
+        Captcha captcha = CAPTCHAS.get(IP);
+
+        if(captcha == null){
+            //Captcha expired
+        } else if(!captcha.isCorrect(word)){
+            //Wrong captcha
+        } else {
+
+        }
 
         return Response.ok(entry).build();
     }
@@ -62,17 +54,15 @@ public class AddResource {
         Captcha captcha = new Captcha();
         String IP = requestContext.getRemoteAddr();
 
-        synchronized (CAPTCHAS){
-            CAPTCHAS.put(IP, captcha);
-        }
+        CAPTCHAS.put(IP, captcha);
 
         AddOutEntry entry = new AddOutEntry();
-        entry.setCaptcha("some url");
+        entry.setCaptcha("some url"); //TODO: This is what test() is for.
 
         return Response.ok(entry).build();
     }
 
-    @POST
+    @GET
     @Path("test")
     @Produces("image/jpeg")
     public Response test(){
