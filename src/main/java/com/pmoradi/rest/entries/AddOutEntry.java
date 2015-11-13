@@ -8,6 +8,16 @@ public class AddOutEntry {
 
     private String url, urlError, link, linkError, group, groupError, password, passwordError, captcha, captchaError;
 
+    public AddOutEntry(){}
+
+    public AddOutEntry(AddInEntry inEntry){
+        url = inEntry.getUrl();
+        link = inEntry.getLink();
+        group = inEntry.getGroup();
+        password = inEntry.getPassword();
+        captcha = inEntry.getCaptcha();
+    }
+
     public String getUrl() {
         return url;
     }

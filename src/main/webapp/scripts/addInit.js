@@ -1,5 +1,5 @@
 $(function(){
-    $('body').html(add.stuff.createForm());
+    $('body').html(add.createForm(null));
     setSubmitEvent($('#add-link'));
 });
 

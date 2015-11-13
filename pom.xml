@@ -105,6 +105,7 @@
                                 <argument>src/main/resources/soy</argument>
                                 <argument>target/scripts</argument>
                             </arguments>
+                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
                         </configuration>
                     </execution>
                 </executions>

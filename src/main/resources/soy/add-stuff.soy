@@ -1,13 +1,13 @@
-{namespace add.stuff}
+{namespace add}
 
 /**
- *
+ * @param json A json object lapping to AddOutEntry.java
  */
 {template .createForm}
     <div id="create-div">
         <div>
-            <span>URL: <input type="text" name="url"></span>
-            <span id="url_error"></span>
+            <span>URL: <input type="text" name="url" value="{$json.url}"></span>
+            <span id="url_error">{$json.urlError}</span>
         </div>
         <div>
             <span>Link: <input type="text" name="link"></span>
@@ -24,7 +24,7 @@
             <span id="password_error"></span>
         </div>
         <div>
-            <span>Capatcha: <input type="text" name="captcha"></span>
+            <span>Captcha: <input type="text" name="captcha"></span>
             <span id="captcha_error"></span>
         </div>
         <button>Add Link</button>

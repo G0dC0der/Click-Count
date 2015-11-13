@@ -9,8 +9,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
-public class SoyCompiler {
+public class SoyCompiler { //TODO: Fix relative paths
 
     public static void main(String[] args) throws IOException {
         File src = new File(args[0]);
@@ -52,6 +53,7 @@ public class SoyCompiler {
         if(soyContent.size() != files.size())
             throw new IllegalStateException("Unexpected state.");
 
+        String absoluteSrc = srcDir.getAbsolutePath();
         for(int i = 0; i < soyContent.size(); i++){
             String content = soyContent.get(i);
             String output = destDir.getAbsolutePath() + "/" + files.get(i).getName() + ".js";
