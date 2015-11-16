@@ -6,42 +6,43 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-public final class Captcha
-{
-    private static final int IMG_WIDTH  = 200;
-    private static final int IMG_HEIGHT = 150;
+public final class Captcha {
+    private static final Random RANDOM = new Random();
     private static final char[] CHARS = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
             'a','b','c','d','e','f','g','h','i','j','k',    'm','n','o','p','q','r','s','t','u','v','w','x','y','z',
             '0',    '2','3','4','5','6','7','8','9'};
 
     private transient final String word;
-    private transient final Random random;
+    private int width;
+    private int height;
+
 
     public Captcha () {
-        random = new Random();
         word = generateWord();
+        width = 200;
+        height = 150;
     }
 
     public BufferedImage create() {
-        BufferedImage captchaImg = new BufferedImage(IMG_WIDTH,IMG_HEIGHT,BufferedImage.TYPE_BYTE_GRAY);
+        BufferedImage captchaImg = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
         Graphics2D g2d = captchaImg.createGraphics();
         g2d.setFont(new Font("Serif", Font.PLAIN, 40));
         g2d.setPaint(Color.WHITE);
-        g2d.fillRect (0, 0, IMG_WIDTH, IMG_HEIGHT);
+        g2d.fillRect(0, 0, width, height);
         g2d.setColor(Color.BLACK);
 
-        int x = 5, y = IMG_HEIGHT / 2;
+        int x = 5;
+        int y = height / 2;
         for (int i = 0; i < word.length(); i++) {
-            char c = word.charAt(i);
-            g2d.drawString(c + "", x, y);
-            x += random.nextInt(10) + 10;
-            int r = random.nextInt(20) - 15;
-            if (random.nextInt(10) > 5)
+            x += RANDOM.nextInt(10) + 10;
+            int r = RANDOM.nextInt(20) - 15;
+            if (r > -5)
                 y += r;
             else
                 y -= r;
-        }
 
+            g2d.drawString(word.charAt(i) + "", x, y);
+        }
         return captchaImg;
     }
 
@@ -49,12 +50,28 @@ public final class Captcha
         return word.equals(this.word);
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
     private String generateWord() {
-        int wordLength = random.nextInt(7) + 5;
+        int wordLength = RANDOM.nextInt(7) + 5;
         StringBuilder bu = new StringBuilder(wordLength);
 
         for (int i = 0; i < wordLength; i++)
-            bu.append(CHARS[random.nextInt(CHARS.length)]);
+            bu.append(CHARS[RANDOM.nextInt(CHARS.length)]);
 
         return bu.toString();
     }

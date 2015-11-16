@@ -19,9 +19,14 @@ public class Engineering {
     @Inject
     private URLDao urlDAO;
 
-    public byte[] toBytes(BufferedImage img) throws IOException {
+    public byte[] toBytes(BufferedImage img) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(img, "jpeg", baos);
+        try {
+            ImageIO.write(img, "jpeg", baos);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
         return baos.toByteArray();
     }
 }

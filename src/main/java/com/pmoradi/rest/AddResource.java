@@ -8,12 +8,13 @@ import com.pmoradi.util.Engineering;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Map;
 
 @Path("/")
@@ -49,13 +50,24 @@ public class AddResource {
         return Response.ok(out).build();
     }
 
-    @POST
+    @GET
     @Path("captcha")
-    public Response getCaptcha(@Context HttpServletRequest requestContext) throws IOException { //TODO: Remove throws. Handle it instead.
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getCaptcha(@Context HttpServletRequest requestContext) {
         Captcha captcha = new Captcha();
         String IP = requestContext.getRemoteAddr();
         CAPTCHAS.put(IP, captcha);
 
-        return Response.ok(engineering.toBytes(captcha.create())).build();
+        StreamingOutput stream = new StreamingOutput(){
+            @Override
+            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+                for(byte b : engineering.toBytes(captcha.create()))
+                    outputStream.write(b & 0xFF);
+                outputStream.close();
+            }
+        };
+
+        return Response.ok(stream).build();
+//        return Response.ok(engineering.toBytes(captcha.create())).build();
     }
 }

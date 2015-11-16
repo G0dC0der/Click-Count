@@ -1,31 +1,41 @@
-{namespace add}
+{namespace addPage}
 
 /**
- * @param json A json object lapping to AddOutEntry.java
+ * @param url
+ * @param urlError
+ * @param link
+ * @param linkError
+ * @param group
+ * @param groupError
+ * @param password
+ * @param passwordError
+ * @param captchaImg
+ * @param captcha
+ * @param captchaError
  */
 {template .createForm}
     <div id="create-div">
-        <div>
-            <span>URL: <input type="text" name="url" value="{$json.url}"></span>
-            <span id="url_error">{$json.urlError}</span>
+        <div class="add-group">
+            <span class="form-desc">URL{call pictogram.req/}:</span><input type="text" class="add-input" name="url" value="{if $url != null}{$url}{/if}">
+            <div id="url_error" class="error-text">{if $urlError != null}{$urlError}{/if}</div>
         </div>
-        <div>
-            <span>Link: <input type="text" name="link"></span>
-            <span id="link_error"></span>
+        <div class="add-group">
+            <div class="form-desc">Link{call pictogram.req/}:</div><input type="text" class="add-input" name="link" value="{if $link != null}{$link}{/if}">
+            <div id="link_error" class="error-text">{if $linkError != null}{$linkError}{/if}</div>
         </div>
-        <div>
-            <span>(Optional)</span>
-            <span>Group: <input type="text" name="group"></span>
-            <span id="group_error"></span>
+        <div class="add-group">
+            <div class="form-desc">Group:</div><input type="text" class="add-input" name="group" value="{if $group != null}{$group}{/if}">
+            <div id="group_error" class="error-text">{if $groupError != null}{$groupError}{/if}</div>
         </div>
-        <div>
-            <span>(Optional)</span>
-            <span>Password: <input type="password" name="password"></span>
-            <span id="password_error"></span>
+        <div class="add-group">
+            <div class="form-desc">Password:</div><input type="password" class="add-input" name="password" value="{if $password != null}{$password}{/if}">
+            <div id="password_error" class="error-text">{if $passwordError != null}{$passwordError}{/if}</div>
         </div>
-        <div>
-            <span>Captcha: <input type="text" name="captcha"></span>
-            <span id="captcha_error"></span>
+        <div class="add-group">
+            <div class="form-desc">Captcha{call pictogram.req/}:</div><input type="text" class="add-input" name="captcha" value="{if $captcha != null}{$captcha}{/if}">
+            <div id="captcha_error" class="error-text">{if $captchaError != null}{$captchaError}{/if}</div>
+            <div class="captcha-img"><img src="{if $captchaImg != null}{$captchaImg}{/if}"></div>
+            <div class="captcha-refresh"><a href="#">Refresh</a></div>
         </div>
         <button>Add Link</button>
     </div>

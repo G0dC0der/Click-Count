@@ -1,0 +1,27 @@
+.error-text{
+    font-size:13px;
+    color:red;
+    padding-left:70px;
+}
+
+.form-desc{
+    width:70px;
+    float:left;
+}
+
+.add-group{
+    padding-bottom:3px;
+}
+
+.captcha-img{
+    padding-left:70px;
+    padding-top:3px;
+}
+
+.captcha-refresh{
+    padding-left:70px;
+}
+
+.add-input{
+    width:200px;
+}
