@@ -34,19 +34,20 @@ public class AddResource {
         String word = entry.getCaptcha();
         Captcha captcha = CAPTCHAS.get(ip);
 
-        if(captcha == null){
-            out.setCaptchaError("Captcha has expired.");
-            return Response.status(403).entity(out).build();
-        } else if(!captcha.isCorrect(word)){
-            out.setCaptchaError("The captcha is incorrect.");
-            return Response.status(403).entity(out).build();
-        }
+//        if(captcha == null){
+//            out.setCaptchaError("Captcha has expired.");
+//            return Response.status(403).entity(out).build();
+//        } else if(!captcha.isCorrect(word)){
+//            out.setCaptchaError("The captcha is incorrect.");
+//            return Response.status(403).entity(out).build();
+//        }
 
         //If not using password, check if url is used.
         //Else, check is group + password is correct.
 
         out.setCaptcha("");
         out.setPassword("");
+        CAPTCHAS.remove(ip);
         return Response.ok(out).build();
     }
 

@@ -25,3 +25,21 @@
 .add-input{
     width:200px;
 }
+
+#info-section{
+    margin-top:15px;
+}
+
+#info-table {
+    width:50%;
+    border-collapse: collapse;
+}
+
+#info-table {
+    width:50%;
+    border-collapse: collapse;
+}
+
+.info-row:hover{
+    background:#E5EAFF;
+}

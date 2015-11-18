@@ -1,19 +1,19 @@
 {namespace addPage}
 
 /**
- * @param url
- * @param urlError
- * @param link
- * @param linkError
- * @param group
- * @param groupError
- * @param password
- * @param passwordError
- * @param captcha
- * @param captchaError
+ * @param url String
+ * @param urlError String
+ * @param link String
+ * @param linkError String
+ * @param group String
+ * @param groupError String
+ * @param password String
+ * @param passwordError String
+ * @param captcha String
+ * @param captchaError String
  */
-{template .createForm}
-    <div id="create-div">
+{template .addForm}
+    <div id="add-container">
         <div class="add-group">
             <span class="form-desc">URL{call pictogram.req/}:</span><input type="text" class="add-input" name="url" value="{if $url != null}{$url}{/if}">
             <div id="url_error" class="error-text">{if $urlError != null}{$urlError}{/if}</div>
@@ -38,4 +38,30 @@
         </div>
         <button>Add Link</button>
     </div>
+{/template}
+
+/**
+ *
+ */
+{template .infoHeader}
+    <table id="info-table" border="1">
+        <tr class="header-top">
+            <th class="header-el">URL</th>
+            <th class="header-el">Link</th>
+            <th class="header-el">Group</th>
+        </tr>
+    </table>
+{/template}
+
+/**
+ * @param url String
+ * @param link String
+ * @param group String
+ */
+{template .infoRow}
+    <tr class="info-row">
+        <td class="info-el"><a href="{$url}">{$url}</a></td>
+        <td class="info-el"><a href="{$link}">{$link}</a></td>
+        <td class="info-el">{if $group != null}{$group}{/if}</td>
+    </tr>
 {/template}
