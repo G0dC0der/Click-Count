@@ -9,7 +9,6 @@
  * @param groupError
  * @param password
  * @param passwordError
- * @param captchaImg
  * @param captcha
  * @param captchaError
  */
@@ -34,7 +33,7 @@
         <div class="add-group">
             <div class="form-desc">Captcha{call pictogram.req/}:</div><input type="text" class="add-input" name="captcha" value="{if $captcha != null}{$captcha}{/if}">
             <div id="captcha_error" class="error-text">{if $captchaError != null}{$captchaError}{/if}</div>
-            <div class="captcha-img"><img src="{if $captchaImg != null}{$captchaImg}{/if}"></div>
+            <div class="captcha-img"><img src="img/questionmark.png"></div>
             <div class="captcha-refresh"><a href="#">Refresh</a></div>
         </div>
         <button>Add Link</button>

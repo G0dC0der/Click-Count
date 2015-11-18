@@ -8,17 +8,16 @@ import com.pmoradi.util.Engineering;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Map;
 
 @Path("/")
-@Produces("text/json")
 public class AddResource {
 
     private static final Map<String, Captcha> CAPTCHAS = CachedMap.getCachedMap(60000);
@@ -28,6 +27,7 @@ public class AddResource {
 
     @POST
     @Path("add")
+    @Produces("text/json")
     public Response add(@Context HttpServletRequest requestContext, AddInEntry entry){
         AddOutEntry out = new AddOutEntry(entry);
         String ip = requestContext.getRemoteAddr();
@@ -52,22 +52,18 @@ public class AddResource {
 
     @GET
     @Path("captcha")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces("application/octet-stream")
     public Response getCaptcha(@Context HttpServletRequest requestContext) {
         Captcha captcha = new Captcha();
         String IP = requestContext.getRemoteAddr();
         CAPTCHAS.put(IP, captcha);
 
-        StreamingOutput stream = new StreamingOutput(){
-            @Override
-            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
-                for(byte b : engineering.toBytes(captcha.create()))
-                    outputStream.write(b & 0xFF);
-                outputStream.close();
-            }
+        StreamingOutput stream = (outputStream)->{
+            for(byte b : engineering.toBytes(captcha.create()))
+                outputStream.write(b & 0xFF);
+            outputStream.close();
         };
 
         return Response.ok(stream).build();
-//        return Response.ok(engineering.toBytes(captcha.create())).build();
     }
 }

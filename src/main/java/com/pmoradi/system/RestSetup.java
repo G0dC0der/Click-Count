@@ -5,6 +5,7 @@ import com.pmoradi.dao.GroupDao;
 import com.pmoradi.dao.URLDao;
 import com.pmoradi.util.Engineering;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.inject.Singleton;
@@ -15,6 +16,8 @@ public class RestSetup extends ResourceConfig {
 
     public RestSetup(){
         packages("com.pmoradi.rest");
+        packages("org.glassfish.jersey.jackson");
+        register(JacksonFeature.class);
         register(new AbstractBinder(){
             @Override
             protected void configure() {

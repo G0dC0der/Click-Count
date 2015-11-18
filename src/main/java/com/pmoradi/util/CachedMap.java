@@ -11,11 +11,10 @@ public class CachedMap {
     public static <K,V> Map<K,V> getCachedMap(int timeout){
         Map<K,V> map =  Collections.synchronizedMap(new PassiveExpiringMap<K, V>(timeout));
         WeakReference<Map<K,V>> ref = new WeakReference<>(map);
+
         Thread t = new Thread(()->{
             while(ref.get() != null){
-                synchronized (map){
-                    map.isEmpty();
-                }
+                map.isEmpty();
                 try {
                     Thread.sleep(timeout);
                 } catch (InterruptedException e) {
