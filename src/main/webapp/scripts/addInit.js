@@ -16,6 +16,7 @@ function postInit(){
  */
 function setSubmitEvent($container){
     $container.find('button').on('click', function(){
+        $(this).prop('disabled', true);
         Ajax.POST({
             url: 'rest/add',
             data:{
