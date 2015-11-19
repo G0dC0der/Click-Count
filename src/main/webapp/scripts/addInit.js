@@ -80,5 +80,17 @@ function postAdd(response, success){
             link: response.link,
             group: response.group
         }).content);
+
+        Dialog.popup({
+            text: "The link was successfully added!",
+            img: "img/success.gif",
+            life: 3000
+        });
+    } else {
+        Dialog.popup({
+            text: "Failed to add the link.",
+            img: "img/fail.gif",
+            life: 3000
+        });
     }
 }

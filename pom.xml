@@ -109,7 +109,7 @@
                             <mainClass>com.pmoradi.util.SoyCompiler</mainClass>
                             <arguments>
                                 <argument>src/main/resources/soy</argument>
-                                <argument>target/scripts</argument>
+                                <argument>${project.build.directory}/${project.build.finalName}/scripts</argument>
                             </arguments>
                             <cleanupDaemonThreads>false</cleanupDaemonThreads>
                         </configuration>
@@ -118,24 +118,66 @@
             </plugin>
 
             <plugin>
+                <groupId>com.samaxes.maven</groupId>
+                <artifactId>minify-maven-plugin</artifactId>
+                <version>1.7.4</version>
+                <executions>
+                    <execution>
+                        <id>default-minify</id>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <charset>UTF-8</charset>
+                            <jsEngine>CLOSURE</jsEngine>
+                            <skipMerge>true</skipMerge>
+                            <nosuffix>true</nosuffix>
+
+                            <cssSourceDir>src/main/webapp/css</cssSourceDir>
+                            <cssTargetDir>styles/minified</cssTargetDir>
+                            <cssSourceFiles>
+                                <cssSourceFile>*.css</cssSourceFile>
+                            </cssSourceFiles>
+                            <cssFinalFile>styles.min.css</cssFinalFile>
+
+                            <!--<jsSourceDir>js</jsSourceDir>-->
+                            <!--<jsSourceFiles>-->
+                                <!--<jsSourceFile>scripts/lib/jquery-1.11.3.min.js</jsSourceFile>-->
+                                <!--<jsSourceFile>scripts/lib/soyutils.js</jsSourceFile>-->
+                            <!--</jsSourceFiles>-->
+                            <!--<jsSourceIncludes>-->
+                                <!--<jsSourceInclude>scripts/utils/ajax.js</jsSourceInclude>-->
+                                <!--<jsSourceInclude>scripts/utils/constants.js</jsSourceInclude>-->
+                                <!--<jsSourceInclude>scripts/utils/dialog.js</jsSourceInclude>-->
+                                <!--<jsSourceInclude>scripts/addInit.js</jsSourceInclude>-->
+                            <!--</jsSourceIncludes>-->
+                            <!--<jsFinalFile>scripts.min.js</jsFinalFile>-->
+                            <!--<jsEngine>CLOSURE</jsEngine>-->
+                        </configuration>
+                        <goals>
+                            <goal>minify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>war</goal>
-                        </goals>
-                        <configuration>
-                            <webResources>
-                                <resource>
-                                    <directory>target/scripts</directory>
-                                    <targetPath>scripts</targetPath>
-                                </resource>
-                            </webResources>
-                        </configuration>
-                    </execution>
-                </executions>
+                <!--<executions> &lt;!&ndash; Do we really need this? Try without it. &ndash;&gt;-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>war</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<webResources>-->
+                                <!--<resource>-->
+                                    <!--<directory>target/scripts</directory>-->
+                                    <!--<targetPath>scripts</targetPath>-->
+                                <!--</resource>-->
+                            <!--</webResources>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>

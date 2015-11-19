@@ -28,19 +28,31 @@ public class AddResource {
     @POST
     @Path("add")
     @Produces("text/json")
-    public Response add(@Context HttpServletRequest requestContext, AddInEntry entry){
-        AddOutEntry out = new AddOutEntry(entry);
+    public Response add(@Context HttpServletRequest requestContext, AddInEntry in){
+        AddOutEntry out = new AddOutEntry(in);
+
         String ip = requestContext.getRemoteAddr();
-        String word = entry.getCaptcha();
+        String word = in.getCaptcha();
         Captcha captcha = CAPTCHAS.get(ip);
 
-//        if(captcha == null){
-//            out.setCaptchaError("Captcha has expired.");
-//            return Response.status(403).entity(out).build();
-//        } else if(!captcha.isCorrect(word)){
-//            out.setCaptchaError("The captcha is incorrect.");
-//            return Response.status(403).entity(out).build();
-//        }
+        boolean error = false;
+        if(in.getUrl().isEmpty()){
+            out.setUrlError("The url can not be empty.");
+            error = true;
+        }
+        if(in.getLink().isEmpty()) {
+            out.setLinkError("The link can not be empty.");
+            error = true;
+        }
+        if(captcha == null){
+            out.setCaptchaError("Captcha has expired or was never requested.");
+            error = true;
+        } else if(!captcha.isCorrect(word)) {
+            out.setCaptchaError("The captcha is incorrect.");
+            error = true;
+        }
+        if(error)
+            return Response.status(403).entity(out).build();
 
         //If not using password, check if url is used.
         //Else, check is group + password is correct.

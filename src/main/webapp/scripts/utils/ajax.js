@@ -10,7 +10,7 @@ $(function(){
         $.ajax({
             type: 'POST',
             url: json.url,
-            contentType: 'application/json',
+            contentType: typeof json.contentType === 'undefined' ? 'application/json' : json.contentType,
             data: JSON.stringify(json.data),
             success: json.success,
             error: json.error

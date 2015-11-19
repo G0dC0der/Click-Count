@@ -43,3 +43,20 @@
 .info-row:hover{
     background:#E5EAFF;
 }
+
+.popup{
+    border-radius: 7px;
+    border: 1px solid #A0A0A0;
+    position: absolute;
+    z-index:1001;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background:#DCDCCC;
+    padding:5px;
+}
+
+.popup-img{
+    display:inline-block;
+    vertical-align: middle;
+    height:100%;
+}
