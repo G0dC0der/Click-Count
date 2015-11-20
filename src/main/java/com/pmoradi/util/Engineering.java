@@ -3,6 +3,8 @@ package com.pmoradi.util;
 import com.pmoradi.dao.ClickDao;
 import com.pmoradi.dao.GroupDao;
 import com.pmoradi.dao.URLDao;
+import com.pmoradi.entities.Group;
+import com.pmoradi.security.SecureStrings;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -28,5 +30,24 @@ public class Engineering {
             return null;
         }
         return baos.toByteArray();
+    }
+
+    public void addUrl(String url, String link, String group, String password) throws Exception{ //Find specific exceptions
+
+    }
+
+    public void addUrl(String url, String link){
+
+    }
+
+    public String getLink(String url){
+        return null;
+    }
+
+    public boolean verify(String groupName, String password){
+        String hash = SecureStrings.md5(password + SecureStrings.getSalt());
+        Group group = groupDAO.getByName(groupName);
+
+        return group == null || group.getPassword().equals(hash); //TODO: Do Hibernate return null if the object does not exist?
     }
 }

@@ -5,6 +5,7 @@ import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.security.Captcha;
 import com.pmoradi.util.CachedMap;
 import com.pmoradi.util.Engineering;
+import com.pmoradi.util.Texting;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ public class AddResource {
     private static final Map<String, Captcha> CAPTCHAS = CachedMap.getCachedMap(60000);
 
     @Inject
-    private Engineering engineering;
+    private Engineering logic;
 
     @POST
     @Path("add")
@@ -40,6 +41,10 @@ public class AddResource {
             out.setUrlError("The url can not be empty.");
             error = true;
         }
+        if(!Texting.validUrl(in.getUrl())){
+            out.setUrl("Url contains illegal characters.");
+            error = true;
+        }
         if(in.getLink().isEmpty()) {
             out.setLinkError("The link can not be empty.");
             error = true;
@@ -51,14 +56,29 @@ public class AddResource {
             out.setCaptchaError("The captcha is incorrect.");
             error = true;
         }
+        if(!in.getGroup().isEmpty() && in.getPassword().isEmpty() && 4 > in.getPassword().length()){
+            out.setPasswordError("Password not acceptable");
+            error = true;
+        }
+        if(!error && !logic.verify(in.getGroup(), in.getPassword())){
+            out.setGroupError("Group name and password mismatch.");
+            error = true;
+        }
+        out.setCaptcha("");
+
         if(error)
             return Response.status(403).entity(out).build();
 
-        //If not using password, check if url is used.
-        //Else, check is group + password is correct.
+        try{
+            if(in.getGroup().isEmpty())
+                logic.addUrl(in.getUrl(), in.getLink());
+            else
+                logic.addUrl(in.getUrl(), in.getLink(), in.getGroup(), in.getPassword());
+        }catch(Exception e){
+            out.setUrlError("The URL is already used."); //Be more specific. The data base might be down. Or, somebody might took the group name before we had a chance to save.
+            return Response.status(403).entity(out).build();
+        }
 
-        out.setCaptcha("");
-        out.setPassword("");
         CAPTCHAS.remove(ip);
         return Response.ok(out).build();
     }
@@ -72,7 +92,7 @@ public class AddResource {
         CAPTCHAS.put(IP, captcha);
 
         StreamingOutput stream = (outputStream)->{
-            for(byte b : engineering.toBytes(captcha.create()))
+            for(byte b : logic.toBytes(captcha.create()))
                 outputStream.write(b & 0xFF);
             outputStream.close();
         };

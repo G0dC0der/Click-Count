@@ -18,7 +18,7 @@ function setSubmitEvent($container){
     $container.find('button').on('click', function(){
         $(this).prop('disabled', true);
         Ajax.POST({
-            url: 'rest/add',
+            url: Constant.REST_ADD,
             data:{
                 url: $container.find("[name='url']").val(),
                 link: $container.find("[name='link']").val(),
@@ -67,6 +67,7 @@ function postAdd(response, success){
         groupError: response.groupError,
         password: response.password,
         passwordError: response.passwordError,
+        captcha: response.captcha,
         captchaError: response.captchaError
     }).content);
 
@@ -85,13 +86,13 @@ function postAdd(response, success){
         Dialog.popup({
             text: "The link was successfully added!",
             img: "img/success.gif",
-            life: 3000
+            life: 2400
         });
     } else {
         Dialog.popup({
             text: "Failed to add the link.",
             img: "img/fail.gif",
-            life: 3000
+            life: 2400
         });
     }
 }

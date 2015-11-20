@@ -1,4 +1,4 @@
-package com.pmoradi.test.database.entities;
+package com.pmoradi.test.entities;
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import com.pmoradi.entities.Click;

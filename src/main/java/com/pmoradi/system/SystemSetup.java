@@ -10,6 +10,7 @@ public class SystemSetup implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         Repository.getEntityManagerFactory();
+        Repository.getLockManager();
     }
 
     @Override
