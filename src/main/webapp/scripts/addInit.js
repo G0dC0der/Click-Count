@@ -86,13 +86,13 @@ function postAdd(response, success){
         Dialog.popup({
             text: "The link was successfully added!",
             img: "img/success.gif",
-            life: 2400
+            life: 3000
         });
     } else {
         Dialog.popup({
             text: "Failed to add the link.",
-            img: "img/fail.gif",
-            life: 2400
+            img: "img/fail.png",
+            life: 3000
         });
     }
 }

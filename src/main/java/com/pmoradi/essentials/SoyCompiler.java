@@ -1,4 +1,4 @@
-package com.pmoradi.util;
+package com.pmoradi.essentials;
 
 import com.google.template.soy.SoyFileSet;
 import com.google.template.soy.jssrc.SoyJsSrcOptions;
@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 public class SoyCompiler { //TODO: Fix relative paths
 

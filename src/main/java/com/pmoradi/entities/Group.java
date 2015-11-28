@@ -11,11 +11,11 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "groupname",nullable = false)
+    @Column(name = "groupname", nullable = false)
     private String groupName;
 
     @Column(nullable = false)
-    private String password = "";
+    private String password;
 
     @OneToMany(mappedBy = "group")
     private List<URL> urls;

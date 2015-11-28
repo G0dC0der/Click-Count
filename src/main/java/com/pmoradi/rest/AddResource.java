@@ -3,9 +3,9 @@ package com.pmoradi.rest;
 import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.security.Captcha;
-import com.pmoradi.util.CachedMap;
-import com.pmoradi.util.Engineering;
-import com.pmoradi.util.Texting;
+import com.pmoradi.essentials.CachedMap;
+import com.pmoradi.essentials.Engineering;
+import com.pmoradi.essentials.Texting;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +60,7 @@ public class AddResource {
             out.setPasswordError("Password not acceptable");
             error = true;
         }
-        if(!error && !logic.verify(in.getGroup(), in.getPassword())){
+        if(!in.getGroup().isEmpty() && !in.getPassword().isEmpty() && !logic.validate(in.getGroup(), in.getPassword())){
             out.setGroupError("Group name and password mismatch.");
             error = true;
         }

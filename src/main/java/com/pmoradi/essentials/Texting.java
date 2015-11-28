@@ -1,4 +1,4 @@
-package com.pmoradi.util;
+package com.pmoradi.essentials;
 
 public class Texting {
 

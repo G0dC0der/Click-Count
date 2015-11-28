@@ -97,6 +97,12 @@
                     <exclude>*.sql</exclude>
                 </excludes>
             </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>META-INF/*.xml</include>
+                </includes>
+            </resource>
         </resources>
 
         <plugins>
@@ -120,7 +126,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>com.pmoradi.util.SoyCompiler</mainClass>
+                            <mainClass>com.pmoradi.essentials.SoyCompiler</mainClass>
                             <arguments>
                                 <argument>src/main/resources/soy</argument>
                                 <argument>${project.build.directory}/${project.build.finalName}/scripts</argument>

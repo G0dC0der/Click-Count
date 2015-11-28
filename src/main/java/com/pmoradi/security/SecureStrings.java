@@ -1,6 +1,5 @@
 package com.pmoradi.security;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -18,22 +17,23 @@ public class SecureStrings {
     }
 
     public static String md5(String str){
-        try {
-            return new String(MD5.digest(str.getBytes("UTF-8")));
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
+        return hash(MD5, str);
     }
 
     public static String sha1(String str){
-        try {
-            return new String(SHA1.digest(str.getBytes("UTF-8")));
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
+        return hash(SHA1, str);
     }
 
-    public static String getSalt(){
+    private static String hash(MessageDigest md, String str){
+        byte[] array = md.digest(str.getBytes());
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < array.length; ++i) {
+            sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+        }
+        return sb.toString();
+    }
+
+    public static final String getSalt(){
         return "CLICKERZ";
     }
 }

@@ -5,7 +5,6 @@ import com.pmoradi.entities.Click;
 import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;
 import com.pmoradi.system.Repository;
-import com.pmoradi.system.SystemSetup;
 import org.junit.Assert;
 import org.junit.Test;
 

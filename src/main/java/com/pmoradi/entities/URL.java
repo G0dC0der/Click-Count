@@ -1,6 +1,7 @@
 package com.pmoradi.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "urls", indexes = {@Index(columnList = "url", name = "url_index", unique = true)})
@@ -19,6 +20,9 @@ public class URL {
     @ManyToOne
     @JoinColumn(name = "group_fk")
     private Group group;
+
+    @OneToMany(mappedBy = "url")
+    private List<Click> clicks;
 
     public Integer getId() {
         return id;
@@ -50,5 +54,13 @@ public class URL {
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public List<Click> getClicks() {
+        return clicks;
+    }
+
+    public void setClicks(List<Click> clicks) {
+        this.clicks = clicks;
     }
 }

@@ -1,4 +1,4 @@
-package com.pmoradi.util;
+package com.pmoradi.essentials;
 
 import org.apache.commons.collections4.map.PassiveExpiringMap;
 
