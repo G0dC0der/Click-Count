@@ -1,6 +1,6 @@
 package com.pmoradi.test.dao;
 
-import com.pmoradi.dao.GroupDao;
+import com.pmoradi.dao.EntityDao;
 import com.pmoradi.dao.URLDao;
 import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;
@@ -8,18 +8,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 public class UrlDaoTest {
 
     private URLDao urlDao;
-    private GroupDao groupDao;
+    private EntityDao entityDao;
 
     @Before
     public void setup(){
         urlDao = new URLDao();
-        groupDao = new GroupDao();
+        entityDao = new EntityDao();
     }
 
     @Test
@@ -64,17 +65,21 @@ public class UrlDaoTest {
         final String GROUP = UUID.randomUUID().toString();
         final String URL = UUID.randomUUID().toString();
 
+        URL url = new URL();
         Group group = new Group();
         group.setGroupName(GROUP);
         group.setPassword(UUID.randomUUID().toString());
+        group.setUrls(Arrays.asList(url));
 
-        URL url = new URL();
         url.setGroup(group);
         url.setUrl(URL);
         url.setLink(UUID.randomUUID().toString());
+        url.setGroup(group);
 
-        groupDao.save(group);
+        entityDao.save(group, url);
 
         Assert.assertNotNull(urlDao.findByGroupAndUrl(GROUP, URL));
+        Assert.assertNull(urlDao.findByGroupAndUrl(GROUP, "foo"));
+        Assert.assertNull(urlDao.findByGroupAndUrl("bar", URL));
     }
 }

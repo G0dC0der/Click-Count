@@ -8,19 +8,23 @@ import java.util.Random;
 
 public final class Captcha {
     private static final Random RANDOM = new Random();
-    private static final char[] CHARS = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+    private static final char[] CHARS = {
+            'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
             'a','b','c','d','e','f','g','h','i','j','k',    'm','n','o','p','q','r','s','t','u','v','w','x','y','z',
             '0',    '2','3','4','5','6','7','8','9'};
 
     private transient final String word;
     private int width;
     private int height;
-
+    private int minChars;
+    private int maxChars;
 
     public Captcha () {
-        word = generateWord();
         width = 200;
         height = 150;
+        minChars = 4;
+        maxChars = 6;
+        word = generateWord();
     }
 
     public BufferedImage create() {
@@ -67,12 +71,22 @@ public final class Captcha {
     }
 
     private String generateWord() {
-        int wordLength = RANDOM.nextInt(7) + 5;
+        int wordLength = RANDOM.nextInt(maxChars - minChars) + minChars;
         StringBuilder bu = new StringBuilder(wordLength);
 
         for (int i = 0; i < wordLength; i++)
             bu.append(CHARS[RANDOM.nextInt(CHARS.length)]);
 
         return bu.toString();
+    }
+
+    public static void main(String[] args){
+         int minChars;
+         int maxChars;
+        minChars = 4;
+        maxChars = 6;
+        int i = RANDOM.nextInt(maxChars - minChars) + minChars;
+
+        System.out.println(i);
     }
 }

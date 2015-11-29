@@ -1,6 +1,7 @@
 package com.pmoradi.system;
 
 import com.pmoradi.dao.ClickDao;
+import com.pmoradi.dao.EntityDao;
 import com.pmoradi.dao.GroupDao;
 import com.pmoradi.dao.URLDao;
 import com.pmoradi.essentials.Engineering;
@@ -25,6 +26,7 @@ public class RestSetup extends ResourceConfig {
                 bind(ClickDao.class).to(ClickDao.class).in(Singleton.class);
                 bind(GroupDao.class).to(GroupDao.class).in(Singleton.class);
                 bind(URLDao.class).to(URLDao.class).in(Singleton.class);
+                bind(EntityDao.class).to(EntityDao.class).in(Singleton.class);
             }
         });
     }

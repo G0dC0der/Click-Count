@@ -52,13 +52,13 @@ public class URLDao {
     public URL findByGroupAndUrl(String group, String urlName){
         EntityManager manager = Repository.getEntityManagerFactory().createEntityManager();
 
-        Query query = manager.createQuery("from URL u inner join Group g on u.url_fk=g.id where c.url = :urlname and g.groupName = :groupname");
+        Query query = manager.createQuery("from URL as u inner join u.group as g where u.url = :urlname and g.groupName = :groupname");
         query.setParameter("urlname", urlName);
         query.setParameter("groupname", group);
-        URL result = query.getResultList().isEmpty() ? null : (URL) query.getSingleResult();
+        URL url = query.getResultList().isEmpty() ? null : (URL)((Object[])query.getSingleResult())[0];
         manager.close();
 
-        return result;
+        return url;
     }
 
     public List<URL> findByLink(String link){

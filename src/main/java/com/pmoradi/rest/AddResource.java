@@ -1,11 +1,11 @@
 package com.pmoradi.rest;
 
+import com.pmoradi.essentials.CachedMap;
+import com.pmoradi.essentials.Engineering;
 import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.security.Captcha;
-import com.pmoradi.essentials.CachedMap;
-import com.pmoradi.essentials.Engineering;
-import com.pmoradi.essentials.Texting;
+import com.pmoradi.util.LinkUtil;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +41,7 @@ public class AddResource {
             out.setUrlError("The url can not be empty.");
             error = true;
         }
-        if(!Texting.validUrl(in.getUrl())){
+        if(!LinkUtil.validUrl(in.getUrl())){
             out.setUrl("Url contains illegal characters.");
             error = true;
         }
@@ -58,6 +58,10 @@ public class AddResource {
         }
         if(!in.getGroup().isEmpty() && in.getPassword().isEmpty() && 4 > in.getPassword().length()){
             out.setPasswordError("Password not acceptable");
+            error = true;
+        }
+        if(!in.getGroup().isEmpty() && LinkUtil.validUrl(in.getGroup())){
+            out.setGroupError("Group contains illegal characters");
             error = true;
         }
         if(!in.getGroup().isEmpty() && !in.getPassword().isEmpty() && !logic.validate(in.getGroup(), in.getPassword())){
