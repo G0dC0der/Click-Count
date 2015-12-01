@@ -9,12 +9,12 @@ public class SystemSetup implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        Repository.getEntityManagerFactory();
+        Repository.getDatabase();
         Repository.getLockManager();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        Repository.getEntityManagerFactory().close();
+        Repository.getDatabase().close();
     }
 }

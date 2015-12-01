@@ -1,5 +1,6 @@
 package com.pmoradi.system;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.HashSet;
@@ -10,33 +11,40 @@ public class Repository {
     private static EntityManagerFactory entityManagerFactory;
     private static LockManager lockManager;
 
-    public static EntityManagerFactory getEntityManagerFactory(){
+    public static EntityManagerFactory getDatabase(){
         if(entityManagerFactory == null)
             entityManagerFactory = Persistence.createEntityManagerFactory("hibernate-engine");
 
         return entityManagerFactory;
     }
 
+    public static EntityManager newSession(){
+        return newSession();
+    }
+
     public static LockManager getLockManager(){
         if(lockManager == null){
             lockManager = new LockManager() {
 
-                private Set<Lock> locks = new HashSet<>();
+                private Set<Key> keys = new HashSet<>();
 
                 @Override
-                public synchronized Lock lock(String name) throws InterruptedException {
-                    final Lock lock = new EntityLock(name);
+                public synchronized Key lock(String keyName) {
+                    final Key key = new EntityKey(keyName);
 
-                    while(locks.contains(lock))
-                        wait();
+                    while(keys.contains(key)){
+                        try {
+                            wait();
+                        } catch (InterruptedException e) {}
+                    }
 
-                    locks.add(lock);
-                    return lock;
+                    keys.add(key);
+                    return key;
                 }
 
                 @Override
-                public synchronized void unlock(Lock lock) {
-                    locks.remove(lock);
+                public synchronized void unlock(Key key) {
+                    keys.remove(key);
                     notifyAll();
                 }
             };

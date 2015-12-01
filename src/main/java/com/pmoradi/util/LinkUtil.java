@@ -75,8 +75,8 @@ public class LinkUtil {
                 case '9':
                 case '.':
                 case '-':
-                case  '_':
-                case  '~':
+                case '_':
+                case '~':
                     break;
                 default:
                     return false;

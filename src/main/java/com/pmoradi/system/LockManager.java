@@ -2,15 +2,15 @@ package com.pmoradi.system;
 
 public interface LockManager {
 
-    public interface Lock{
+    public interface Key {
         String getName();
     }
 
-    static class EntityLock implements Lock{
+    static class EntityKey implements Key {
 
         final String name;
 
-        EntityLock(String name){
+        EntityKey(String name){
             this.name = name;
         }
 
@@ -21,10 +21,10 @@ public interface LockManager {
 
         @Override
         public boolean equals(Object obj) {
-            if(obj == null || obj instanceof Lock == false)
+            if(obj == null || obj instanceof Key == false)
                 return false;
 
-            Lock lock = (Lock) obj;
+            Key lock = (Key) obj;
             return getName().equals(lock.getName());
         }
 
@@ -34,7 +34,7 @@ public interface LockManager {
         }
     }
 
-    Lock lock(String name) throws InterruptedException;
+    Key lock(String keyName);
 
-    void unlock(Lock lock);
+    void unlock(Key key);
 }

@@ -4,7 +4,6 @@ import com.pmoradi.dao.ClickDao;
 import com.pmoradi.dao.EntityDao;
 import com.pmoradi.dao.GroupDao;
 import com.pmoradi.dao.URLDao;
-import com.pmoradi.essentials.Engineering;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;

@@ -27,4 +27,4 @@ CREATE TABLE clicks(
 );
 
 CREATE UNIQUE INDEX unique_group ON groups(groupname);
-CREATE UNIQUE INDEX unique_url ON urls(url);
+INSERT INTO groups (groupname, password) VALUES ('default', '');

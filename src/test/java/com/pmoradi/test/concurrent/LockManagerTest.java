@@ -26,7 +26,7 @@ public class LockManagerTest {
             final int threadNumber = i;
             executor.submit(()->{
                 try {
-                    LockManager.Lock lock = manager.lock(lockName);
+                    LockManager.Key lock = manager.lock(lockName);
                     lockOwner.set(threadNumber);
 
                     Thread.sleep(1);

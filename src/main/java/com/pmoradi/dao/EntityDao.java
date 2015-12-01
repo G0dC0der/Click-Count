@@ -9,7 +9,7 @@ import javax.persistence.EntityManager;
 public class EntityDao {
 
     public void save(Group group, URL url) {
-        EntityManager em = Repository.getEntityManagerFactory().createEntityManager();
+        EntityManager em = Repository.newSession();
 
         em.getTransaction().begin();
         em.persist(url);

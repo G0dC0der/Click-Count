@@ -1,7 +1,6 @@
 package com.pmoradi.rest;
 
-import com.pmoradi.entities.URL;
-import com.pmoradi.essentials.Engineering;
+import com.pmoradi.system.Engineering;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -22,20 +21,15 @@ public class RedirectResource {
     private Engineering logic;
 
     @GET
-    @Path("{url}")
-    public void redirectUrl(@Context HttpServletRequest request,
-                            @Context HttpServletResponse response,
-                            @PathParam("url") String url) throws ServletException, IOException {
-        String link = logic.getLinkAndClick(url);
-        response.sendRedirect(link != null ? link : request.getContextPath() + "/" + String.format("error.html?status=404&url=%s", url));
-    }
-
-    @GET
     @Path("{group}/{url}")
     public void redirectGroupUrl(@Context HttpServletRequest request,
                                  @Context HttpServletResponse response,
                                  @PathParam("group") String group,
                                  @PathParam("url") String url) throws ServletException, IOException {
+        if(url == null){
+            url = group;
+            group = "default";
+        }
         String link = logic.getLinkAndClick(group, url);
         response.sendRedirect(link != null ? link : request.getContextPath() + "/" + String.format("error.html?status=404&url=%s&group=%s", url, group));
     }

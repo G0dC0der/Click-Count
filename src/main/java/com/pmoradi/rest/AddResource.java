@@ -1,11 +1,12 @@
 package com.pmoradi.rest;
 
 import com.pmoradi.essentials.CachedMap;
-import com.pmoradi.essentials.Engineering;
+import com.pmoradi.system.Engineering;
+import com.pmoradi.essentials.GroupUnavailableException;
+import com.pmoradi.essentials.UrlUnavailableException;
 import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.security.Captcha;
-import com.pmoradi.util.LinkUtil;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+import java.net.MalformedURLException;
 import java.util.Map;
 
 @Path("/")
@@ -41,10 +43,6 @@ public class AddResource {
             out.setUrlError("The url can not be empty.");
             error = true;
         }
-        if(!LinkUtil.validUrl(in.getUrl())){
-            out.setUrl("Url contains illegal characters.");
-            error = true;
-        }
         if(in.getLink().isEmpty()) {
             out.setLinkError("The link can not be empty.");
             error = true;
@@ -56,19 +54,9 @@ public class AddResource {
             out.setCaptchaError("The captcha is incorrect.");
             error = true;
         }
-        if(!in.getGroup().isEmpty() && in.getPassword().isEmpty() && 4 > in.getPassword().length()){
-            out.setPasswordError("Password not acceptable");
-            error = true;
-        }
-        if(!in.getGroup().isEmpty() && LinkUtil.validUrl(in.getGroup())){
-            out.setGroupError("Group contains illegal characters");
-            error = true;
-        }
-        if(!in.getGroup().isEmpty() && !in.getPassword().isEmpty() && !logic.validate(in.getGroup(), in.getPassword())){
-            out.setGroupError("Group name and password mismatch.");
-            error = true;
-        }
+
         out.setCaptcha("");
+        CAPTCHAS.remove(ip);
 
         if(error)
             return Response.status(403).entity(out).build();
@@ -78,13 +66,24 @@ public class AddResource {
                 logic.addUrl(in.getUrl(), in.getLink());
             else
                 logic.addUrl(in.getUrl(), in.getLink(), in.getGroup(), in.getPassword());
-        }catch(Exception e){
-            out.setUrlError("The URL is already used."); //Be more specific. The data base might be down. Or, somebody might took the group name before we had a chance to save.
-            return Response.status(403).entity(out).build();
+        } catch(GroupUnavailableException e){
+            out.setGroupError(e.getMessage());
+            error = true;
+        } catch(UrlUnavailableException e){
+            out.setUrlError(e.getMessage());
+            error = true;
+        } catch (MalformedURLException e){
+            String msg = e.getMessage();
+            if(msg.startsWith("GROUP:"))
+                out.setGroupError("The group name consist of illegal characters.");
+            else if(msg.startsWith("URL:"))
+                out.setUrlError("URL with the given group is already used.");
+            error = true;
         }
 
-        CAPTCHAS.remove(ip);
-        return Response.ok(out).build();
+        return error ?
+                Response.status(404).entity(out).build() :
+                Response.ok(out).build();
     }
 
     @GET
