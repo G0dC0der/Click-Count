@@ -12,7 +12,7 @@ public class ClickDao {
     private URLDao urlDao;
 
     public void save(Click click){
-        EntityManager manager = Repository.newSession();
+        EntityManager manager = Repository.getDatabase().createEntityManager();
         manager.getTransaction().begin();
 
         manager.persist(click);
@@ -22,7 +22,7 @@ public class ClickDao {
     }
 
     public void delete(Click click){
-        EntityManager manager = Repository.newSession();
+        EntityManager manager = Repository.getDatabase().createEntityManager();
         manager.getTransaction().begin();
         manager.remove(manager.contains(click) ? click : manager.merge(click));
         manager.getTransaction().commit();
@@ -30,7 +30,7 @@ public class ClickDao {
     }
 
     public Click findById(Integer id){
-        EntityManager manager = Repository.newSession();
+        EntityManager manager = Repository.getDatabase().createEntityManager();
         Click click = manager.find(Click.class, id);
         manager.close();
 

@@ -11,7 +11,7 @@ import java.util.List;
 public class URLDao {
 
     public void save(URL url){
-        EntityManager manager = Repository.newSession();
+        EntityManager manager = Repository.getDatabase().createEntityManager();
         manager.getTransaction().begin();
         manager.persist(url);
         manager.getTransaction().commit();
@@ -20,7 +20,7 @@ public class URLDao {
     }
 
     public void delete(URL url){
-        EntityManager manager = Repository.newSession();
+        EntityManager manager = Repository.getDatabase().createEntityManager();
         manager.getTransaction().begin();
         manager.remove(manager.contains(url) ? url : manager.merge(url));
         manager.getTransaction().commit();
@@ -28,7 +28,7 @@ public class URLDao {
     }
 
     public URL findById(Integer id){
-        EntityManager manager = Repository.newSession();
+        EntityManager manager = Repository.getDatabase().createEntityManager();
         manager.getTransaction().begin();
         URL url = manager.find(URL.class, id);
         Hibernate.initialize(url.getClicks());
@@ -39,7 +39,7 @@ public class URLDao {
     }
 
     public URL findByUrlName(String urlName){
-        EntityManager manager = Repository.newSession();
+        EntityManager manager = Repository.getDatabase().createEntityManager();
 
         Query query = manager.createQuery("from URL where url = :urlname");
         query.setParameter("urlname", urlName);
@@ -50,7 +50,7 @@ public class URLDao {
     }
 
     public URL findByGroupAndUrl(String group, String urlName){
-        EntityManager manager = Repository.newSession();
+        EntityManager manager = Repository.getDatabase().createEntityManager();
 
         Query query = manager.createQuery("from URL as u inner join u.group as g where u.url = :urlname and g.groupName = :groupname");
         query.setParameter("urlname", urlName);
@@ -62,7 +62,7 @@ public class URLDao {
     }
 
     public List<URL> findByLink(String link){
-        EntityManager manager = Repository.newSession();
+        EntityManager manager = Repository.getDatabase().createEntityManager();
         Query query = manager.createQuery("from URL where link = :link");
         query.setParameter("link", link);
         List<URL> urls = query.getResultList();

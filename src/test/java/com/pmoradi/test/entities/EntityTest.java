@@ -41,7 +41,7 @@ public class EntityTest {
         url.setGroup(group);
         click.setUrl(url);
 
-        EntityManager em = Repository.newSession();
+        EntityManager em = Repository.getDatabase().createEntityManager();
         em.getTransaction().begin();
         em.persist(group);
         em.persist(url);
@@ -66,7 +66,7 @@ public class EntityTest {
 
     @Test
     public void testURLToGroupRelation(){
-        EntityManager em = Repository.newSession();
+        EntityManager em = Repository.getDatabase().createEntityManager();
         final int SIZE = 20;
 
         Group group = new Group();
@@ -106,7 +106,7 @@ public class EntityTest {
         Group group = new Group();
         group.setGroupName(groupname);
 
-        EntityManager em = Repository.newSession();
+        EntityManager em = Repository.getDatabase().createEntityManager();
         em.getTransaction().begin();
         em.persist(group);
         em.getTransaction().commit();

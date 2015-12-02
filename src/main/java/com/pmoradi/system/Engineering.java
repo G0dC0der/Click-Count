@@ -7,7 +7,6 @@ import com.pmoradi.dao.URLDao;
 import com.pmoradi.entities.Click;
 import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;
-import com.pmoradi.essentials.GroupUnavailableException;
 import com.pmoradi.essentials.UrlUnavailableException;
 import com.pmoradi.security.SecureStrings;
 import com.pmoradi.system.LockManager.Key;
@@ -21,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.Timestamp;
-import java.util.Arrays;
 
 public class Engineering {
 
@@ -34,33 +32,23 @@ public class Engineering {
     @Inject
     private EntityDao entityDao;
 
-    public byte[] toBytes(BufferedImage img) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            ImageIO.write(img, "jpeg", baos);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return baos.toByteArray();
-    }
-
-    public void addUrl(String urlName, String link, String groupName, String password) throws GroupUnavailableException, UrlUnavailableException, MalformedURLException, CredentialException {
+    public void addUrl(String urlName, String link, String groupName, String password) throws UrlUnavailableException, MalformedURLException, CredentialException {
         urlName = urlName.toLowerCase();
         groupName = groupName.toLowerCase();
 
-        if (!LinkUtil.validUrl(urlName))
-            throw new MalformedURLException("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
-        if (!LinkUtil.validUrl(groupName))
-            throw new MalformedURLException("Group contains illegal characters. Use A-Z a-z 0-9 .-_~");
+        if (!LinkUtil.validUrl(urlName) || LinkUtil.isForbidden(urlName))
+            throw new MalformedURLException("URL contains illegal characters or a reserved word. Use A-Z a-z 0-9 .-_~");
+        if (!LinkUtil.validUrl(groupName) || LinkUtil.isForbidden(groupName))
+            throw new MalformedURLException("Group contains illegal characters or a reserved word. Use A-Z a-z 0-9 .-_~");
 
-        Key key = Repository.getLockManager().lock(groupName);
+        Key key = Repository.getLockManager().lock("group:" + groupName);
+
         try {
             Group group = groupDAO.find(groupName);
             String hash = null;
-            if(group != null) {
+            if (group != null) {
                 hash = SecureStrings.md5(password + SecureStrings.getSalt());
-                if(!hash.equals(group.getPassword()))
+                if (!hash.equals(group.getPassword()))
                     throw new CredentialException("Group name and password mismatch.");
             }
 
@@ -72,13 +60,11 @@ public class Engineering {
             url.setUrl(urlName);
             url.setLink(LinkUtil.addHttp(link));
 
-            boolean saveGroup = false;
-            if (group == null) {
+            boolean saveGroup = group == null;
+            if (saveGroup) {
                 group = new Group();
                 group.setGroupName(groupName);
                 group.setPassword(hash != null ? hash : SecureStrings.md5(password + SecureStrings.getSalt()));
-                group.setUrls(Arrays.asList(url));
-                saveGroup = true;
             }
             url.setGroup(group);
 
@@ -90,49 +76,59 @@ public class Engineering {
         }
     }
 
-    public void addUrl(String urlName, String link) throws GroupUnavailableException, UrlUnavailableException, MalformedURLException, CredentialException {
-        addUrl(urlName, link, "default", "super_secret_password");
+    public void addUrl(String urlName, String link) throws UrlUnavailableException, MalformedURLException {
+        urlName = urlName.toLowerCase();
+
+        if (!LinkUtil.validUrl(urlName) || LinkUtil.isForbidden(urlName))
+            throw new MalformedURLException("URL contains illegal characters or a reserved word. Use A-Z a-z 0-9 .-_~");
+
+        Group defaultGroup = Repository.defaultGroup();
+        Key key = Repository.getLockManager().lock("url:" + urlName);
+
+        try {
+            URL url = getURL("default", urlName);
+            if(url != null)
+                throw new UrlUnavailableException("The URL for the default group is already in use.");
+
+            url = new URL();
+            url.setUrl(urlName);
+            url.setLink(LinkUtil.addHttp(link));
+            url.setGroup(defaultGroup);
+
+            urlDAO.save(url);
+        } finally {
+            Repository.getLockManager().unlock(key);
+        }
     }
 
-    public String getLinkAndClick(String urlName){
-        URL url = getURL(urlName);
-        if(url != null){
+    public String getLinkAndClick(String groupName, String urlName) {
+        URL url = getURL(groupName, urlName);
+        if (url != null) {
             click(url);
             return url.getLink();
         }
         return null;
     }
 
-    public String getLinkAndClick(String  group, String urlName){
-        URL url = getURL(group, urlName);
-        if(url != null){
-            click(url);
-            return url.getLink();
-        }
-        return null;
+    public URL getURL(String groupName, String urlName) {
+        return urlDAO.findByGroupAndUrl(groupName.toLowerCase(), urlName.toLowerCase());
     }
 
-    public URL getURL(String urlName){
-        return urlDAO.findByUrlName(urlName.toLowerCase());
-    }
-
-    public URL getURL(String group, String urlName) {
-        return urlDAO.findByGroupAndUrl(group.toLowerCase(), urlName.toLowerCase());
-    }
-
-    public void click(URL url){
+    public void click(URL url) {
         Click click = new Click();
         click.setTime(new Timestamp(System.currentTimeMillis()));
         click.setUrl(url);
         clickDAO.save(click);
     }
 
-    public boolean validate(String groupName, String password){
-        Group group = groupDAO.find(groupName.toLowerCase());
-        if(group == null)
-            return true;
-
-        String hash = SecureStrings.md5(password + SecureStrings.getSalt());
-        return group.getPassword().equals(hash);
+    public byte[] toBytes(BufferedImage img) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(img, "jpeg", baos);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return baos.toByteArray();
     }
 }

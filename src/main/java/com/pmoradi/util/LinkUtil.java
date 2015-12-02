@@ -8,6 +8,18 @@ public class LinkUtil {
         return "http://" + str;
     }
 
+    public static boolean isForbidden(String token){
+        switch (token){
+            case "add":
+            case "default":
+            case "view":
+            case "all":
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public static boolean validUrl(String url){
         for(char c : url.toCharArray()){
             switch (c){

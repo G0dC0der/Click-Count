@@ -22,7 +22,7 @@ public final class Captcha {
     public Captcha () {
         width = 200;
         height = 150;
-        minChars = 4;
+        minChars = 6;
         maxChars = 6;
         word = generateWord();
     }
@@ -78,15 +78,5 @@ public final class Captcha {
             bu.append(CHARS[RANDOM.nextInt(CHARS.length)]);
 
         return bu.toString();
-    }
-
-    public static void main(String[] args){
-         int minChars;
-         int maxChars;
-        minChars = 4;
-        maxChars = 6;
-        int i = RANDOM.nextInt(maxChars - minChars) + minChars;
-
-        System.out.println(i);
     }
 }

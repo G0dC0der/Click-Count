@@ -2,13 +2,13 @@ package com.pmoradi.rest;
 
 import com.pmoradi.essentials.CachedMap;
 import com.pmoradi.system.Engineering;
-import com.pmoradi.essentials.GroupUnavailableException;
 import com.pmoradi.essentials.UrlUnavailableException;
 import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.security.Captcha;
 
 import javax.inject.Inject;
+import javax.security.auth.login.CredentialException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -66,23 +66,23 @@ public class AddResource {
                 logic.addUrl(in.getUrl(), in.getLink());
             else
                 logic.addUrl(in.getUrl(), in.getLink(), in.getGroup(), in.getPassword());
-        } catch(GroupUnavailableException e){
-            out.setGroupError(e.getMessage());
-            error = true;
         } catch(UrlUnavailableException e){
             out.setUrlError(e.getMessage());
             error = true;
         } catch (MalformedURLException e){
             String msg = e.getMessage();
-            if(msg.startsWith("GROUP:"))
-                out.setGroupError("The group name consist of illegal characters.");
-            else if(msg.startsWith("URL:"))
-                out.setUrlError("URL with the given group is already used.");
+            if(msg.startsWith("Group"))
+                out.setGroupError(msg);
+            else if(msg.startsWith("URL"))
+                out.setUrlError(msg);
+            error = true;
+        } catch (CredentialException e) {
+            out.setGroupError(e.getMessage());
             error = true;
         }
 
         return error ?
-                Response.status(404).entity(out).build() :
+                Response.status(403).entity(out).build() :
                 Response.ok(out).build();
     }
 

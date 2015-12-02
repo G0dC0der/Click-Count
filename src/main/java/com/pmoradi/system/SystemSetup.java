@@ -11,6 +11,7 @@ public class SystemSetup implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         Repository.getDatabase();
         Repository.getLockManager();
+        Repository.defaultGroup();
     }
 
     @Override

@@ -1,5 +1,9 @@
 package com.pmoradi.rest;
 
+import com.pmoradi.rest.entries.ViewInEntry;
+import com.pmoradi.system.Engineering;
+
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
@@ -7,20 +11,19 @@ import javax.ws.rs.core.Response;
 @Produces("text/json")
 public class ViewResource {
 
-//    @GET
-//    @Path("viewgroup")
-//    public Response viewAll(@FormParam("group") String group,
-//                            @FormParam("password") String password){
-//        Object resp = "lol";
-//
-//        return Response.ok(resp).build();
-//    }
+    @Inject
+    private Engineering logic;
 
     @GET
-    @Path("{url}/view")
+    @Path("view/all")
+    public Response viewAll(ViewInEntry in) {
+        return null;
+    }
+
+    @GET
+    @Path("view/single/{url}")
     public Response viewSingle(@PathParam("url") String url){
-        Object resp = "lol";
-        System.out.println("View Single");
-        return Response.ok(resp).build();
+        //Assumes group is default
+        return null;
     }
 }
