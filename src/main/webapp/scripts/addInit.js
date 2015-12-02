@@ -17,8 +17,14 @@ function postInit(){
 function setSubmitEvent($container){
     $container.find('button').on('click', function(){
         $(this).prop('disabled', true);
+        Dialog.loading({
+            id: 'loading-section',
+            text: 'Adding URL, please wait...',
+            opacity: 0.2
+        });
+
         Ajax.POST({
-            url: Constant.REST_ADD,
+            url: Constants.Rest.ADD,
             data:{
                 url: $container.find("[name='url']").val(),
                 link: $container.find("[name='link']").val(),
@@ -43,7 +49,7 @@ function setSubmitEvent($container){
 function setCaptchaRefresh($el, $img){
     $el.on('click', function(){
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'rest/captcha', true);
+        xhr.open('GET', Constants.Rest.CAPTCHA, true);
         xhr.responseType = 'arraybuffer';
         xhr.onload = function(e) {
             if (this.response) {
@@ -58,6 +64,8 @@ function setCaptchaRefresh($el, $img){
 }
 
 function postAdd(response, success){
+    $('#loading-section').remove();
+
     $('#add-section').html(addPage.addForm({
         url: response.url,
         urlError: response.urlError,
@@ -77,9 +85,10 @@ function postAdd(response, success){
         if(!$('#info-table').length){
             $('#info-section').html(addPage.infoHeader({}).content);
         }
+
         $('#info-table').append(addPage.infoRow({
-            url: Constant.REST + "/" + response.url,
-            link: response.link,
+            url: Constants.DOMAIN + Constants.REST + (Objects.typed(response.group) ? "/" + response.group : "") + "/" + response.url,
+            link: (response.link.indexOf('http') == 0 ? response.link : "http://" + response.link),
             group: response.group
         }).content);
 

@@ -8,12 +8,13 @@ public class LinkUtil {
         return "http://" + str;
     }
 
-    public static boolean isForbidden(String token){
+    public static boolean isReserved(String token){
         switch (token){
             case "add":
             case "default":
             case "view":
             case "all":
+            case "service":
                 return true;
             default:
                 return false;

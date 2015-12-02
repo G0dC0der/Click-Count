@@ -71,7 +71,7 @@ public final class Captcha {
     }
 
     private String generateWord() {
-        int wordLength = RANDOM.nextInt(maxChars - minChars) + minChars;
+        int wordLength = minChars == maxChars ? minChars : RANDOM.nextInt(maxChars - minChars) + minChars;
         StringBuilder bu = new StringBuilder(wordLength);
 
         for (int i = 0; i < wordLength; i++)

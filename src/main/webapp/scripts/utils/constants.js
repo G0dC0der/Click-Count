@@ -1,9 +1,12 @@
-var Constant = null;
+var Constants = null;
 
 $(function(){
-    Constant = {};
-    Constant.DOMAIN = 'http://www.smartlink.com';
-    Constant.REST = Constant.DOMAIN + "/rest";
-    Constant.REST_ADD = "rest/add";
+    Constants = {};
+    Constants.Rest = {};
+
+    Constants.DOMAIN = 'http://localhost:9090/clicky/';
+    Constants.REST = "service";
+    Constants.Rest.ADD = Constants.REST + "/add";
+    Constants.Rest.CAPTCHA = Constants.REST + "/captcha";
 });
 

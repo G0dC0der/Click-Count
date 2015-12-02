@@ -11,7 +11,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import javax.inject.Singleton;
 import javax.ws.rs.ApplicationPath;
 
-@ApplicationPath("/rest")
+@ApplicationPath("/service")
 public class RestSetup extends ResourceConfig {
 
     public RestSetup(){

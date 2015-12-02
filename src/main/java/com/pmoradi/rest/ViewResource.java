@@ -14,16 +14,15 @@ public class ViewResource {
     @Inject
     private Engineering logic;
 
-    @GET
+    @POST
     @Path("view/all")
-    public Response viewAll(ViewInEntry in) {
+    public Response view(ViewInEntry in){
         return null;
     }
 
     @GET
-    @Path("view/single/{url}")
+    @Path("{url}/view")
     public Response viewSingle(@PathParam("url") String url){
-        //Assumes group is default
         return null;
     }
 }

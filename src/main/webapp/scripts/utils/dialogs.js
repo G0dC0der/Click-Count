@@ -25,4 +25,12 @@ $(function(){
 
     Dialog.formDialog = function(){
     };
+
+    /**
+     * json: Contains id(string), text(string), opacity(float)
+     */
+    Dialog.loading = function(json){
+        var $loadingDiv = $(dialogs.loading(json).content);
+        $('body').append($loadingDiv);
+    };
 });

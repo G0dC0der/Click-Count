@@ -9,3 +9,15 @@
         <span class="popup-text">{$text}</span><img class="popup-img" src="{$img}"/>
     </div>
 {/template}
+
+/**
+ * @param id
+ * @param text
+ * @param opacity
+ */
+{template .loading}
+    <div id="{$id}">
+        {if $opacity > 0.0}<div class="overlay" style="opacity:{$opacity};"></div>{/if}
+        <div class="loading-div">{$text}</div>
+    </div>
+{/template}

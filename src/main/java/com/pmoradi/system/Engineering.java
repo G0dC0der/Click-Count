@@ -36,9 +36,9 @@ public class Engineering {
         urlName = urlName.toLowerCase();
         groupName = groupName.toLowerCase();
 
-        if (!LinkUtil.validUrl(urlName) || LinkUtil.isForbidden(urlName))
+        if (!LinkUtil.validUrl(urlName) || LinkUtil.isReserved(urlName))
             throw new MalformedURLException("URL contains illegal characters or a reserved word. Use A-Z a-z 0-9 .-_~");
-        if (!LinkUtil.validUrl(groupName) || LinkUtil.isForbidden(groupName))
+        if (!LinkUtil.validUrl(groupName) || LinkUtil.isReserved(groupName))
             throw new MalformedURLException("Group contains illegal characters or a reserved word. Use A-Z a-z 0-9 .-_~");
 
         Key key = Repository.getLockManager().lock("group:" + groupName);
@@ -79,7 +79,7 @@ public class Engineering {
     public void addUrl(String urlName, String link) throws UrlUnavailableException, MalformedURLException {
         urlName = urlName.toLowerCase();
 
-        if (!LinkUtil.validUrl(urlName) || LinkUtil.isForbidden(urlName))
+        if (!LinkUtil.validUrl(urlName) || LinkUtil.isReserved(urlName))
             throw new MalformedURLException("URL contains illegal characters or a reserved word. Use A-Z a-z 0-9 .-_~");
 
         Group defaultGroup = Repository.defaultGroup();

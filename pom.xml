@@ -158,19 +158,21 @@
 
                             <jsSourceDir>scripts</jsSourceDir>
                             <jsSourceFiles>
+                                <!-- External Libraries -->
                                 <jsSourceFile>lib/jquery-1.11.3.min.js</jsSourceFile>
                                 <jsSourceFile>lib/soyutils.js</jsSourceFile>
+                                <!-- Soy File s-->
+                                <jsSourceFile>dialogs.soy.js</jsSourceFile>
+                                <jsSourceFile>add-stuff.soy.js</jsSourceFile>
+                                <jsSourceFile>pictogram.soy.js</jsSourceFile>
+                                <!-- Utils -->
+                                <jsSourceFile>utils/ajax.js</jsSourceFile>
+                                <jsSourceFile>utils/constants.js</jsSourceFile>
+                                <jsSourceFile>utils/dialogs.js</jsSourceFile>
+                                <jsSourceFile>utils/objects.js</jsSourceFile>
                             </jsSourceFiles>
                             <jsSourceIncludes>
-                                <!-- Soy Files-->
-                                <jsSourceInclude>dialogs.soy.js</jsSourceInclude>
-                                <jsSourceInclude>add-stuff.soy.js</jsSourceInclude>
-                                <jsSourceInclude>pictogram.soy.js</jsSourceInclude>
-                                <!-- Utils-->
-                                <jsSourceInclude>utils/ajax.js</jsSourceInclude>
-                                <jsSourceInclude>utils/constants.js</jsSourceInclude>
-                                <jsSourceInclude>utils/dialog.js</jsSourceInclude>
-                                <!-- Others-->
+                                <!-- Page Specific -->
                                 <jsSourceInclude>addInit.js</jsSourceInclude>
                             </jsSourceIncludes>
                         </configuration>
