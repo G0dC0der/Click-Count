@@ -50,10 +50,10 @@ public class GroupDao {
         return group;
     }
 
-    public void fullInit(Group group){
+    public Group fullInit(Group group){
         EntityManager manager = Repository.getDatabase().createEntityManager();
         manager.getTransaction().begin();
-        manager.merge(group);
+        group = manager.merge(group);
 
         Hibernate.initialize(group.getUrls());
         for(URL url : group.getUrls()){
@@ -61,7 +61,7 @@ public class GroupDao {
             Hibernate.initialize(url.getGroup());
         }
 
-        manager.getTransaction().commit();
         manager.close();
+        return group;
     }
 }

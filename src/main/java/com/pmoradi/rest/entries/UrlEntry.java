@@ -4,7 +4,6 @@ public class UrlEntry {
 
     private String url;
     private String link;
-    private int clickCount;
     private long[] clicks;
 
     public String getUrl() {
@@ -21,14 +20,6 @@ public class UrlEntry {
 
     public void setLink(String link) {
         this.link = link;
-    }
-
-    public int getClickCount() {
-        return clickCount;
-    }
-
-    public void setClickCount(int clickCount) {
-        this.clickCount = clickCount;
     }
 
     public long[] getClicks() {

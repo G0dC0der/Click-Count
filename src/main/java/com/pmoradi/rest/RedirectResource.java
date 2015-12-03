@@ -1,6 +1,7 @@
 package com.pmoradi.rest;
 
 import com.pmoradi.system.Inventory;
+import com.pmoradi.util.WebUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -32,7 +33,7 @@ public class RedirectResource {
             response.sendRedirect(link);
             return Response.ok().build();
         } else {
-            response.sendRedirect(request.getContextPath() + String.format("error.html?status=%d&url=%s&group=default", 404, urlName));
+            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, "default", "URL not found."));
             return Response.status(404).build();
         }
     }
@@ -49,7 +50,7 @@ public class RedirectResource {
             response.sendRedirect(link);
             return Response.ok().build();
         } else {
-            response.sendRedirect(request.getContextPath() + String.format("error.html?status=%d&url=%s&group=%s", 404, urlName, groupName));
+            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, groupName, "URL not found."));
             return Response.status(404).build();
         }
     }

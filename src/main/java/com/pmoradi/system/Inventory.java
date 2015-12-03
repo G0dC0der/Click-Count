@@ -110,11 +110,10 @@ public class Inventory {
         return null;
     }
 
-    public UrlEntry getUrlData(String urlName) {
-        URL url = urlDAO.findByUrlName(urlName);
+    public UrlEntry getUrlData(String groupName, String urlName) {
+        URL url = urlDAO.findByGroupAndUrl(groupName, urlName);
         if(url != null) {
-            urlDAO.clickInit(url);
-            return Assembler.assemble(url);
+            return Assembler.assemble(urlDAO.clickInit(url));
         }
         return null;
     }
@@ -124,8 +123,7 @@ public class Inventory {
         Group group = groupDAO.find(groupName, hash);
 
         if (group != null) {
-            groupDAO.fullInit(group);
-            return Assembler.assemble(group);
+            return Assembler.assemble(groupDAO.fullInit(group));
         }
         return null;
     }

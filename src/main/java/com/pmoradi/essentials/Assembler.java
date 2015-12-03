@@ -22,7 +22,6 @@ public class Assembler {
             clicks[i] = urlClicks.get(i).getTime().getTime();
         }
         urlEntry.setClicks(clicks);
-        urlEntry.setClickCount(clicks.length);
 
         return urlEntry;
     }

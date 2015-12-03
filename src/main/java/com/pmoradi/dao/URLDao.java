@@ -72,13 +72,13 @@ public class URLDao {
         return urls;
     }
 
-    public void clickInit(URL url) {
+    public URL clickInit(URL url) {
         EntityManager manager = Repository.getDatabase().createEntityManager();
         manager.getTransaction().begin();
-        manager.merge(url);
-        Hibernate.initialize(url.getClicks());
-        manager.getTransaction().commit();
+        url = manager.merge(url);
         manager.close();
+
+        return url;
     }
 
     public int urls() {

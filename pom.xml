@@ -170,10 +170,12 @@
                                 <jsSourceFile>utils/constants.js</jsSourceFile>
                                 <jsSourceFile>utils/dialogs.js</jsSourceFile>
                                 <jsSourceFile>utils/objects.js</jsSourceFile>
+                                <jsSourceFile>utils/utils.js</jsSourceFile>
                             </jsSourceFiles>
                             <jsSourceIncludes>
                                 <!-- Page Specific -->
                                 <jsSourceInclude>addInit.js</jsSourceInclude>
+                                <jsSourceInclude>errorInit.js</jsSourceInclude>
                             </jsSourceIncludes>
                         </configuration>
                         <goals>

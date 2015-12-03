@@ -21,3 +21,30 @@
         <div class="loading-div">{$text}</div>
     </div>
 {/template}
+
+/**
+ * @param status
+ * @param url
+ * @param group
+ * @param description
+ */
+{template .errorDiv}
+    <table class="error-div">
+        <tr>
+            <td class="error-key">Status:</td>
+            <td class="error-status">{$status}</td>
+        </tr>
+        <tr>
+            <td class="error-key">URL:</td>
+            <td class="error-url">{$url}</td>
+        </tr>
+        <tr>
+            <td class="error-key">Group:</td>
+            <td class="error-group">{$group}</td>
+        </tr>
+        <tr>
+            <td class="error-key">Description:</td>
+            <td class="error-desc">{$description}</td>
+        </tr>
+    </table>
+{/template}

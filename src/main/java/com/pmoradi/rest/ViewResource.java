@@ -4,6 +4,7 @@ import com.pmoradi.rest.entries.GroupEntry;
 import com.pmoradi.rest.entries.UrlEntry;
 import com.pmoradi.rest.entries.ViewInEntry;
 import com.pmoradi.system.Inventory;
+import com.pmoradi.util.WebUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletOutputStream;
@@ -32,13 +33,13 @@ public class ViewResource {
                          ViewInEntry in) throws IOException {
 
         if(in.getGroupName().equals("default")) {
-            response.sendRedirect(request.getContextPath() + String.format("error.html?status=%d&url=%s&group=default&desc=%s", 403, "null", "Can not get an overview of the default group"));
+            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(403, "", in.getGroupName(), "Can not get an overview of the default group."));
             return Response.status(403).build();
         }
 
         GroupEntry groupEntry = logic.getGroupData(in.getGroupName(), in.getPassword());
         if(groupEntry == null) {
-            response.sendRedirect(request.getContextPath() + String.format("error.html?status=%d&url=%s&group=%s", 404, "null", in.getGroupName()));
+            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, "", in.getGroupName(), "Group name and password mismatch."));
             return Response.status(404).build();
         } else {
             return Response.ok(groupEntry).build();
@@ -51,14 +52,16 @@ public class ViewResource {
                            @Context HttpServletResponse response,
                            @PathParam("url") String urlName) throws IOException {
 
-        UrlEntry urlData = logic.getUrlData(urlName);
+        UrlEntry urlData = logic.getUrlData("default", urlName);
         if(urlData == null) {
-            response.sendRedirect(request.getContextPath() + String.format("error.html?status=%d&url=%s&group=default", 404, urlName));
+            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, "default", "URL not found."));
         } else {
             ServletOutputStream out = response.getOutputStream();
             out.println("URL: " + urlData.getUrl());
             out.println("Link: " + urlData.getLink());
-            out.println("Clicks: " + urlData.getClickCount());
+            out.println("Clicks: " + urlData.getClicks().length);
+            out.flush();
+            out.close();
         }
     }
 }

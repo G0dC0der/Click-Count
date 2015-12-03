@@ -21,6 +21,10 @@ public class WebUtil {
         }
     }
 
+    public static String errorPage(int status, String urlName, String groupName, String description) {
+        return String.format("/error.html?status=%d&url=%s&group=%s&description=%s", status, urlName, groupName, description);
+    }
+
     public static boolean validUrl(String url){
         for(char c : url.toCharArray()){
             switch (c){

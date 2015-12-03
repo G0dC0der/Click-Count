@@ -86,3 +86,33 @@
     background-image: -moz-linear-gradient(transparent, #FFF);
     background-image: -o-linear-gradient(transparent, #FFF);
 }
+
+.error-div{
+    border-style: groove;
+    display:inline-block;
+    padding:20px;
+    left: 50%;
+    top:50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+}
+
+.error-status{
+    color:blue;
+}
+
+.error-url{
+
+}
+
+.error-group{
+
+}
+
+.error-desc{
+    font-style: italic;
+}
+
+.error-key{
+    font-weight: bold;
+}
