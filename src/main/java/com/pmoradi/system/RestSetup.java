@@ -21,7 +21,7 @@ public class RestSetup extends ResourceConfig {
         register(new AbstractBinder(){
             @Override
             protected void configure() {
-                bind(Engineering.class).to(Engineering.class).in(Singleton.class);
+                bind(Inventory.class).to(Inventory.class).in(Singleton.class);
                 bind(ClickDao.class).to(ClickDao.class).in(Singleton.class);
                 bind(GroupDao.class).to(GroupDao.class).in(Singleton.class);
                 bind(URLDao.class).to(URLDao.class).in(Singleton.class);

@@ -1,11 +1,12 @@
 package com.pmoradi.rest;
 
 import com.pmoradi.essentials.CachedMap;
-import com.pmoradi.system.Engineering;
+import com.pmoradi.system.Inventory;
 import com.pmoradi.essentials.UrlUnavailableException;
 import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.security.Captcha;
+import com.pmoradi.util.WebUtil;
 
 import javax.inject.Inject;
 import javax.security.auth.login.CredentialException;
@@ -26,7 +27,7 @@ public class AddResource {
     private static final Map<String, Captcha> CAPTCHAS = CachedMap.getCachedMap(60000);
 
     @Inject
-    private Engineering logic;
+    private Inventory logic;
 
     @POST
     @Path("add")
@@ -41,6 +42,13 @@ public class AddResource {
         boolean error = false;
         if(in.getUrl().isEmpty()){
             out.setUrlError("The url can not be empty.");
+            error = true;
+        } else if(WebUtil.isReserved(in.getUrl().toLowerCase())) {
+            out.setUrlError("The url can not be equal to a reserved word.");
+            error = true;
+        }
+        if(!in.getGroup().isEmpty() && WebUtil.isReserved(in.getGroup().toLowerCase())) {
+            out.setGroupError("The group name can not be equal to a reserved word.");
             error = true;
         }
         if(in.getLink().isEmpty()) {

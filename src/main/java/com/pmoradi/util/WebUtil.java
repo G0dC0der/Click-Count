@@ -1,6 +1,6 @@
 package com.pmoradi.util;
 
-public class LinkUtil {
+public class WebUtil {
 
     public static String addHttp(String str){
         if(str.startsWith("http://") || str.startsWith("https://"))

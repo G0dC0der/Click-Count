@@ -1,5 +1,6 @@
 package com.pmoradi.dao;
 
+import com.pmoradi.entities.Click;
 import com.pmoradi.entities.URL;
 import com.pmoradi.system.Repository;
 import org.hibernate.Hibernate;
@@ -69,5 +70,24 @@ public class URLDao {
         manager.close();
 
         return urls;
+    }
+
+    public void clickInit(URL url) {
+        EntityManager manager = Repository.getDatabase().createEntityManager();
+        manager.getTransaction().begin();
+        manager.merge(url);
+        Hibernate.initialize(url.getClicks());
+        manager.getTransaction().commit();
+        manager.close();
+    }
+
+    public int urls() {
+        EntityManager manager = Repository.getDatabase().createEntityManager();
+
+        Query query = manager.createQuery("select (*) from URL");
+        int count = (int) query.getResultList().get(0);
+
+        manager.close();
+        return count;
     }
 }

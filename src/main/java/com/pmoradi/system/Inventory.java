@@ -1,16 +1,18 @@
 package com.pmoradi.system;
 
 import com.pmoradi.dao.ClickDao;
-import com.pmoradi.dao.EntityDao;
 import com.pmoradi.dao.GroupDao;
 import com.pmoradi.dao.URLDao;
 import com.pmoradi.entities.Click;
 import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;
+import com.pmoradi.essentials.Assembler;
 import com.pmoradi.essentials.UrlUnavailableException;
+import com.pmoradi.rest.entries.GroupEntry;
+import com.pmoradi.rest.entries.UrlEntry;
 import com.pmoradi.security.SecureStrings;
 import com.pmoradi.system.LockManager.Key;
-import com.pmoradi.util.LinkUtil;
+import com.pmoradi.util.WebUtil;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -21,7 +23,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.Timestamp;
 
-public class Engineering {
+public class Inventory {
 
     @Inject
     private ClickDao clickDAO;
@@ -29,17 +31,15 @@ public class Engineering {
     private GroupDao groupDAO;
     @Inject
     private URLDao urlDAO;
-    @Inject
-    private EntityDao entityDao;
 
     public void addUrl(String urlName, String link, String groupName, String password) throws UrlUnavailableException, MalformedURLException, CredentialException {
         urlName = urlName.toLowerCase();
         groupName = groupName.toLowerCase();
 
-        if (!LinkUtil.validUrl(urlName) || LinkUtil.isReserved(urlName))
-            throw new MalformedURLException("URL contains illegal characters or a reserved word. Use A-Z a-z 0-9 .-_~");
-        if (!LinkUtil.validUrl(groupName) || LinkUtil.isReserved(groupName))
-            throw new MalformedURLException("Group contains illegal characters or a reserved word. Use A-Z a-z 0-9 .-_~");
+        if (!WebUtil.validUrl(urlName))
+            throw new MalformedURLException("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
+        if (!WebUtil.validUrl(groupName))
+            throw new MalformedURLException("Group contains illegal characters. Use A-Z a-z 0-9 .-_~");
 
         Key key = Repository.getLockManager().lock("group:" + groupName);
 
@@ -58,7 +58,7 @@ public class Engineering {
 
             url = new URL();
             url.setUrl(urlName);
-            url.setLink(LinkUtil.addHttp(link));
+            url.setLink(WebUtil.addHttp(link));
 
             boolean saveGroup = group == null;
             if (saveGroup) {
@@ -79,8 +79,8 @@ public class Engineering {
     public void addUrl(String urlName, String link) throws UrlUnavailableException, MalformedURLException {
         urlName = urlName.toLowerCase();
 
-        if (!LinkUtil.validUrl(urlName) || LinkUtil.isReserved(urlName))
-            throw new MalformedURLException("URL contains illegal characters or a reserved word. Use A-Z a-z 0-9 .-_~");
+        if (!WebUtil.validUrl(urlName))
+            throw new MalformedURLException("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
 
         Group defaultGroup = Repository.defaultGroup();
         Key key = Repository.getLockManager().lock("url:" + urlName);
@@ -92,7 +92,7 @@ public class Engineering {
 
             url = new URL();
             url.setUrl(urlName);
-            url.setLink(LinkUtil.addHttp(link));
+            url.setLink(WebUtil.addHttp(link));
             url.setGroup(defaultGroup);
 
             urlDAO.save(url);
@@ -110,15 +110,32 @@ public class Engineering {
         return null;
     }
 
-    public URL getURL(String groupName, String urlName) {
-        return urlDAO.findByGroupAndUrl(groupName.toLowerCase(), urlName.toLowerCase());
+    public UrlEntry getUrlData(String urlName) {
+        URL url = urlDAO.findByUrlName(urlName);
+        if(url != null) {
+            urlDAO.clickInit(url);
+            return Assembler.assemble(url);
+        }
+        return null;
     }
 
-    public void click(URL url) {
-        Click click = new Click();
-        click.setTime(new Timestamp(System.currentTimeMillis()));
-        click.setUrl(url);
-        clickDAO.save(click);
+    public GroupEntry getGroupData(String groupName, String password) {
+        String hash = SecureStrings.md5(password + SecureStrings.getSalt());
+        Group group = groupDAO.find(groupName, hash);
+
+        if (group != null) {
+            groupDAO.fullInit(group);
+            return Assembler.assemble(group);
+        }
+        return null;
+    }
+
+    public int totalURLs() {
+        return urlDAO.urls();
+    }
+
+    public int totalClicks() {
+        return clickDAO.clicks();
     }
 
     public byte[] toBytes(BufferedImage img) {
@@ -130,5 +147,16 @@ public class Engineering {
             return null;
         }
         return baos.toByteArray();
+    }
+
+    void click(URL url) {
+        Click click = new Click();
+        click.setTime(new Timestamp(System.currentTimeMillis()));
+        click.setUrl(url);
+        clickDAO.save(click);
+    }
+
+    private URL getURL(String groupName, String urlName) {
+        return urlDAO.findByGroupAndUrl(groupName.toLowerCase(), urlName.toLowerCase());
     }
 }

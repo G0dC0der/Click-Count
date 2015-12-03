@@ -3,12 +3,22 @@ $(function(){
     var $container = $('#add-container');
     setSubmitEvent($container);
     setCaptchaRefresh($container.find('a'), $container.find('img'));
+    submitOnEnter();
 });
 
 function postInit(){
     var $container = $('#add-container');
     setSubmitEvent($container);
     setCaptchaRefresh($container.find('a'), $container.find('img'));
+    submitOnEnter();
+}
+
+function submitOnEnter(){
+    $('#add-container').find('input').keyup(function(event){
+        if(event.keyCode == 13) {
+            $('#add-container').find('button').click();
+        }
+    });
 }
 
 /**

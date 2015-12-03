@@ -1,7 +1,6 @@
 package com.pmoradi.rest;
 
-import com.pmoradi.rest.entries.LinkOutEntry;
-import com.pmoradi.system.Engineering;
+import com.pmoradi.system.Inventory;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -20,20 +19,20 @@ import java.io.IOException;
 public class RedirectResource {
 
     @Inject
-    private Engineering logic;
+    private Inventory logic;
 
     @GET
     @Path("{url}")
     public Response redirect(@Context HttpServletRequest request,
                              @Context HttpServletResponse response,
-                             @PathParam("url") String url) throws ServletException, IOException {
+                             @PathParam("url") String urlName) throws ServletException, IOException {
 
-        String link = logic.getLinkAndClick("default", url);
+        String link = logic.getLinkAndClick("default", urlName);
         if(link != null) {
             response.sendRedirect(link);
             return Response.ok().build();
         } else {
-            response.sendRedirect(String.format("notfound.html?status=%d&url=%s&group=default", 404, url));
+            response.sendRedirect(request.getContextPath() + String.format("error.html?status=%d&url=%s&group=default", 404, urlName));
             return Response.status(404).build();
         }
     }
@@ -42,15 +41,15 @@ public class RedirectResource {
     @Path("{group}/{url}")
     public Response redirect(@Context HttpServletRequest request,
                              @Context HttpServletResponse response,
-                             @PathParam("group") String group,
-                             @PathParam("url") String url) throws ServletException, IOException {
+                             @PathParam("group") String groupName,
+                             @PathParam("url") String urlName) throws ServletException, IOException {
 
-        String link = logic.getLinkAndClick(group, url);
+        String link = logic.getLinkAndClick(groupName, urlName);
         if(link != null) {
             response.sendRedirect(link);
             return Response.ok().build();
         } else {
-            response.sendRedirect(String.format("notfound.html?status=%d&url=%s&group=%s", 404, url, group));
+            response.sendRedirect(request.getContextPath() + String.format("error.html?status=%d&url=%s&group=%s", 404, urlName, groupName));
             return Response.status(404).build();
         }
     }

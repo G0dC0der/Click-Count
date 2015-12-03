@@ -5,6 +5,7 @@ import com.pmoradi.system.Repository;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 public class ClickDao {
 
@@ -35,5 +36,15 @@ public class ClickDao {
         manager.close();
 
         return click;
+    }
+
+    public int clicks() {
+        EntityManager manager = Repository.getDatabase().createEntityManager();
+
+        Query query = manager.createQuery("select (*) from Click");
+        int count = (int) query.getResultList().get(0);
+
+        manager.close();
+        return count;
     }
 }
