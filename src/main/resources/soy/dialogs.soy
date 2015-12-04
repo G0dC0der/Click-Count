@@ -32,19 +32,23 @@
     <table class="error-div">
         <tr>
             <td class="error-key">Status:</td>
-            <td class="error-status">{$status}</td>
+            <td class="error-status">{if $status != null}{$status}{else}-{/if}</td>
         </tr>
-        <tr>
-            <td class="error-key">URL:</td>
-            <td class="error-url">{$url}</td>
-        </tr>
-        <tr>
-            <td class="error-key">Group:</td>
-            <td class="error-group">{$group}</td>
-        </tr>
+        {if $url != null}
+            <tr>
+                <td class="error-key">URL:</td>
+                <td class="error-url">{$url}</td>
+            </tr>
+        {/if}
+        {if $group != null}
+            <tr>
+                <td class="error-key">Group:</td>
+                <td class="error-group">{$group}</td>
+            </tr>
+        {/if}
         <tr>
             <td class="error-key">Description:</td>
-            <td class="error-desc">{$description}</td>
+            <td class="error-desc">{if $description != null}{$description}{else}Unknown Error{/if}</td>
         </tr>
     </table>
 {/template}

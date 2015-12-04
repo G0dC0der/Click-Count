@@ -9,5 +9,6 @@ $(function(){
     Constants.Rest.ADD = Constants.REST + "/add";
     Constants.Rest.CAPTCHA = Constants.REST + "/captcha";
     Constants.Rest.VIEW_ALL = Constants.REST + "/view/all";
+    Constants.Rest.TOTAL_DATA = Constants.REST + "/view/total";
 });
 

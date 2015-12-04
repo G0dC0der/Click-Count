@@ -38,11 +38,11 @@ public class ClickDao {
         return click;
     }
 
-    public int clicks() {
+    public long clicks() {
         EntityManager manager = Repository.getDatabase().createEntityManager();
 
-        Query query = manager.createQuery("select (*) from Click");
-        int count = (int) query.getResultList().get(0);
+        Query query = manager.createQuery("select count(*) from Click");
+        long count = (long) query.getResultList().get(0);
 
         manager.close();
         return count;

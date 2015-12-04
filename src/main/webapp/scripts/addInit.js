@@ -1,10 +1,10 @@
-$(function(){
+function addOnload(){
     $('#add-section').html(addPage.addForm({}).content);
     var $container = $('#add-container');
     setSubmitEvent($container);
     setCaptchaRefresh($container.find('a'), $container.find('img'));
     submitOnEnter();
-});
+}
 
 function postInit(){
     var $container = $('#add-container');

@@ -1,6 +1,7 @@
 package com.pmoradi.rest;
 
 import com.pmoradi.rest.entries.GroupEntry;
+import com.pmoradi.rest.entries.TotalOutEntry;
 import com.pmoradi.rest.entries.UrlEntry;
 import com.pmoradi.rest.entries.ViewInEntry;
 import com.pmoradi.system.Inventory;
@@ -25,6 +26,18 @@ public class ViewResource {
 
     @Inject
     private Inventory logic;
+
+    @GET
+    @Path("view/total")
+    public Response totalData(){
+        long totalUrls = logic.totalURLs();
+        long totalClicks = logic.totalClicks();
+        TotalOutEntry totalOut = new TotalOutEntry();
+        totalOut.setTotalUrls(totalUrls);
+        totalOut.setTotalClicks(totalClicks);
+
+        return Response.ok(totalOut).build();
+    }
 
     @POST
     @Path("view/all")

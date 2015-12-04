@@ -164,6 +164,7 @@
                                 <!-- Soy File s-->
                                 <jsSourceFile>dialogs.soy.js</jsSourceFile>
                                 <jsSourceFile>add-stuff.soy.js</jsSourceFile>
+                                <jsSourceFile>index-stuff.soy.js</jsSourceFile>
                                 <jsSourceFile>pictogram.soy.js</jsSourceFile>
                                 <!-- Utils -->
                                 <jsSourceFile>utils/ajax.js</jsSourceFile>
@@ -175,6 +176,7 @@
                             <jsSourceIncludes>
                                 <!-- Page Specific -->
                                 <jsSourceInclude>addInit.js</jsSourceInclude>
+                                <jsSourceInclude>mainInit.js</jsSourceInclude>
                                 <jsSourceInclude>errorInit.js</jsSourceInclude>
                             </jsSourceIncludes>
                         </configuration>

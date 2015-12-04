@@ -128,11 +128,11 @@ public class Inventory {
         return null;
     }
 
-    public int totalURLs() {
+    public long totalURLs() {
         return urlDAO.urls();
     }
 
-    public int totalClicks() {
+    public long totalClicks() {
         return clickDAO.clicks();
     }
 

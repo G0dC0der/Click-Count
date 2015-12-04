@@ -81,11 +81,11 @@ public class URLDao {
         return url;
     }
 
-    public int urls() {
+    public long urls() {
         EntityManager manager = Repository.getDatabase().createEntityManager();
 
-        Query query = manager.createQuery("select (*) from URL");
-        int count = (int) query.getResultList().get(0);
+        Query query = manager.createQuery("select count(*) from URL");
+        long count = (long) query.getResultList().get(0);
 
         manager.close();
         return count;
