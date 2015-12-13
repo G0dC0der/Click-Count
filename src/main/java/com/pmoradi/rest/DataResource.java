@@ -3,7 +3,7 @@ package com.pmoradi.rest;
 import com.pmoradi.essentials.CachedMap;
 import com.pmoradi.system.Inventory;
 import com.pmoradi.essentials.UrlUnavailableException;
-import com.pmoradi.rest.entries.AddInEntry;
+import com.pmoradi.rest.entries.DataEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.security.Captcha;
 import com.pmoradi.util.WebUtil;
@@ -22,9 +22,9 @@ import java.net.MalformedURLException;
 import java.util.Map;
 
 @Path("/")
-public class AddResource {
+public class DataResource {
 
-    private static final Map<String, Captcha> CAPTCHAS = CachedMap.getCachedMap(60000);
+    static final Map<String, Captcha> CAPTCHAS = CachedMap.getCachedMap(60000);
 
     @Inject
     private Inventory logic;
@@ -32,23 +32,27 @@ public class AddResource {
     @POST
     @Path("add")
     @Produces("text/json")
-    public Response add(@Context HttpServletRequest requestContext, AddInEntry in){
+    public Response add(@Context HttpServletRequest request, DataEntry in){
         AddOutEntry out = new AddOutEntry(in);
 
-        String ip = requestContext.getRemoteAddr();
+        String ip = request.getRemoteAddr();
         String word = in.getCaptcha();
         Captcha captcha = CAPTCHAS.get(ip);
 
         boolean error = false;
-        if(in.getUrl().isEmpty()){
+        if(in.getUrlName().isEmpty()){
             out.setUrlError("The url can not be empty.");
             error = true;
-        } else if(WebUtil.isReserved(in.getUrl().toLowerCase())) {
+        } else if(WebUtil.isReserved(in.getUrlName().toLowerCase())) {
             out.setUrlError("The url can not be equal to a reserved word.");
             error = true;
         }
-        if(!in.getGroup().isEmpty() && WebUtil.isReserved(in.getGroup().toLowerCase())) {
+        if(!in.getGroupName().isEmpty() && WebUtil.isReserved(in.getGroupName().toLowerCase())) {
             out.setGroupError("The group name can not be equal to a reserved word.");
+            error = true;
+        }
+        if(in.getGroupName().isEmpty() && !in.getPassword().isEmpty()) {
+            out.setGroupError("Group can not be blank if password is used.");
             error = true;
         }
         if(in.getLink().isEmpty()) {
@@ -59,7 +63,7 @@ public class AddResource {
             out.setCaptchaError("Captcha has expired or was never requested.");
             error = true;
         } else if(!captcha.isCorrect(word)) {
-            out.setCaptchaError("The captcha is incorrect.");
+            out.setCaptchaError("Captcha is incorrect.");
             error = true;
         }
 
@@ -70,10 +74,10 @@ public class AddResource {
             return Response.status(403).entity(out).build();
 
         try{
-            if(in.getGroup().isEmpty())
-                logic.addUrl(in.getUrl(), in.getLink());
+            if(in.getGroupName().isEmpty())
+                logic.addUrl(in.getUrlName(), in.getLink());
             else
-                logic.addUrl(in.getUrl(), in.getLink(), in.getGroup(), in.getPassword());
+                logic.addUrl(in.getUrlName(), in.getLink(), in.getGroupName(), in.getPassword());
         } catch(UrlUnavailableException e){
             out.setUrlError(e.getMessage());
             error = true;
@@ -94,10 +98,16 @@ public class AddResource {
                 Response.ok(out).build();
     }
 
+    @POST
+    @Path("delete")
+    public Response delete(@Context HttpServletRequest requestContext, DataEntry in){
+        return null;
+    }
+
     @GET
     @Path("captcha")
     @Produces("application/octet-stream")
-    public Response getCaptcha(@Context HttpServletRequest requestContext) {
+    public Response captcha(@Context HttpServletRequest requestContext) {
         Captcha captcha = new Captcha();
         String IP = requestContext.getRemoteAddr();
         CAPTCHAS.put(IP, captcha);

@@ -1,11 +1,11 @@
 {namespace addPage}
 
 /**
- * @param url String
+ * @param urlName String
  * @param urlError String
  * @param link String
  * @param linkError String
- * @param group String
+ * @param groupName String
  * @param groupError String
  * @param password String
  * @param passwordError String
@@ -15,7 +15,7 @@
 {template .addForm}
     <div id="add-container">
         <div class="add-group">
-            <span class="form-desc">URL{call pictogram.req/}:</span><input type="text" class="add-input" name="url" value="{if $url != null}{$url}{/if}">
+            <span class="form-desc">URL{call pictogram.req/}:</span><input type="text" class="add-input" name="url" value="{if $urlName != null}{$urlName}{/if}">
             <div id="url_error" class="error-text">{if $urlError != null}{$urlError}{/if}</div>
         </div>
         <div class="add-group">
@@ -23,7 +23,7 @@
             <div id="link_error" class="error-text">{if $linkError != null}{$linkError}{/if}</div>
         </div>
         <div class="add-group">
-            <div class="form-desc">Group:</div><input type="text" class="add-input" name="group" value="{if $group != null}{$group}{/if}">
+            <div class="form-desc">Group:</div><input type="text" class="add-input" name="group" value="{if $groupName != null}{$groupName}{/if}">
             <div id="group_error" class="error-text">{if $groupError != null}{$groupError}{/if}</div>
         </div>
         <div class="add-group">
@@ -36,7 +36,7 @@
             <div class="captcha-img"><img src="img/questionmark.png"></div>
             <div class="captcha-refresh"><a href="#">Refresh</a></div>
         </div>
-        <button>Add Link</button>
+        <button>Add</button>
     </div>
 {/template}
 

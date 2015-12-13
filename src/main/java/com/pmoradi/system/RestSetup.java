@@ -1,9 +1,9 @@
 package com.pmoradi.system;
 
-import com.pmoradi.dao.ClickDao;
-import com.pmoradi.dao.EntityDao;
-import com.pmoradi.dao.GroupDao;
-import com.pmoradi.dao.URLDao;
+import com.pmoradi.entities.dao.ClickDao;
+import com.pmoradi.entities.dao.EntityDao;
+import com.pmoradi.entities.dao.GroupDao;
+import com.pmoradi.entities.dao.URLDao;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;

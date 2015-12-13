@@ -1,0 +1,47 @@
+{namespace showPage}
+
+/**
+ * @param groupName String
+ * @param groupError String
+ * @param password String
+ * @param passwordError String
+ * @param captcha String
+ * @param captchaError String
+ */
+{template .submitForm}
+    <div id="add-container">
+        <div class="add-group">
+            <div class="form-desc">Group{call pictogram.req/}:</div><input type="text" class="add-input" name="group" value="{if $groupName != null}{$groupName}{/if}">
+            <div id="group_error" class="error-text">{if $groupError != null}{$groupError}{/if}</div>
+        </div>
+        <div class="add-group">
+            <div class="form-desc">Password{call pictogram.req/}:</div><input type="password" class="add-input" name="password" value="{if $password != null}{$password}{/if}">
+            <div id="password_error" class="error-text">{if $passwordError != null}{$passwordError}{/if}</div>
+        </div>
+        <div class="add-group">
+            <div class="form-desc">Captcha{call pictogram.req/}:</div><input type="text" class="add-input" name="captcha" value="{if $captcha != null}{$captcha}{/if}">
+            <div id="captcha_error" class="error-text">{if $captchaError != null}{$captchaError}{/if}</div>
+            <div class="captcha-img"><img src="img/questionmark.png"></div>
+            <div class="captcha-refresh"><a href="#">Refresh</a></div>
+        </div>
+        <button>Fetch</button>
+    </div>
+{/template}
+
+/**
+ * @param arr
+ */
+{template .showStatistics}
+    {foreach $el in $arr}
+        <div class="result-element">
+            <div class="result-row"><span class="result-key">URL:</span><span class="result-data">{$el.url}</span></div>
+            <div class="result-row"><span class="result-key">Link:</span><span class="result-data">{$el.link}</span></div>
+            {if $el.firstClick != null}<div class="result-row"><span class="result-key">First Click:</span><span class="result-data">{$el.firstClick}</span></div>{/if}
+            <div class="result-row"><span class="result-key">Total Clicks:</span><span class="result-data">{$el.totalClicks}</span></div>
+            {if $el.dailyClicks != null}<div class="result-row"><span class="result-key">Daily Clicks(since first):</span><span class="result-data">{$el.dailyClicks}</span></div>{/if}
+            {if $el.monthlyClicks != null}<div class="result-row"><span class="result-key">Monthly Clicks Since First:</span><span class="result-data">{$el.monthlyClicks}</span></div>{/if}
+            <button class="remove-button">Remove</button>
+            <hr>
+        </div>
+    {/foreach}
+{/template}

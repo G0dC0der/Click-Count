@@ -1,6 +1,5 @@
-package com.pmoradi.dao;
+package com.pmoradi.entities.dao;
 
-import com.pmoradi.entities.Click;
 import com.pmoradi.entities.URL;
 import com.pmoradi.system.Repository;
 import org.hibernate.Hibernate;

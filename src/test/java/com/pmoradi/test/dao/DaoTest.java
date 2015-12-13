@@ -1,7 +1,7 @@
 package com.pmoradi.test.dao;
 
-import com.pmoradi.dao.ClickDao;
-import com.pmoradi.dao.URLDao;
+import com.pmoradi.entities.dao.ClickDao;
+import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.entities.Click;
 import com.pmoradi.entities.URL;
 import org.junit.Assert;

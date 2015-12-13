@@ -12,7 +12,7 @@ public class Assembler {
 
     public static UrlEntry assemble(URL url) {
         UrlEntry urlEntry = new UrlEntry();
-        urlEntry.setUrl(url.getUrl());
+        urlEntry.setUrlName(url.getUrl());
         urlEntry.setLink(url.getLink());
 
         List<Click> urlClicks = url.getClicks();

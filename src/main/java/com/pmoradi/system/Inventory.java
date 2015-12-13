@@ -1,8 +1,8 @@
 package com.pmoradi.system;
 
-import com.pmoradi.dao.ClickDao;
-import com.pmoradi.dao.GroupDao;
-import com.pmoradi.dao.URLDao;
+import com.pmoradi.entities.dao.ClickDao;
+import com.pmoradi.entities.dao.GroupDao;
+import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.entities.Click;
 import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;
@@ -22,6 +22,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.Timestamp;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Inventory {
 
@@ -31,6 +33,8 @@ public class Inventory {
     private GroupDao groupDAO;
     @Inject
     private URLDao urlDAO;
+    private LockManager manager = Repository.getLockManager();
+    private ExecutorService executorService = Executors.newFixedThreadPool(500);
 
     public void addUrl(String urlName, String link, String groupName, String password) throws UrlUnavailableException, MalformedURLException, CredentialException {
         urlName = urlName.toLowerCase();
@@ -41,7 +45,7 @@ public class Inventory {
         if (!WebUtil.validUrl(groupName))
             throw new MalformedURLException("Group contains illegal characters. Use A-Z a-z 0-9 .-_~");
 
-        Key key = Repository.getLockManager().lock("group:" + groupName);
+        Key key = manager.lock("group:" + groupName);
 
         try {
             Group group = groupDAO.find(groupName);
@@ -72,7 +76,7 @@ public class Inventory {
                 groupDAO.save(group);
             urlDAO.save(url);
         } finally {
-            Repository.getLockManager().unlock(key);
+            manager.unlock(key);
         }
     }
 
@@ -83,7 +87,7 @@ public class Inventory {
             throw new MalformedURLException("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
 
         Group defaultGroup = Repository.defaultGroup();
-        Key key = Repository.getLockManager().lock("url:" + urlName);
+        Key key = manager.lock("url:" + urlName);
 
         try {
             URL url = getURL("default", urlName);
@@ -97,14 +101,14 @@ public class Inventory {
 
             urlDAO.save(url);
         } finally {
-            Repository.getLockManager().unlock(key);
+            manager.unlock(key);
         }
     }
 
     public String getLinkAndClick(String groupName, String urlName) {
         URL url = getURL(groupName, urlName);
         if (url != null) {
-            click(url);
+            executorService.submit(()-> click(url));
             return url.getLink();
         }
         return null;
@@ -112,20 +116,14 @@ public class Inventory {
 
     public UrlEntry getUrlData(String groupName, String urlName) {
         URL url = urlDAO.findByGroupAndUrl(groupName, urlName);
-        if(url != null) {
-            return Assembler.assemble(urlDAO.clickInit(url));
-        }
-        return null;
+        return url != null ? Assembler.assemble(urlDAO.clickInit(url)) : null;
     }
 
     public GroupEntry getGroupData(String groupName, String password) {
         String hash = SecureStrings.md5(password + SecureStrings.getSalt());
         Group group = groupDAO.find(groupName, hash);
 
-        if (group != null) {
-            return Assembler.assemble(groupDAO.fullInit(group));
-        }
-        return null;
+        return group != null ? Assembler.assemble(groupDAO.fullInit(group)) : null;
     }
 
     public long totalURLs() {

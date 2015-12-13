@@ -6,24 +6,24 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AddOutEntry {
 
-    private String url, urlError, link, linkError, group, groupError, password, passwordError, captcha, captchaError;
+    private String urlName, urlError, link, linkError, groupName, groupError, password, passwordError, captcha, captchaError;
 
     public AddOutEntry(){}
 
-    public AddOutEntry(AddInEntry inEntry){
-        url = inEntry.getUrl();
+    public AddOutEntry(DataEntry inEntry){
+        urlName = inEntry.getUrlName();
         link = inEntry.getLink();
-        group = inEntry.getGroup();
+        groupName = inEntry.getGroupName();
         password = inEntry.getPassword();
         captcha = inEntry.getCaptcha();
     }
 
-    public String getUrl() {
-        return url;
+    public String getUrlName() {
+        return urlName;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUrlName(String urlName) {
+        this.urlName = urlName;
     }
 
     public String getUrlError() {
@@ -50,12 +50,12 @@ public class AddOutEntry {
         this.linkError = linkError;
     }
 
-    public String getGroup() {
-        return group;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setGroup(String group) {
-        this.group = group;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public String getGroupError() {

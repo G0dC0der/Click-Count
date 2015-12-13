@@ -1,6 +1,6 @@
 package com.pmoradi.rest.entries;
 
-public class TotalOutEntry {
+public class TotalEntry {
 
     private long totalUrls;
     private long totalClicks;

@@ -4,12 +4,14 @@
     <title>Smart Link View</title>
     <script type="text/javascript" src="minify/scripts/script.min.js"></script>
     <link rel="stylesheet" type="text/css" href="minify/css/style.min.css">
+    <script type="text/javascript">
+        $(function(){
+            showOnload();
+        });
+    </script>
 </head>
 <body>
-    <div id="input-div">
-        <div><input name="group" type="text"></div>
-        <div><input name="password" type="password"></div>
-    </div>
+    <div id="input-div"></div>
     <div id="result-div"></div>
 </body>
 </html>

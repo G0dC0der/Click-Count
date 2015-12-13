@@ -1,7 +1,7 @@
 package com.pmoradi.test.dao;
 
-import com.pmoradi.dao.EntityDao;
-import com.pmoradi.dao.URLDao;
+import com.pmoradi.entities.dao.EntityDao;
+import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;
 import org.junit.Assert;

@@ -1,6 +1,6 @@
 package com.pmoradi.test.dao;
 
-import com.pmoradi.dao.ClickDao;
+import com.pmoradi.entities.dao.ClickDao;
 import com.pmoradi.entities.Click;
 import org.junit.Assert;
 import org.junit.Before;

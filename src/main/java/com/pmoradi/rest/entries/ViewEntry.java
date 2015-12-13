@@ -4,10 +4,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ViewInEntry {
+public class ViewEntry {
 
     private String groupName;
     private String password;
+    private String captcha;
 
     public String getGroupName() {
         return groupName;
@@ -23,5 +24,13 @@ public class ViewInEntry {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getCaptcha() {
+        return captcha;
+    }
+
+    public void setCaptcha(String captcha) {
+        this.captcha = captcha;
     }
 }

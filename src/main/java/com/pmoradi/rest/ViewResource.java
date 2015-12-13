@@ -1,9 +1,7 @@
 package com.pmoradi.rest;
 
-import com.pmoradi.rest.entries.GroupEntry;
-import com.pmoradi.rest.entries.TotalOutEntry;
-import com.pmoradi.rest.entries.UrlEntry;
-import com.pmoradi.rest.entries.ViewInEntry;
+import com.pmoradi.rest.entries.*;
+import com.pmoradi.security.Captcha;
 import com.pmoradi.system.Inventory;
 import com.pmoradi.util.WebUtil;
 
@@ -32,7 +30,7 @@ public class ViewResource {
     public Response totalData(){
         long totalUrls = logic.totalURLs();
         long totalClicks = logic.totalClicks();
-        TotalOutEntry totalOut = new TotalOutEntry();
+        TotalEntry totalOut = new TotalEntry();
         totalOut.setTotalUrls(totalUrls);
         totalOut.setTotalClicks(totalClicks);
 
@@ -41,19 +39,40 @@ public class ViewResource {
 
     @POST
     @Path("view/all")
-    public Response view(@Context HttpServletRequest request,
-                         @Context HttpServletResponse response,
-                         ViewInEntry in) throws IOException {
+    public Response viewAll(@Context HttpServletRequest request, ViewEntry in) throws IOException {
+        String ip = request.getRemoteAddr();
+        String word = in.getCaptcha();
+        Captcha captcha = DataResource.CAPTCHAS.get(ip);
+        DataResource.CAPTCHAS.remove(ip);
 
-        if(in.getGroupName().equals("default")) {
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(403, "", in.getGroupName(), "Can not get an overview of the default group."));
-            return Response.status(403).build();
+        AddOutEntry out = new AddOutEntry();
+        out.setGroupName(in.getGroupName());
+        out.setPassword(in.getPassword());
+
+        boolean error = false;
+
+        if(captcha == null){
+            out.setCaptchaError("Captcha has expired or was never requested.");
+            error = true;
+        } else if(!captcha.isCorrect(word)) {
+            out.setCaptchaError("Captcha is incorrect.");
+            error = true;
         }
+        if(in.getGroupName().isEmpty()){
+            out.setGroupError("Group can not be empty");
+            error = true;
+        } else if(in.getGroupName().equals("default")) {
+            out.setGroupError("Can not fetch data from the default group");
+            error = true;
+        }
+
+        if(error)
+            return Response.status(403).entity(out).build();
 
         GroupEntry groupEntry = logic.getGroupData(in.getGroupName(), in.getPassword());
         if(groupEntry == null) {
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, "", in.getGroupName(), "Group name and password mismatch."));
-            return Response.status(404).build();
+            out.setGroupError("Group and password mismatch.");
+            return Response.status(404).entity(out).build();
         } else {
             return Response.ok(groupEntry).build();
         }
@@ -70,9 +89,29 @@ public class ViewResource {
             response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, "default", "URL not found."));
         } else {
             ServletOutputStream out = response.getOutputStream();
-            out.println("URL: " + urlData.getUrl());
+            out.println("URL: " + urlData.getUrlName());
             out.println("Link: " + urlData.getLink());
             out.println("Clicks: " + urlData.getClicks().length);
+            out.flush();
+            out.close();
+        }
+    }
+
+    @GET
+    @Path("{group}/{url}/view")
+    public void viewSingle(@Context HttpServletRequest request,
+                           @Context HttpServletResponse response,
+                           @PathParam("group") String groupName,
+                           @PathParam("url") String urlName) throws IOException {
+
+        UrlEntry urlData = logic.getUrlData(groupName, urlName);
+        if(urlData == null) {
+            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, groupName, "URL not found."));
+        } else {
+            ServletOutputStream out = response.getOutputStream();
+            out.println("URL: " + urlData.getUrlName());
+            out.println("Link: " + urlData.getLink());
+            out.println("Group: " + groupName);
             out.flush();
             out.close();
         }

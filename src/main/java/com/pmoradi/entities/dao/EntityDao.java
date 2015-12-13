@@ -1,4 +1,4 @@
-package com.pmoradi.dao;
+package com.pmoradi.entities.dao;
 
 import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;

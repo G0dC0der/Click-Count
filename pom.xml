@@ -161,9 +161,10 @@
                                 <!-- External Libraries -->
                                 <jsSourceFile>lib/jquery-1.11.3.min.js</jsSourceFile>
                                 <jsSourceFile>lib/soyutils.js</jsSourceFile>
-                                <!-- Soy File s-->
+                                <!-- Soy Files -->
                                 <jsSourceFile>dialogs.soy.js</jsSourceFile>
                                 <jsSourceFile>add-stuff.soy.js</jsSourceFile>
+                                <jsSourceFile>show-stuff.soy.js</jsSourceFile>
                                 <jsSourceFile>index-stuff.soy.js</jsSourceFile>
                                 <jsSourceFile>pictogram.soy.js</jsSourceFile>
                                 <!-- Utils -->
@@ -172,12 +173,14 @@
                                 <jsSourceFile>utils/dialogs.js</jsSourceFile>
                                 <jsSourceFile>utils/objects.js</jsSourceFile>
                                 <jsSourceFile>utils/utils.js</jsSourceFile>
+                                <jsSourceFile>utils/captcha.js</jsSourceFile>
                             </jsSourceFiles>
                             <jsSourceIncludes>
                                 <!-- Page Specific -->
                                 <jsSourceInclude>addInit.js</jsSourceInclude>
                                 <jsSourceInclude>mainInit.js</jsSourceInclude>
                                 <jsSourceInclude>errorInit.js</jsSourceInclude>
+                                <jsSourceInclude>showInit.js</jsSourceInclude>
                             </jsSourceIncludes>
                         </configuration>
                         <goals>

@@ -2,16 +2,16 @@ package com.pmoradi.rest.entries;
 
 public class UrlEntry {
 
-    private String url;
+    private String urlName;
     private String link;
     private long[] clicks;
 
-    public String getUrl() {
-        return url;
+    public String getUrlName() {
+        return urlName;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUrlName(String urlName) {
+        this.urlName = urlName;
     }
 
     public String getLink() {

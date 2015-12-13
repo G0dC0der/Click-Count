@@ -2,21 +2,27 @@ function addOnload(){
     $('#add-section').html(addPage.addForm({}).content);
     var $container = $('#add-container');
     setSubmitEvent($container);
-    setCaptchaRefresh($container.find('a'), $container.find('img'));
-    submitOnEnter();
+
+    var $el = $container.find('a');
+    var $img = $container.find('img');
+    var $input = $container.find("[name='captcha']");
+    Captcha.init($el, $img);
+    Captcha.link($el, $input);
+
+    submitOnEnter("add-container");
 }
 
 function postInit(){
     var $container = $('#add-container');
     setSubmitEvent($container);
-    setCaptchaRefresh($container.find('a'), $container.find('img'));
-    submitOnEnter();
+    Captcha.init($container.find('a'), $container.find('img'));
+    submitOnEnter("add-container");
 }
 
-function submitOnEnter(){
-    $('#add-container').find('input').keyup(function(event){
+function submitOnEnter(id){
+    $('#' + id).find('input').keyup(function(event){
         if(event.keyCode == 13) {
-            $('#add-container').find('button').click();
+            $('#' + id).find('button').click();
         }
     });
 }
@@ -36,9 +42,9 @@ function setSubmitEvent($container){
         Ajax.POST({
             url: Constants.Rest.ADD,
             data:{
-                url: $container.find("[name='url']").val(),
+                urlName: $container.find("[name='url']").val(),
                 link: $container.find("[name='link']").val(),
-                group: $container.find("[name='group']").val(),
+                groupName: $container.find("[name='group']").val(),
                 password: $container.find("[name='password']").val(),
                 captcha: $container.find("[name='captcha']").val()
             },
@@ -52,36 +58,15 @@ function setSubmitEvent($container){
     });
 }
 
-/**
- * $el, The element to trigger the refresh action
- * $img, The img element to paste the image on.
- */
-function setCaptchaRefresh($el, $img){
-    $el.on('click', function(){
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', Constants.Rest.CAPTCHA, true);
-        xhr.responseType = 'arraybuffer';
-        xhr.onload = function(e) {
-            if (this.response) {
-                var byteArray = new Uint8Array(this.response);
-                $img.prop('src', "data:image/jpeg;base64," + btoa(String.fromCharCode.apply(null, byteArray)));
-            } else {
-                $img.prop('src', "img/questionmark.png");
-            }
-        };
-        xhr.send();
-    });
-}
-
 function postAdd(response, success){
     $('#loading-section').remove();
 
     $('#add-section').html(addPage.addForm({
-        url: response.url,
+        urlName: response.urlName,
         urlError: response.urlError,
         link: response.link,
         linkError: response.linkError,
-        group: response.group,
+        groupName: response.groupName,
         groupError: response.groupError,
         password: response.password,
         passwordError: response.passwordError,
@@ -97,7 +82,7 @@ function postAdd(response, success){
         }
 
         $('#info-table').append(addPage.infoRow({
-            url: Constants.DOMAIN + Constants.REST + (Objects.typed(response.group) ? "/" + response.group : "") + "/" + response.url,
+            url: Constants.DOMAIN + Constants.REST + (Objects.typed(response.groupName) ? "/" + response.groupName : "") + "/" + response.urlName,
             link: (response.link.indexOf('http') == 0 ? response.link : "http://" + response.link),
             group: response.group
         }).content);

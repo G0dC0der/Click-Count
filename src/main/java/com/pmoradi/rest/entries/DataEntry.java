@@ -4,16 +4,16 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AddInEntry {
+public class DataEntry {
 
-    private String url, link, group, password, captcha;
+    private String urlName, link, groupName, password, captcha;
 
-    public String getUrl() {
-        return url;
+    public String getUrlName() {
+        return urlName;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUrlName(String urlName) {
+        this.urlName = urlName;
     }
 
     public String getLink() {
@@ -24,12 +24,12 @@ public class AddInEntry {
         this.link = link;
     }
 
-    public String getGroup() {
-        return group;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setGroup(String group) {
-        this.group = group;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public String getPassword() {
