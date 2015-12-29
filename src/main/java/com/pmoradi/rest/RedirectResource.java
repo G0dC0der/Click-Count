@@ -1,7 +1,7 @@
 package com.pmoradi.rest;
 
-import com.pmoradi.system.Inventory;
-import com.pmoradi.util.WebUtil;
+import com.pmoradi.system.Facade;
+import com.pmoradi.essentials.WebUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -20,7 +20,7 @@ import java.io.IOException;
 public class RedirectResource {
 
     @Inject
-    private Inventory logic;
+    private Facade logic;
 
     @GET
     @Path("{url}")

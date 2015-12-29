@@ -30,7 +30,6 @@ function showOnload(json){
                     captcha: "",
                     captchaError: data.captchaError
                 });
-
             }
         });
     });
@@ -45,16 +44,31 @@ function showOnload(json){
 
 function postFetch(data){
     var $dataContainer = $('#result-div');
-    $dataContainer.html(showPage.showStatistics({
-        arr: format(data)
-    }).content);
-    $dataContainer.prepend('<hr>');
+    var $addContainer = $('#add-container');
 
+    $dataContainer.html(showPage.showStatistics({ arr: format(data) }).content);
+    $dataContainer.prepend('<hr>');
     $dataContainer.find('button').click(function(){
         var $button = $(this);
-        $button.parent().remove();
-    });
+        var $elContainer = $button.parent();
+        var urlName = $elContainer.find(".result-data").first().html();
+        urlName = urlName.substring(urlName.lastIndexOf("/") + 1);
 
+        Ajax.POST({
+            url: Constants.Rest.DELETE,
+            data: {
+                urlName: urlName,
+                groupName: $addContainer.find("[name='group']").val(),
+                password: $addContainer.find("[name='password']").val()
+            },
+            success:function(data, textStatus, jqXHR){
+                $elContainer.remove();
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+                $elContainer.find('.error-text').html(jqXHR.responseText);
+            }
+        });
+    });
     $('#loading-section').remove();
 }
 

@@ -4,7 +4,7 @@ $(function(){
     Ajax = {};
 
     /**
-     * json, A json containing data, url, success and error.
+     * json, A json containing data, url, success, headers and error.
      */
     Ajax.POST = function(json){
         ajaxInternal("POST", json);
@@ -19,6 +19,7 @@ $(function(){
             type: type,
             url: json.url,
             contentType: typeof json.contentType === 'undefined' ? 'application/json' : json.contentType,
+            headers: json.headers,
             data: JSON.stringify(json.data),
             success: json.success,
             error: json.error

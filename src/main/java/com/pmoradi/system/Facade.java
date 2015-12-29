@@ -12,8 +12,9 @@ import com.pmoradi.rest.entries.GroupEntry;
 import com.pmoradi.rest.entries.UrlEntry;
 import com.pmoradi.security.SecureStrings;
 import com.pmoradi.system.LockManager.Key;
-import com.pmoradi.util.WebUtil;
+import com.pmoradi.essentials.WebUtil;
 
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.security.auth.login.CredentialException;
@@ -25,7 +26,7 @@ import java.sql.Timestamp;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Inventory {
+public class Facade {
 
     @Inject
     private ClickDao clickDAO;
@@ -33,8 +34,19 @@ public class Inventory {
     private GroupDao groupDAO;
     @Inject
     private URLDao urlDAO;
-    private LockManager manager = Repository.getLockManager();
-    private ExecutorService executorService = Executors.newFixedThreadPool(500);
+    private Group defaultGroup;
+    private final LockManager manager;
+    private final ExecutorService executorService;
+
+    public Facade(final LockManager manager) {
+        this.manager = manager;
+        this.executorService = Executors.newFixedThreadPool(100);
+    }
+
+    @PostConstruct
+    private void setDefaultGroup(){
+        defaultGroup = groupDAO.find("default");
+    }
 
     public void addUrl(String urlName, String link, String groupName, String password) throws UrlUnavailableException, MalformedURLException, CredentialException {
         urlName = urlName.toLowerCase();
@@ -86,7 +98,6 @@ public class Inventory {
         if (!WebUtil.validUrl(urlName))
             throw new MalformedURLException("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
 
-        Group defaultGroup = Repository.defaultGroup();
         Key key = manager.lock("url:" + urlName);
 
         try {
@@ -134,6 +145,18 @@ public class Inventory {
         return clickDAO.clicks();
     }
 
+    public void delete(String groupName, String password, String urlName) throws CredentialException {
+        urlName = urlName.toLowerCase();
+        groupName = groupName.toLowerCase();
+        String hash = SecureStrings.md5(password + SecureStrings.getSalt());
+
+        Group group = groupDAO.find(groupName);
+        if (group == null || !hash.equals(group.getPassword()))
+            throw new CredentialException("Group name and password mismatch.");
+
+        urlDAO.deleteByName(groupName, urlName);
+    }
+
     public byte[] toBytes(BufferedImage img) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
@@ -145,7 +168,7 @@ public class Inventory {
         return baos.toByteArray();
     }
 
-    void click(URL url) {
+    private void click(URL url) {
         Click click = new Click();
         click.setTime(new Timestamp(System.currentTimeMillis()));
         click.setUrl(url);

@@ -2,8 +2,8 @@ package com.pmoradi.rest;
 
 import com.pmoradi.rest.entries.*;
 import com.pmoradi.security.Captcha;
-import com.pmoradi.system.Inventory;
-import com.pmoradi.util.WebUtil;
+import com.pmoradi.system.Facade;
+import com.pmoradi.essentials.WebUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletOutputStream;
@@ -23,7 +23,7 @@ import java.io.IOException;
 public class ViewResource {
 
     @Inject
-    private Inventory logic;
+    private Facade logic;
 
     @GET
     @Path("view/total")

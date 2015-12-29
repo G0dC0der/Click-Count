@@ -15,7 +15,7 @@
 {template .addForm}
     <div id="add-container">
         <div class="add-group">
-            <span class="form-desc">URL{call pictogram.req/}:</span><input type="text" class="add-input" name="url" value="{if $urlName != null}{$urlName}{/if}">
+            <span class="form-desc">URL:</span><input type="text" class="add-input" name="url" value="{if $urlName != null}{$urlName}{/if}">
             <div id="url_error" class="error-text">{if $urlError != null}{$urlError}{/if}</div>
         </div>
         <div class="add-group">

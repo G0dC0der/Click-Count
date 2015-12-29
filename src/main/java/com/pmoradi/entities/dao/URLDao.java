@@ -1,7 +1,7 @@
 package com.pmoradi.entities.dao;
 
 import com.pmoradi.entities.URL;
-import com.pmoradi.system.Repository;
+import com.pmoradi.system.SessionFactory;
 import org.hibernate.Hibernate;
 
 import javax.persistence.EntityManager;
@@ -10,8 +10,14 @@ import java.util.List;
 
 public class URLDao {
 
+    private final SessionFactory sessionFactory;
+
+    public URLDao(final SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
     public void save(URL url){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
         manager.getTransaction().begin();
         manager.persist(url);
         manager.getTransaction().commit();
@@ -20,15 +26,25 @@ public class URLDao {
     }
 
     public void delete(URL url){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
         manager.getTransaction().begin();
         manager.remove(manager.contains(url) ? url : manager.merge(url));
         manager.getTransaction().commit();
         manager.close();
     }
 
+    public void deleteByName(String groupName, String urlName){
+        EntityManager manager = sessionFactory.newSession();
+
+        Query query = manager.createQuery("delete from URL as u inner join u.group as g where u.url = :urlname and g.groupName = :groupname");
+        query.setParameter("urlname", urlName);
+        query.setParameter("groupname", groupName);
+        query.executeUpdate();
+        manager.close();
+    }
+
     public URL findById(Integer id){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
         manager.getTransaction().begin();
         URL url = manager.find(URL.class, id);
         Hibernate.initialize(url.getClicks());
@@ -38,23 +54,12 @@ public class URLDao {
         return url;
     }
 
-    public URL findByUrlName(String urlName){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
-
-        Query query = manager.createQuery("from URL where url = :urlname");
-        query.setParameter("urlname", urlName);
-        URL result = query.getResultList().isEmpty() ? null : (URL) query.getSingleResult();
-        manager.close();
-
-        return result;
-    }
-
-    public URL findByGroupAndUrl(String group, String urlName){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+    public URL findByGroupAndUrl(String groupName, String urlName){
+        EntityManager manager = sessionFactory.newSession();
 
         Query query = manager.createQuery("from URL as u inner join u.group as g where u.url = :urlname and g.groupName = :groupname");
         query.setParameter("urlname", urlName);
-        query.setParameter("groupname", group);
+        query.setParameter("groupname", groupName);
         URL url = query.getResultList().isEmpty() ? null : (URL)((Object[])query.getSingleResult())[0];
         manager.close();
 
@@ -62,7 +67,7 @@ public class URLDao {
     }
 
     public List<URL> findByLink(String link){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
         Query query = manager.createQuery("from URL where link = :link");
         query.setParameter("link", link);
         List<URL> urls = query.getResultList();
@@ -72,7 +77,7 @@ public class URLDao {
     }
 
     public URL clickInit(URL url) {
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
         manager.getTransaction().begin();
         url = manager.merge(url);
         manager.close();
@@ -81,7 +86,7 @@ public class URLDao {
     }
 
     public long urls() {
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
 
         Query query = manager.createQuery("select count(*) from URL");
         long count = (long) query.getResultList().get(0);

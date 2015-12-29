@@ -1,7 +1,7 @@
 package com.pmoradi.entities.dao;
 
 import com.pmoradi.entities.Click;
-import com.pmoradi.system.Repository;
+import com.pmoradi.system.SessionFactory;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -9,11 +9,14 @@ import javax.persistence.Query;
 
 public class ClickDao {
 
-    @Inject
-    private URLDao urlDao;
+    private final SessionFactory sessionFactory;
+
+    public ClickDao(final SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     public void save(Click click){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
         manager.getTransaction().begin();
 
         manager.persist(click);
@@ -23,7 +26,7 @@ public class ClickDao {
     }
 
     public void delete(Click click){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
         manager.getTransaction().begin();
         manager.remove(manager.contains(click) ? click : manager.merge(click));
         manager.getTransaction().commit();
@@ -31,7 +34,7 @@ public class ClickDao {
     }
 
     public Click findById(Integer id){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
         Click click = manager.find(Click.class, id);
         manager.close();
 
@@ -39,7 +42,7 @@ public class ClickDao {
     }
 
     public long clicks() {
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
 
         Query query = manager.createQuery("select count(*) from Click");
         long count = (long) query.getResultList().get(0);

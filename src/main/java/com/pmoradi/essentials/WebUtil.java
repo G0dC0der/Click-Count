@@ -1,6 +1,21 @@
-package com.pmoradi.util;
+package com.pmoradi.essentials;
+
+import java.util.Random;
 
 public class WebUtil {
+
+    private static final char[] URL_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
+    private static final Random r = new Random();
+
+    public static String randomUrl(){
+        final int size = 8;
+        StringBuilder bu = new StringBuilder(size);
+        for(int i = 0; i < size; i++){
+            bu.append(URL_CHARS[r.nextInt(URL_CHARS.length)]);
+        }
+
+        return bu.toString();
+    }
 
     public static String addHttp(String str){
         if(str.startsWith("http://") || str.startsWith("https://"))

@@ -1,12 +1,12 @@
 package com.pmoradi.rest;
 
 import com.pmoradi.essentials.CachedMap;
-import com.pmoradi.system.Inventory;
+import com.pmoradi.system.Facade;
 import com.pmoradi.essentials.UrlUnavailableException;
 import com.pmoradi.rest.entries.DataEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.security.Captcha;
-import com.pmoradi.util.WebUtil;
+import com.pmoradi.essentials.WebUtil;
 
 import javax.inject.Inject;
 import javax.security.auth.login.CredentialException;
@@ -27,7 +27,7 @@ public class DataResource {
     static final Map<String, Captcha> CAPTCHAS = CachedMap.getCachedMap(60000);
 
     @Inject
-    private Inventory logic;
+    private Facade logic;
 
     @POST
     @Path("add")
@@ -39,11 +39,12 @@ public class DataResource {
         String word = in.getCaptcha();
         Captcha captcha = CAPTCHAS.get(ip);
 
-        boolean error = false;
         if(in.getUrlName().isEmpty()){
-            out.setUrlError("The url can not be empty.");
-            error = true;
-        } else if(WebUtil.isReserved(in.getUrlName().toLowerCase())) {
+            out.setUrlName(WebUtil.randomUrl());
+        }
+
+        boolean error = false;
+        if(WebUtil.isReserved(in.getUrlName().toLowerCase())) {
             out.setUrlError("The url can not be equal to a reserved word.");
             error = true;
         }
@@ -100,8 +101,22 @@ public class DataResource {
 
     @POST
     @Path("delete")
-    public Response delete(@Context HttpServletRequest requestContext, DataEntry in){
-        return null;
+    public Response delete(DataEntry in){
+        if(in.getGroupName().isEmpty())
+            return Response.status(403).entity("Group name shall not be empty.").build();
+        else if(in.getGroupName().equals("default"))
+            return Response.status(403).entity("Group name can not be default.").build();
+        else if(in.getUrlName().isEmpty())
+            return Response.status(403).entity("Must specify a url to delete.").build();
+
+        try {
+            logic.delete(in.getGroupName(), in.getPassword(), in.getUrlName());
+            return Response.ok().build();
+        } catch (CredentialException e) {
+            return Response.status(403).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            return Response.status(500).entity("Internal Error").build();
+        }
     }
 
     @GET

@@ -2,7 +2,7 @@ package com.pmoradi.entities.dao;
 
 import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;
-import com.pmoradi.system.Repository;
+import com.pmoradi.system.SessionFactory;
 import org.hibernate.Hibernate;
 
 import javax.persistence.EntityManager;
@@ -10,8 +10,14 @@ import javax.persistence.Query;
 
 public class GroupDao {
 
+    private final SessionFactory sessionFactory;
+
+    public GroupDao(final SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
     public void save(Group group){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
         manager.getTransaction().begin();
         manager.persist(group);
         manager.getTransaction().commit();
@@ -20,7 +26,7 @@ public class GroupDao {
     }
 
     public void delete(Group group){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
         manager.getTransaction().begin();
         manager.remove(manager.contains(group) ? group : manager.merge(group));
         manager.getTransaction().commit();
@@ -28,7 +34,7 @@ public class GroupDao {
     }
 
     public Group find(String groupName){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
         Query query = manager.createQuery("from Group where groupName = :groupName");
         query.setParameter("groupName", groupName);
 
@@ -39,7 +45,7 @@ public class GroupDao {
     }
 
     public Group find(String groupName, String password){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
         Query query = manager.createQuery("from Group where groupName = :groupName and password = :password");
         query.setParameter("groupName", groupName);
         query.setParameter("password", password);
@@ -51,7 +57,7 @@ public class GroupDao {
     }
 
     public Group fullInit(Group group){
-        EntityManager manager = Repository.getDatabase().createEntityManager();
+        EntityManager manager = sessionFactory.newSession();
         manager.getTransaction().begin();
         group = manager.merge(group);
 
