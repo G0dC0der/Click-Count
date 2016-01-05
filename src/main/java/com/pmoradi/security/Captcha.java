@@ -1,5 +1,7 @@
 package com.pmoradi.security;
 
+import com.pmoradi.system.SystemSetup;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -18,13 +20,19 @@ public final class Captcha {
     private int height;
     private int minChars;
     private int maxChars;
+    private long expiringTime;
 
     public Captcha () {
-        width = 200;
-        height = 150;
-        minChars = 6;
-        maxChars = 6;
-        word = generateWord();
+        this(200, 150, 6, 6, null, System.currentTimeMillis() + 60_000);
+    }
+
+    public Captcha (int width, int height, int minChars, int maxChars, String word, long expiringTime) {
+        this.width = width;
+        this.height = height;
+        this.minChars = minChars;
+        this.maxChars = maxChars;
+        this.word = word != null ? word : generateWord();
+        this.expiringTime = expiringTime;
     }
 
     public BufferedImage create() {
@@ -38,7 +46,7 @@ public final class Captcha {
         int x = 5;
         int y = height / 2;
         for (int i = 0; i < word.length(); i++) {
-            x += RANDOM.nextInt(10) + 10;
+            x += RANDOM.nextInt(10) + 7;
             int r = RANDOM.nextInt(20) - 15;
             if (r > -5)
                 y += r;
@@ -50,24 +58,12 @@ public final class Captcha {
         return captchaImg;
     }
 
+    public boolean hasExpired(){
+        return expiringTime > System.currentTimeMillis();
+    }
+
     public boolean isCorrect (String word) {
-        return word.equals(this.word);
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
+        return !hasExpired() && word.equals(this.word);
     }
 
     private String generateWord() {

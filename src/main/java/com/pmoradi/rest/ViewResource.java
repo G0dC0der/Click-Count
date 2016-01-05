@@ -28,11 +28,9 @@ public class ViewResource {
     @GET
     @Path("view/total")
     public Response totalData(){
-        long totalUrls = logic.totalURLs();
-        long totalClicks = logic.totalClicks();
         TotalEntry totalOut = new TotalEntry();
-        totalOut.setTotalUrls(totalUrls);
-        totalOut.setTotalClicks(totalClicks);
+        totalOut.setTotalUrls(logic.totalURLs());
+        totalOut.setTotalClicks(logic.totalClicks());
 
         return Response.ok(totalOut).build();
     }
@@ -40,10 +38,9 @@ public class ViewResource {
     @POST
     @Path("view/all")
     public Response viewAll(@Context HttpServletRequest request, ViewEntry in) throws IOException {
-        String ip = request.getRemoteAddr();
         String word = in.getCaptcha();
-        Captcha captcha = DataResource.CAPTCHAS.get(ip);
-        DataResource.CAPTCHAS.remove(ip);
+        Captcha captcha = (Captcha) request.getSession().getAttribute("captcha");
+        request.getSession().removeAttribute("captcha");
 
         AddOutEntry out = new AddOutEntry();
         out.setGroupName(in.getGroupName());

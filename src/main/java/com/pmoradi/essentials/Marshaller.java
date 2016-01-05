@@ -8,12 +8,13 @@ import com.pmoradi.rest.entries.UrlEntry;
 
 import java.util.List;
 
-public class Assembler {
+public class Marshaller {
 
-    public static UrlEntry assemble(URL url) {
+    public static UrlEntry marshall(URL url) {
         UrlEntry urlEntry = new UrlEntry();
         urlEntry.setUrlName(url.getUrl());
         urlEntry.setLink(url.getLink());
+        urlEntry.setAddDate(url.getAddDate().getTime());
 
         List<Click> urlClicks = url.getClicks();
         long[] clicks = new long[urlClicks.size()];
@@ -26,7 +27,7 @@ public class Assembler {
         return urlEntry;
     }
 
-    public static GroupEntry assemble(Group group) {
+    public static GroupEntry marshall(Group group) {
         GroupEntry groupEntry = new GroupEntry();
         groupEntry.setGroupName(group.getGroupName());
 
@@ -34,7 +35,7 @@ public class Assembler {
         UrlEntry[] urlEntries = new UrlEntry[urls.size()];
 
         for(int i = 0; i < urlEntries.length; i++) {
-            urlEntries[i] = assemble(urls.get(i));
+            urlEntries[i] = marshall(urls.get(i));
         }
 
         groupEntry.setUrls(urlEntries);

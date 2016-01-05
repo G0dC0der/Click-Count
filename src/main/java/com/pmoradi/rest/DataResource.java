@@ -1,6 +1,5 @@
 package com.pmoradi.rest;
 
-import com.pmoradi.essentials.CachedMap;
 import com.pmoradi.system.Facade;
 import com.pmoradi.essentials.UrlUnavailableException;
 import com.pmoradi.rest.entries.DataEntry;
@@ -19,12 +18,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.net.MalformedURLException;
-import java.util.Map;
 
 @Path("/")
 public class DataResource {
-
-    static final Map<String, Captcha> CAPTCHAS = CachedMap.getCachedMap(60000);
 
     @Inject
     private Facade logic;
@@ -35,9 +31,8 @@ public class DataResource {
     public Response add(@Context HttpServletRequest request, DataEntry in){
         AddOutEntry out = new AddOutEntry(in);
 
-        String ip = request.getRemoteAddr();
         String word = in.getCaptcha();
-        Captcha captcha = CAPTCHAS.get(ip);
+        Captcha captcha = (Captcha) request.getSession().getAttribute("captcha");
 
         if(in.getUrlName().isEmpty()){
             out.setUrlName(WebUtil.randomUrl());
@@ -61,15 +56,15 @@ public class DataResource {
             error = true;
         }
         if(captcha == null){
-            out.setCaptchaError("Captcha has expired or was never requested.");
+            out.setCaptchaError("Captcha was never requested.");
             error = true;
         } else if(!captcha.isCorrect(word)) {
-            out.setCaptchaError("Captcha is incorrect.");
+            out.setCaptchaError("Captcha is either incorrect or has expired.");
             error = true;
         }
 
         out.setCaptcha("");
-        CAPTCHAS.remove(ip);
+        request.getSession().removeAttribute("captcha");
 
         if(error)
             return Response.status(403).entity(out).build();
@@ -122,10 +117,9 @@ public class DataResource {
     @GET
     @Path("captcha")
     @Produces("application/octet-stream")
-    public Response captcha(@Context HttpServletRequest requestContext) {
-        Captcha captcha = new Captcha();
-        String IP = requestContext.getRemoteAddr();
-        CAPTCHAS.put(IP, captcha);
+    public Response captcha(@Context HttpServletRequest request) {
+        Captcha captcha = new Captcha(200, 150, 6, 6, null, System.currentTimeMillis() + 60_000);
+        request.getSession().setAttribute("captcha", captcha);
 
         StreamingOutput stream = (outputStream)->{
             for(byte b : logic.toBytes(captcha.create()))

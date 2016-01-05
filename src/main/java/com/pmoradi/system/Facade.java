@@ -6,7 +6,7 @@ import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.entities.Click;
 import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;
-import com.pmoradi.essentials.Assembler;
+import com.pmoradi.essentials.Marshaller;
 import com.pmoradi.essentials.UrlUnavailableException;
 import com.pmoradi.rest.entries.GroupEntry;
 import com.pmoradi.rest.entries.UrlEntry;
@@ -34,6 +34,9 @@ public class Facade {
     private GroupDao groupDAO;
     @Inject
     private URLDao urlDAO;
+    @Inject
+    private ApplicationSettings settings;
+
     private Group defaultGroup;
     private final LockManager manager;
     private final ExecutorService executorService;
@@ -75,6 +78,7 @@ public class Facade {
             url = new URL();
             url.setUrl(urlName);
             url.setLink(WebUtil.addHttp(link));
+            url.setAddDate(new Timestamp(System.currentTimeMillis()));
 
             boolean saveGroup = group == null;
             if (saveGroup) {
@@ -108,6 +112,7 @@ public class Facade {
             url = new URL();
             url.setUrl(urlName);
             url.setLink(WebUtil.addHttp(link));
+            url.setAddDate(new Timestamp(System.currentTimeMillis()));
             url.setGroup(defaultGroup);
 
             urlDAO.save(url);
@@ -127,14 +132,14 @@ public class Facade {
 
     public UrlEntry getUrlData(String groupName, String urlName) {
         URL url = urlDAO.findByGroupAndUrl(groupName, urlName);
-        return url != null ? Assembler.assemble(urlDAO.clickInit(url)) : null;
+        return url != null ? Marshaller.marshall(urlDAO.clickInit(url)) : null;
     }
 
     public GroupEntry getGroupData(String groupName, String password) {
         String hash = SecureStrings.md5(password + SecureStrings.getSalt());
         Group group = groupDAO.find(groupName, hash);
 
-        return group != null ? Assembler.assemble(groupDAO.fullInit(group)) : null;
+        return group != null ? Marshaller.marshall(groupDAO.fullInit(group)) : null;
     }
 
     public long totalURLs() {

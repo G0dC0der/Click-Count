@@ -13,6 +13,7 @@ CREATE TABLE urls(
 	id INT NOT NULL auto_increment,
 	url VARCHAR(80) NOT NULL,
 	link VARCHAR(200) NOT NULL,
+	add_date TIMESTAMP,
 	group_fk INT,
 	PRIMARY KEY (id),
 	FOREIGN KEY (group_fk) REFERENCES groups(id)

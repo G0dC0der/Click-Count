@@ -1,6 +1,7 @@
 package com.pmoradi.entities;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -16,6 +17,9 @@ public class URL {
 
     @Column(nullable = false)
     private String link;
+
+    @Column(name = "add_date")
+    private Timestamp addDate;
 
     @ManyToOne
     @JoinColumn(name = "group_fk")
@@ -46,6 +50,14 @@ public class URL {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public Timestamp getAddDate() {
+        return addDate;
+    }
+
+    public void setAddDate(Timestamp addDate) {
+        this.addDate = addDate;
     }
 
     public Group getGroup() {
