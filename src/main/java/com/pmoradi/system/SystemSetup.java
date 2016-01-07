@@ -1,8 +1,11 @@
 package com.pmoradi.system;
 
+import com.google.inject.Inject;
 import com.pmoradi.entities.dao.ClickDao;
 import com.pmoradi.entities.dao.GroupDao;
 import com.pmoradi.entities.dao.URLDao;
+import org.glassfish.hk2.api.Factory;
+import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -19,6 +22,9 @@ import java.util.Set;
 @ApplicationPath("/service")
 public class SystemSetup extends ResourceConfig {
 
+    @Inject
+    private ServiceLocator locator;
+
     public SystemSetup() throws IOException {
         packages("com.pmoradi.rest");
         packages("org.glassfish.jersey.jackson");
@@ -29,11 +35,14 @@ public class SystemSetup extends ResourceConfig {
         register(new AbstractBinder() {
             @Override
             protected void configure() {
-                bindFactory(InjectFactory.getFacadeFactory(manager)).to(Facade.class).in(Singleton.class);
                 bindFactory(InjectFactory.getClickDaoFactory(sessionFactory)).to(ClickDao.class).in(Singleton.class);
                 bindFactory(InjectFactory.getGroupDaoFactory(sessionFactory)).to(GroupDao.class).in(Singleton.class);
                 bindFactory(InjectFactory.getURLDaoFactory(sessionFactory)).to(URLDao.class).in(Singleton.class);
                 bindFactory(InjectFactory.getApplicationSettingsFactory("smartlink.com", "credentials.properties")).to(ApplicationSettings.class).in(Singleton.class);
+
+                Factory<Facade> facadeFactory = InjectFactory.getFacadeFactory(manager);
+                locator.inject(facadeFactory);
+                bindFactory(facadeFactory).to(Facade.class).in(Singleton.class);
             }
         });
     }

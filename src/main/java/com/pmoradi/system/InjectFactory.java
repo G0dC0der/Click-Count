@@ -4,7 +4,9 @@ import com.pmoradi.entities.dao.ClickDao;
 import com.pmoradi.entities.dao.GroupDao;
 import com.pmoradi.entities.dao.URLDao;
 import org.glassfish.hk2.api.Factory;
+import org.glassfish.hk2.api.ServiceLocator;
 
+import javax.ws.rs.core.Context;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -50,9 +52,15 @@ class InjectFactory {
 
     static Factory<Facade> getFacadeFactory(LockManager manager) {
         return new Factory<Facade>() {
+
+            @Context
+            ServiceLocator locator;
+
             @Override
             public Facade provide() {
-                return new Facade(manager);
+                Facade facade = new Facade(manager);
+                locator.inject(facade);
+                return facade;
             }
 
             @Override
