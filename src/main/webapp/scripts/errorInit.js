@@ -1,5 +1,5 @@
 function errorOnload(){
-    $('body').html(dialogs.errorDiv({
+    $('body').append(dialogs.errorDiv({
         status: Util.queryParam('status'),
         url: Util.queryParam('url'),
         group: Util.queryParam('group'),

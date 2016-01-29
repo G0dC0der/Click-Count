@@ -90,7 +90,7 @@ function format(data){
                 return a - b;
             });
 
-            var oldest = new Date(el.clicks[0]);
+            var oldest = new Date(el.addDate);
             var daysDiff = Math.round((now-oldest)/(1000*60*60*24));
             var monthsDiff = (now.getFullYear() - oldest.getFullYear())*12 + (now.getMonth() - oldest.getMonth());
 

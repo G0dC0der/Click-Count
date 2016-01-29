@@ -8,8 +8,10 @@ import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;
 import com.pmoradi.essentials.Marshaller;
 import com.pmoradi.essentials.UrlUnavailableException;
+import com.pmoradi.rest.entries.DataEntry;
 import com.pmoradi.rest.entries.GroupEntry;
 import com.pmoradi.rest.entries.UrlEntry;
+import com.pmoradi.rest.entries.ViewEntry;
 import com.pmoradi.security.SecureStrings;
 import com.pmoradi.system.LockManager.Key;
 import com.pmoradi.essentials.WebUtil;
@@ -34,8 +36,6 @@ public class Facade {
     private GroupDao groupDAO;
     @Inject
     private URLDao urlDAO;
-    @Inject
-    private ApplicationSettings settings;
 
     private Group defaultGroup;
     private final LockManager manager;
@@ -46,15 +46,18 @@ public class Facade {
         this.executorService = Executors.newFixedThreadPool(100);
     }
 
-    @PostConstruct
-    private void setDefaultGroup(){
-        defaultGroup = groupDAO.find("default");
+    private Group getDefaultGroup(){
+        if(defaultGroup == null) {
+            synchronized (this) {
+                if(defaultGroup == null) {
+                    defaultGroup = groupDAO.find("default");
+                }
+            }
+        }
+        return defaultGroup;
     }
 
     public void addUrl(String urlName, String link, String groupName, String password) throws UrlUnavailableException, MalformedURLException, CredentialException {
-        urlName = urlName.toLowerCase();
-        groupName = groupName.toLowerCase();
-
         if (!WebUtil.validUrl(urlName))
             throw new MalformedURLException("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
         if (!WebUtil.validUrl(groupName))
@@ -97,8 +100,6 @@ public class Facade {
     }
 
     public void addUrl(String urlName, String link) throws UrlUnavailableException, MalformedURLException {
-        urlName = urlName.toLowerCase();
-
         if (!WebUtil.validUrl(urlName))
             throw new MalformedURLException("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
 
@@ -113,7 +114,7 @@ public class Facade {
             url.setUrl(urlName);
             url.setLink(WebUtil.addHttp(link));
             url.setAddDate(new Timestamp(System.currentTimeMillis()));
-            url.setGroup(defaultGroup);
+            url.setGroup(getDefaultGroup());
 
             urlDAO.save(url);
         } finally {
@@ -151,8 +152,6 @@ public class Facade {
     }
 
     public void delete(String groupName, String password, String urlName) throws CredentialException {
-        urlName = urlName.toLowerCase();
-        groupName = groupName.toLowerCase();
         String hash = SecureStrings.md5(password + SecureStrings.getSalt());
 
         Group group = groupDAO.find(groupName);
@@ -173,6 +172,15 @@ public class Facade {
         return baos.toByteArray();
     }
 
+    public void lower(DataEntry entry) {
+        entry.setUrlName(entry.getUrlName().toLowerCase());
+        entry.setGroupName(entry.getGroupName().toLowerCase());
+    }
+
+    public void lower(ViewEntry entry) {
+        entry.setGroupName(entry.getGroupName().toLowerCase());
+    }
+
     private void click(URL url) {
         Click click = new Click();
         click.setTime(new Timestamp(System.currentTimeMillis()));
@@ -181,6 +189,6 @@ public class Facade {
     }
 
     private URL getURL(String groupName, String urlName) {
-        return urlDAO.findByGroupAndUrl(groupName.toLowerCase(), urlName.toLowerCase());
+        return urlDAO.findByGroupAndUrl(groupName, urlName);
     }
 }

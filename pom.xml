@@ -47,19 +47,25 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.0.3.Final</version>
+            <version>5.0.6.Final</version>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>5.0.3.Final</version>
+            <version>5.0.6.Final</version>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-c3p0</artifactId>
             <version>5.0.6.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.1</version>
         </dependency>
 
         <dependency>
@@ -85,6 +91,12 @@
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>2.22.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>click-count</finalName>
@@ -106,7 +118,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>META-INF/*.xml</include>
+                    <include>META-INF/*.*</include>
                 </includes>
             </resource>
         </resources>

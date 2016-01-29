@@ -1,18 +1,25 @@
 package com.pmoradi.system;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pmoradi.entities.dao.ClickDao;
 import com.pmoradi.entities.dao.GroupDao;
 import com.pmoradi.entities.dao.URLDao;
+import com.pmoradi.rest.entries.AdminEntry;
+import org.apache.commons.io.IOUtils;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.ServiceLocator;
+import org.hibernate.engine.jdbc.StreamUtils;
 
 import javax.ws.rs.core.Context;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 class InjectFactory {
@@ -68,15 +75,38 @@ class InjectFactory {
         };
     }
 
+    static Factory<AdminFacade> getAdminFacadeFactory() {
+        return new Factory<AdminFacade>() {
+
+            @Context
+            ServiceLocator locator;
+
+            @Override
+            public AdminFacade provide() {
+                AdminFacade facade = new AdminFacade();
+                locator.inject(facade);
+                return facade;
+            }
+
+            @Override
+            public void dispose(AdminFacade facade) {}
+        };
+    }
+
+
     static Factory<ApplicationSettings> getApplicationSettingsFactory(String domain, String path) {
-        Properties props;
+        List<AdminEntry> admins = new ArrayList<>();
+        InputStream stream = null;
         try {
-            InputStream stream = new BufferedInputStream(new FileInputStream(path));
-            props = new Properties();
-            props.load(stream);
-            stream.close();
+            stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+            String jsonData = IOUtils.toString(stream);
+
+            ObjectMapper mapper = new ObjectMapper();
+            admins.addAll(mapper.readValue(jsonData, new TypeReference<List<AdminEntry>>(){}));
         } catch (IOException e) {
-            throw new RuntimeException("credentials.properties was not found.");
+            throw new RuntimeException("Admin data file could not be loaded.", e);
+        } finally {
+            IOUtils.closeQuietly(stream);
         }
 
         return new Factory<ApplicationSettings>() {
@@ -88,7 +118,9 @@ class InjectFactory {
                     {
                         try {
                             publicIP = InetAddress.getByName(getServerDomain()).getHostAddress();
-                        } catch (UnknownHostException e) {}
+                        } catch (UnknownHostException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
@@ -102,13 +134,10 @@ class InjectFactory {
                     }
 
                     @Override
-                    public String getAdminUsername() {
-                        return props.getProperty("admin.username");
-                    }
-
-                    @Override
-                    public String getAdminPassword() {
-                        return props.getProperty("admin.password");
+                    public boolean isAdmin(String username, String password){
+                        return  username != null &&
+                                password != null &&
+                                admins.contains(new AdminEntry(username, password));
                     }
                 };
             }

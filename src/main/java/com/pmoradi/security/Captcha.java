@@ -23,16 +23,16 @@ public final class Captcha {
     private long expiringTime;
 
     public Captcha () {
-        this(200, 150, 6, 6, null, System.currentTimeMillis() + 60_000);
+        this(200, 150, 6, 6, null, 60_000);
     }
 
-    public Captcha (int width, int height, int minChars, int maxChars, String word, long expiringTime) {
+    public Captcha (int width, int height, int minChars, int maxChars, String word, long lifeTime) {
         this.width = width;
         this.height = height;
         this.minChars = minChars;
         this.maxChars = maxChars;
         this.word = word != null ? word : generateWord();
-        this.expiringTime = expiringTime;
+        this.expiringTime = System.currentTimeMillis() + lifeTime;
     }
 
     public BufferedImage create() {
@@ -46,7 +46,7 @@ public final class Captcha {
         int x = 5;
         int y = height / 2;
         for (int i = 0; i < word.length(); i++) {
-            x += RANDOM.nextInt(10) + 7;
+            x += RANDOM.nextInt(10) + 10;
             int r = RANDOM.nextInt(20) - 15;
             if (r > -5)
                 y += r;
@@ -59,11 +59,11 @@ public final class Captcha {
     }
 
     public boolean hasExpired(){
-        return expiringTime > System.currentTimeMillis();
+        return expiringTime < System.currentTimeMillis();
     }
 
     public boolean isCorrect (String word) {
-        return !hasExpired() && word.equals(this.word);
+        return word.equals(this.word);
     }
 
     private String generateWord() {

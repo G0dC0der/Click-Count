@@ -1,6 +1,9 @@
 package com.pmoradi.system;
 
-public interface LockManager {
+import java.util.HashSet;
+import java.util.Set;
+
+public class LockManager {
 
     public interface Key {
         String getName();
@@ -34,7 +37,22 @@ public interface LockManager {
         }
     }
 
-    Key lock(String keyName);
+    private Set<Key> keys = new HashSet<>();
 
-    void unlock(Key key);
+    public synchronized Key lock(String keyName) {
+        final Key key = new EntityKey(keyName);
+
+        while (keys.contains(key)) {
+            try {
+                wait();
+            } catch (InterruptedException e) {}
+        }
+        keys.add(key);
+        return key;
+    }
+
+    public synchronized void unlock(Key key) {
+        keys.remove(key);
+        notifyAll();
+    }
 }

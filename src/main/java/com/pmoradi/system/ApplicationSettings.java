@@ -7,7 +7,5 @@ public interface ApplicationSettings {
 
     String getServerDomain();
 
-    String getAdminUsername();
-
-    String getAdminPassword();
+    boolean isAdmin(String username, String password);
 }

@@ -42,6 +42,7 @@ public class ViewResource {
         Captcha captcha = (Captcha) request.getSession().getAttribute("captcha");
         request.getSession().removeAttribute("captcha");
 
+        logic.lower(in);
         AddOutEntry out = new AddOutEntry();
         out.setGroupName(in.getGroupName());
         out.setPassword(in.getPassword());
@@ -81,7 +82,7 @@ public class ViewResource {
                            @Context HttpServletResponse response,
                            @PathParam("url") String urlName) throws IOException {
 
-        UrlEntry urlData = logic.getUrlData("default", urlName);
+        UrlEntry urlData = logic.getUrlData("default", urlName.toLowerCase());
         if(urlData == null) {
             response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, "default", "URL not found."));
         } else {
@@ -101,7 +102,7 @@ public class ViewResource {
                            @PathParam("group") String groupName,
                            @PathParam("url") String urlName) throws IOException {
 
-        UrlEntry urlData = logic.getUrlData(groupName, urlName);
+        UrlEntry urlData = logic.getUrlData(groupName.toLowerCase(), urlName.toLowerCase());
         if(urlData == null) {
             response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, groupName, "URL not found."));
         } else {

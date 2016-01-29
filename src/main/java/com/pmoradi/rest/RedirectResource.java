@@ -28,12 +28,12 @@ public class RedirectResource {
                              @Context HttpServletResponse response,
                              @PathParam("url") String urlName) throws ServletException, IOException {
 
-        String link = logic.getLinkAndClick("default", urlName);
+        String link = logic.getLinkAndClick("default", urlName.toLowerCase());
         if(link != null) {
             response.sendRedirect(link);
             return Response.ok().build();
         } else {
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, "default", "URL not found."));
+            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName.toLowerCase(), "default", "URL not found."));
             return Response.status(404).build();
         }
     }
@@ -45,7 +45,7 @@ public class RedirectResource {
                              @PathParam("group") String groupName,
                              @PathParam("url") String urlName) throws ServletException, IOException {
 
-        String link = logic.getLinkAndClick(groupName, urlName);
+        String link = logic.getLinkAndClick(groupName.toLowerCase(), urlName.toLowerCase());
         if(link != null) {
             response.sendRedirect(link);
             return Response.ok().build();

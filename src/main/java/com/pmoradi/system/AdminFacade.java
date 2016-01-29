@@ -14,12 +14,6 @@ public class AdminFacade {
     private GroupDao groupDAO;
     @Inject
     private URLDao urlDAO;
-    @Inject
-    private ApplicationSettings settings;
-
-    public void suspend(){
-
-    }
 
     public void deleteGroup(String groupName) {
 
@@ -37,15 +31,7 @@ public class AdminFacade {
 
     }
 
-    public void invalidateGroup(String group) {
-        //Set all this groups url to error page
-    }
-
     public void cheat(String groupName, String urlName, int countManipulation) {
-
-    }
-
-    public void verifyAdmin(String username, String password) {
 
     }
 }
