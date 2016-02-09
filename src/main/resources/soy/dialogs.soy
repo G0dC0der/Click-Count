@@ -32,7 +32,7 @@
     <table class="error-div">
         <tr>
             <td class="error-key">Status:</td>
-            <td class="error-status">{if $status != null}{$status}{else}-{/if}</td>
+            <td class="{if $status != null and $status == '500'}error-status-red{else}error-status{/if}">{if $status != null}{$status}{else}-{/if}</td>
         </tr>
         {if $url != null}
             <tr>

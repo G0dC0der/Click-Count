@@ -83,8 +83,8 @@ function postAdd(response, success){
 
         $('#info-table').append(addPage.infoRow({
             url: Constants.DOMAIN + Constants.REST + (Objects.typed(response.groupName) ? "/" + response.groupName : "") + "/" + response.urlName,
-            link: (response.link.indexOf('http') == 0 ? response.link : "http://" + response.link),
-            group: response.group
+            link: response.link,
+            group: response.groupName
         }).content);
 
         Dialog.popup({

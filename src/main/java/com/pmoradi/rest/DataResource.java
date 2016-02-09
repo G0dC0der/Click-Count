@@ -1,6 +1,5 @@
 package com.pmoradi.rest;
 
-import com.pmoradi.system.ApplicationSettings;
 import com.pmoradi.system.Facade;
 import com.pmoradi.essentials.UrlUnavailableException;
 import com.pmoradi.rest.entries.DataEntry;
@@ -11,6 +10,7 @@ import com.pmoradi.essentials.WebUtil;
 import javax.inject.Inject;
 import javax.security.auth.login.CredentialException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,25 +18,27 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import java.net.MalformedURLException;
+import java.io.IOException;
 
 @Path("/")
 public class DataResource {
 
     @Inject
     private Facade logic;
-    @Inject
-    private ApplicationSettings settings;
 
     @POST
     @Path("add")
     @Produces("text/json")
-    public Response add(@Context HttpServletRequest request, DataEntry in){
-        logic.lower(in);
+    public Response add(@Context HttpServletResponse response,
+                        @Context HttpServletRequest request,
+                        DataEntry in) throws IOException {
+        logic.fix(in);
+        in.setLink(WebUtil.addHttp(in.getLink()));
         AddOutEntry out = new AddOutEntry(in);
 
-        String word = in.getCaptcha();
         Captcha captcha = (Captcha) request.getSession().getAttribute("captcha");
+        request.getSession().removeAttribute("captcha");
+        out.setCaptcha("");
 
         if(in.getUrlName().isEmpty()){
             String randomUrl = WebUtil.randomUrl();
@@ -48,57 +50,61 @@ public class DataResource {
         if(WebUtil.isReserved(in.getUrlName())) {
             out.setUrlError("The url can not be equal to a reserved word.");
             error = true;
-        }
-        if(!in.getGroupName().isEmpty() && WebUtil.isReserved(in.getGroupName())) {
-            out.setGroupError("The group name can not be equal to a reserved word.");
+        } else if(!WebUtil.validUrl(in.getUrlName())) {
+            out.setUrlError("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
             error = true;
         }
-        if(in.getGroupName().isEmpty() && !in.getPassword().isEmpty()) {
+
+        if(!in.getGroupName().isEmpty()) {
+            if(WebUtil.isReserved(in.getGroupName())) {
+                out.setGroupError("The group name is a reserved word.");
+                error = true;
+            } else if(!WebUtil.validUrl(in.getGroupName())) {
+                out.setGroupError("The group name contains illegal characters. Use A-Z a-z 0-9 .-_~");
+                error = true;
+            }
+        } else if(!in.getPassword().isEmpty()) {
             out.setGroupError("Group can not be blank if password is used.");
             error = true;
         }
+
         if(in.getLink().isEmpty()) {
-            out.setLinkError("The link can not be empty.");
+            out.setLinkError("The link may not be empty.");
             error = true;
-        } else if(in.getLink().contains(settings.getServerDomain()) || in.getLink().contains(settings.getServerIP())) {
-            out.setLink("The link may not refer to this website.");
+        } /*else if(in.getLink().contains(settings.getServerDomain()) || in.getLink().contains(settings.getServerIP())) {
+            out.setLink("Referring to this website is disallowed.");
             error = true;
-        }
+        } */
+
         if(captcha == null){
-            out.setCaptchaError("Captcha was never requested or cookies are not accepting data to be stored.");
+            out.setCaptchaError("Captcha was never requested or browser are not accepting cookies to be stored.");
             error = true;
         } else if(captcha.hasExpired()) {
             out.setCaptchaError("Captcha has expired.");
             error = true;
-        } else if(!captcha.isCorrect(word)) {
+        } else if(!captcha.isCorrect(in.getCaptcha())) {
             out.setCaptchaError("Captcha is incorrect.");
             error = true;
         }
 
-        out.setCaptcha("");
-        request.getSession().removeAttribute("captcha");
-
         if(error)
             return Response.status(403).entity(out).build();
 
-        try{
+        try {
             if(in.getGroupName().isEmpty())
                 logic.addUrl(in.getUrlName(), in.getLink());
             else
                 logic.addUrl(in.getUrlName(), in.getLink(), in.getGroupName(), in.getPassword());
-        } catch(UrlUnavailableException e){
+        } catch(UrlUnavailableException e) {
             out.setUrlError(e.getMessage());
-            error = true;
-        } catch (MalformedURLException e){
-            String msg = e.getMessage();
-            if(msg.startsWith("Group"))
-                out.setGroupError(msg);
-            else if(msg.startsWith("URL"))
-                out.setUrlError(msg);
             error = true;
         } catch (CredentialException e) {
             out.setGroupError(e.getMessage());
             error = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(500, "", "", "Internal Error."));
+            return Response.status(500).build();
         }
 
         return error ?
@@ -109,7 +115,7 @@ public class DataResource {
     @POST
     @Path("delete")
     public Response delete(DataEntry in){
-        logic.lower(in);
+        logic.fix(in);
 
         if(in.getGroupName().isEmpty())
             return Response.status(403).entity("Group name shall not be empty.").build();
@@ -124,6 +130,7 @@ public class DataResource {
         } catch (CredentialException e) {
             return Response.status(403).entity(e.getMessage()).build();
         } catch (Exception e) {
+            e.printStackTrace();
             return Response.status(500).entity("Internal Error").build();
         }
     }

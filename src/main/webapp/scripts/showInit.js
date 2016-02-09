@@ -78,9 +78,8 @@ function format(data){
 
     for(var i in data.urls){
         var el = data.urls[i];
-
         var json = {
-            url: Constants.DOMAIN + Constants.REST + "/" + el.urlName,
+            url: Constants.DOMAIN + Constants.REST + "/" + data.groupName + "/" + el.urlName,
             link: el.link,
             totalClicks: el.clicks.length
         };

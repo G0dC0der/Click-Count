@@ -1,6 +1,12 @@
 package com.pmoradi.entities;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -26,6 +32,7 @@ public class URL {
     private Group group;
 
     @OneToMany(mappedBy = "url")
+    @Cascade(CascadeType.DELETE)
     private List<Click> clicks;
 
     public Integer getId() {

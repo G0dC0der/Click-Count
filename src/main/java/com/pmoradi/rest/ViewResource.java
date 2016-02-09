@@ -4,6 +4,7 @@ import com.pmoradi.rest.entries.*;
 import com.pmoradi.security.Captcha;
 import com.pmoradi.system.Facade;
 import com.pmoradi.essentials.WebUtil;
+import org.apache.commons.io.IOUtils;
 
 import javax.inject.Inject;
 import javax.servlet.ServletOutputStream;
@@ -42,7 +43,7 @@ public class ViewResource {
         Captcha captcha = (Captcha) request.getSession().getAttribute("captcha");
         request.getSession().removeAttribute("captcha");
 
-        logic.lower(in);
+        logic.fix(in);
         AddOutEntry out = new AddOutEntry();
         out.setGroupName(in.getGroupName());
         out.setPassword(in.getPassword());
@@ -82,16 +83,19 @@ public class ViewResource {
                            @Context HttpServletResponse response,
                            @PathParam("url") String urlName) throws IOException {
 
-        UrlEntry urlData = logic.getUrlData("default", urlName.toLowerCase());
+        UrlEntry urlData = logic.getUrlData("default", urlName.trim().toLowerCase());
         if(urlData == null) {
             response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, "default", "URL not found."));
         } else {
-            ServletOutputStream out = response.getOutputStream();
-            out.println("URL: " + urlData.getUrlName());
-            out.println("Link: " + urlData.getLink());
-            out.println("Clicks: " + urlData.getClicks().length);
-            out.flush();
-            out.close();
+            ServletOutputStream out = null;
+            try{
+                out = response.getOutputStream();
+                out.println("URL: " + urlData.getUrlName());
+                out.println("Link: " + urlData.getLink());
+                out.println("Clicks: " + urlData.getClicks().length);
+            } finally {
+                IOUtils.closeQuietly(out);
+            }
         }
     }
 
@@ -106,12 +110,15 @@ public class ViewResource {
         if(urlData == null) {
             response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, groupName, "URL not found."));
         } else {
-            ServletOutputStream out = response.getOutputStream();
-            out.println("URL: " + urlData.getUrlName());
-            out.println("Link: " + urlData.getLink());
-            out.println("Group: " + groupName);
-            out.flush();
-            out.close();
+            ServletOutputStream out = null;
+            try {
+                out = response.getOutputStream();
+                out.println("URL: " + urlData.getUrlName());
+                out.println("Link: " + urlData.getLink());
+                out.println("Group: " + groupName);
+            } finally {
+                IOUtils.closeQuietly(out);
+            }
         }
     }
 }
