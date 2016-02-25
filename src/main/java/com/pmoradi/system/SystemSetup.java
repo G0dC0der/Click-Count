@@ -4,6 +4,7 @@ import com.pmoradi.entities.dao.ClickDao;
 import com.pmoradi.entities.dao.GroupDao;
 import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.entities.dao.UserDao;
+import com.pmoradi.security.AuthenticationFilter;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -23,9 +24,10 @@ public class SystemSetup extends ResourceConfig {
         packages("com.pmoradi.rest");
         packages("org.glassfish.jersey.jackson");
         register(JacksonFeature.class);
+        register(AuthenticationFilter.class);
 
         final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("hibernate-engine");
-        final SessionFactory sessionFactory = () -> entityManagerFactory.createEntityManager();
+        final SessionFactory sessionFactory = entityManagerFactory::createEntityManager;
 
         register(new AbstractBinder() {
             @Override

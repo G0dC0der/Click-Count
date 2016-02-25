@@ -16,6 +16,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class DataResource {
 
     @POST
     @Path("add")
-    @Produces("text/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response add(@Context HttpServletResponse response,
                         @Context HttpServletRequest request,
                         DataEntry in) throws IOException {
@@ -137,7 +138,7 @@ public class DataResource {
 
     @GET
     @Path("captcha")
-    @Produces("application/octet-stream")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response captcha(@Context HttpServletRequest request) {
         Captcha captcha = new Captcha(200, 150, 6, 6, null, 60_000);
         request.getSession().setAttribute("captcha", captcha);

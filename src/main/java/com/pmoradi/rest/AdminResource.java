@@ -1,22 +1,24 @@
 package com.pmoradi.rest;
 
-import com.pmoradi.essentials.WebUtil;
+import com.pmoradi.security.Guarded;
 import com.pmoradi.security.Role;
 import com.pmoradi.system.AdminFacade;
 
 import javax.inject.Inject;
-import javax.security.auth.login.CredentialException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 
 @Path("admin")
+@Produces(MediaType.TEXT_PLAIN)
 public class AdminResource {
-
-    private static final String UNAUTHORIZED_MSG = "Unauthorized";
 
     @Inject
     private AdminFacade facade;
@@ -25,32 +27,22 @@ public class AdminResource {
     @Context
     private HttpServletResponse response;
 
-    @GET
+    @DELETE
+    @Guarded(Role.MAINTAINER)
     @Path("delete/group/{groupName}")
-    @Produces("text/plain")
-    public Response deleteGroup(@PathParam("groupName") String groupName,
-                                @QueryParam("username") String username,
-                                @QueryParam("password") String password) throws IOException {
-        try {
-            facade.authenticate(username, password, Role.MAINTAINER);
+    public Response deleteGroup(@PathParam("groupName") String groupName) {
+        if(groupName.equals("default")) {
+            return Response.status(403).entity("The default group can not be removed.").build();
+        }
 
+        try {
             facade.deleteGroup(groupName);
-            return Response.ok("Group <i>" + groupName + "</i> was successfully removed!").build();
-        } catch (CredentialException e) {
-            return wrongLogin(groupName, "", e.getMessage());
-        } catch (NotFoundException e){
-            e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, "", groupName, "Can't delete a group that doesn't exist."));
-            return Response.status(404).build();
+            return Response.ok("Group " + groupName + " was successfully removed!").build();
+        } catch (NotFoundException e) {
+            return Response.status(404).entity("Can't delete a group that doesn't exist.").build();
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(500, "", groupName, "Internal Error"));
-            return Response.status(500).build();
+            return Response.status(500).entity("Internal Error").build();
         }
-    }
-
-    private Response wrongLogin(String groupName, String urlName, String msg) throws IOException {
-        response.sendRedirect(request.getContextPath() + WebUtil.errorPage(401, urlName, groupName, msg));
-        return Response.status(401).entity(msg).build();
     }
 }

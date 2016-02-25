@@ -19,7 +19,7 @@ public class UserDao {
         Query query = manager.createQuery("from User where username = :username");
         query.setParameter("username", username);
 
-        User user = query.getResultList().size() == 0 ? null : (User) query.getSingleResult();
+        User user = query.getResultList().isEmpty() ? null : (User) query.getSingleResult();
 
         manager.close();
         return user;

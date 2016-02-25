@@ -38,4 +38,4 @@ CREATE UNIQUE INDEX unique_group ON groups(group_name);
 CREATE UNIQUE INDEX username_index ON users(user_name);
 CREATE INDEX url_index ON urls(url);
 INSERT INTO groups (group_name, password) VALUES ('default', '');
-INSERT INTO users (user_name, password, role) VALUES ('admin', '8a12e466099ff52b31b3def3ac4d2a2e', 'ADMINISTRATOR');
+INSERT INTO users (user_name, password, role) VALUES ('admin', '95f47c8ba31358731223bdf16b87eecc', 'ADMINISTRATOR');
