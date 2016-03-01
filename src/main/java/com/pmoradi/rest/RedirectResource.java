@@ -35,7 +35,7 @@ public class RedirectResource {
             return Response.ok().build();
         } else {
             response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, "default", "URL not found."));
-            return Response.status(404).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -52,7 +52,7 @@ public class RedirectResource {
             return Response.ok().build();
         } else {
             response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, groupName, "URL not found."));
-            return Response.status(404).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 }

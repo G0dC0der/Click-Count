@@ -67,12 +67,12 @@ public class ViewResource {
         }
 
         if(error)
-            return Response.status(403).entity(out).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(out).build();
 
         GroupEntry groupEntry = logic.getGroupData(in.getGroupName(), in.getPassword());
         if(groupEntry == null) {
             out.setGroupError("Group and password mismatch.");
-            return Response.status(404).entity(out).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(out).build();
         } else {
             return Response.ok(groupEntry).build();
         }
@@ -80,13 +80,14 @@ public class ViewResource {
 
     @GET
     @Path("{url}/view")
-    public void viewSingle(@Context HttpServletRequest request,
+    public Response viewSingle(@Context HttpServletRequest request,
                            @Context HttpServletResponse response,
                            @PathParam("url") String urlName) throws IOException {
 
         UrlEntry urlData = logic.getUrlData("default", urlName.trim().toLowerCase());
         if(urlData == null) {
             response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, "default", "URL not found."));
+            return Response.status(Response.Status.NOT_FOUND).entity("URL not found.").build();
         } else {
             ServletOutputStream out = null;
             try{
@@ -94,6 +95,7 @@ public class ViewResource {
                 out.println("URL: " + urlData.getUrlName());
                 out.println("Link: " + urlData.getLink());
                 out.println("Clicks: " + urlData.getClicks().length);
+                return Response.ok().build();
             } finally {
                 IOUtils.closeQuietly(out);
             }
@@ -102,7 +104,7 @@ public class ViewResource {
 
     @GET
     @Path("{group}/{url}/view")
-    public void viewSingle(@Context HttpServletRequest request,
+    public Response viewSingle(@Context HttpServletRequest request,
                            @Context HttpServletResponse response,
                            @PathParam("group") String groupName,
                            @PathParam("url") String urlName) throws IOException {
@@ -110,6 +112,7 @@ public class ViewResource {
         UrlEntry urlData = logic.getUrlData(groupName.toLowerCase(), urlName.toLowerCase());
         if(urlData == null) {
             response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, groupName, "URL not found."));
+            return Response.status(Response.Status.NOT_FOUND).entity("URL not found.").build();
         } else {
             ServletOutputStream out = null;
             try {
@@ -117,6 +120,7 @@ public class ViewResource {
                 out.println("URL: " + urlData.getUrlName());
                 out.println("Link: " + urlData.getLink());
                 out.println("Group: " + groupName);
+                return Response.ok().build();
             } finally {
                 IOUtils.closeQuietly(out);
             }

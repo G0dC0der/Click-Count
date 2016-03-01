@@ -105,11 +105,11 @@ public class DataResource {
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect(request.getContextPath() + WebUtil.errorPage(500, "", "", "Internal Error."));
-            return Response.status(500).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
         return error ?
-                Response.status(403).entity(out).build() :
+                Response.status(Response.Status.FORBIDDEN).entity(out).build() :
                 Response.ok(out).build();
     }
 
@@ -119,20 +119,20 @@ public class DataResource {
         logic.fix(in);
 
         if(in.getGroupName().isEmpty())
-            return Response.status(403).entity("Group name shall not be empty.").build();
+            return Response.status(Response.Status.FORBIDDEN).entity("Group name shall not be empty.").build();
         else if(in.getGroupName().equals("default"))
-            return Response.status(403).entity("Group name can not be default.").build();
+            return Response.status(Response.Status.FORBIDDEN).entity("Group name can not be default.").build();
         else if(in.getUrlName().isEmpty())
-            return Response.status(403).entity("Must specify a url to delete.").build();
+            return Response.status(Response.Status.FORBIDDEN).entity("Must specify a url to delete.").build();
 
         try {
             logic.delete(in.getGroupName(), in.getPassword(), in.getUrlName());
             return Response.ok().build();
         } catch (CredentialException e) {
-            return Response.status(403).entity(e.getMessage()).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(500).entity("Internal Error").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Internal Error").build();
         }
     }
 

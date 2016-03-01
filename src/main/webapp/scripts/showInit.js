@@ -93,7 +93,7 @@ function format(data){
             var daysDiff = Math.round((now-oldest)/(1000*60*60*24));
             var monthsDiff = (now.getFullYear() - oldest.getFullYear())*12 + (now.getMonth() - oldest.getMonth());
 
-            json.firstClick = oldest.getFullYear() + "-" + (oldest.getMonth() + 1) + "-" + oldest.getDate();
+            json.addDate = oldest.getFullYear() + "-" + (oldest.getMonth() + 1) + "-" + oldest.getDate();
             json.dailyClicks = el.clicks.length / parseFloat(daysDiff);
             //json.monthlyClicks = el.clicks.length /parseFloat(monthsDiff);
         }

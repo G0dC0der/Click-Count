@@ -36,9 +36,9 @@ public class URLDao {
     public void deleteByName(String groupName, String urlName){
         EntityManager manager = sessionFactory.newSession();
 
-        Query query = manager.createQuery("delete from URL as u inner join u.group as g where u.url = :urlname and g.groupName = :groupname");
-        query.setParameter("urlname", urlName);
-        query.setParameter("groupname", groupName);
+        Query query = manager.createQuery("delete from URL as u where u.url = :urlName and u.group in (from Group as g where g.groupName = :groupName)");
+        query.setParameter("urlName", urlName);
+        query.setParameter("groupName", groupName);
         query.executeUpdate();
         manager.close();
     }
