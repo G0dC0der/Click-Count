@@ -2,16 +2,10 @@ package com.pmoradi.essentials;
 
 import org.apache.commons.io.IOUtils;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public abstract class Loop<T> {
 
@@ -139,6 +133,60 @@ public abstract class Loop<T> {
         }
     }
 
+    public static Loop<String> lines(File file) {
+        if(!file.exists() || !file.canRead()) {
+            throw new IllegalArgumentException("File invalid.");
+        }
+        Reader[] in = new Reader[1];
+        String newLine = System.getProperty("line.separator");
+        try {
+            in[0] = new BufferedReader(new FileReader(file));
+
+            return new Loop<String>() {
+                String value;
+
+                @Override
+                String next() {
+                    return value;
+                }
+
+                @Override
+                boolean canAgain() {
+                    try {
+                        StringBuilder bu = new StringBuilder();
+                        while(true) {
+                            int i = in[0].read();
+                            if(i == -1)
+                                return false;
+
+                            String c = Character.toString((char)i);
+                            if(c.equals(newLine))
+                                break;
+                            bu.append(c);
+                        }
+                        value = bu.toString();
+                        return true;
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                }
+
+                @Override
+                protected void clean() {
+                    IOUtils.closeQuietly(in[0]);
+                }
+
+                @Override
+                public void each(SimpleFunction simpleFunction) {
+                    throw new UnsupportedOperationException("Redundant operation.");
+                }
+            };
+        } catch (IOException e) {
+            IOUtils.closeQuietly(in[0]);
+            return null;
+        }
+    }
+
     public static Loop<Integer> read(InputStream in) {
         return new Loop<Integer>() {
             int value;
@@ -209,14 +257,4 @@ public abstract class Loop<T> {
     }
 
     void clean() {}
-
-    public static void main(String... args) {
-        StringBuilder b = new StringBuilder();
-        Loop.read(new File("/Users/pojahn/lol.txt")).each(i -> b.append((char)i.intValue()));
-        System.out.println(b.toString());
-    }
-
-    static void print(Integer i) {
-        System.out.print((char)i.intValue());
-    }
 }

@@ -3,7 +3,6 @@ package com.pmoradi.entities.dao;
 import com.pmoradi.entities.Click;
 import com.pmoradi.system.SessionFactory;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 

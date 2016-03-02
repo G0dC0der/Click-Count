@@ -135,7 +135,7 @@ public class Facade {
         if (group == null || !hash.equals(group.getPassword()))
             throw new CredentialException("Group name and password mismatch.");
 
-        urlDAO.deleteByName(groupName, urlName);
+        urlDAO.delete(urlDAO.findByGroupAndUrl(groupName, urlName));
     }
 
     public byte[] toBytes(BufferedImage img) {

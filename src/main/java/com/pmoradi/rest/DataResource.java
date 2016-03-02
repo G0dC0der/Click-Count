@@ -18,6 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 
@@ -89,7 +90,7 @@ public class DataResource {
         }
 
         if(error)
-            return Response.status(403).entity(out).build();
+            return Response.status(Status.FORBIDDEN).entity(out).build();
 
         try {
             if(in.getGroupName().isEmpty())
@@ -104,12 +105,12 @@ public class DataResource {
             error = true;
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(500, "", "", "Internal Error."));
+            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(Status.INTERNAL_SERVER_ERROR, "", "", "Internal Error."));
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
         return error ?
-                Response.status(Response.Status.FORBIDDEN).entity(out).build() :
+                Response.status(Status.FORBIDDEN).entity(out).build() :
                 Response.ok(out).build();
     }
 
@@ -119,20 +120,20 @@ public class DataResource {
         logic.fix(in);
 
         if(in.getGroupName().isEmpty())
-            return Response.status(Response.Status.FORBIDDEN).entity("Group name shall not be empty.").build();
+            return Response.status(Status.FORBIDDEN).entity("Group name shall not be empty.").build();
         else if(in.getGroupName().equals("default"))
-            return Response.status(Response.Status.FORBIDDEN).entity("Group name can not be default.").build();
+            return Response.status(Status.FORBIDDEN).entity("Group name can not be default.").build();
         else if(in.getUrlName().isEmpty())
-            return Response.status(Response.Status.FORBIDDEN).entity("Must specify a url to delete.").build();
+            return Response.status(Status.FORBIDDEN).entity("Must specify a url to delete.").build();
 
         try {
             logic.delete(in.getGroupName(), in.getPassword(), in.getUrlName());
             return Response.ok().build();
         } catch (CredentialException e) {
-            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
+            return Response.status(Status.FORBIDDEN).entity(e.getMessage()).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Internal Error").build();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal Error").build();
         }
     }
 

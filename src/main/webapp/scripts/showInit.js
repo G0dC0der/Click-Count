@@ -94,11 +94,15 @@ function format(data){
             var monthsDiff = (now.getFullYear() - oldest.getFullYear())*12 + (now.getMonth() - oldest.getMonth());
 
             json.addDate = oldest.getFullYear() + "-" + (oldest.getMonth() + 1) + "-" + oldest.getDate();
-            json.dailyClicks = el.clicks.length / parseFloat(daysDiff);
+            json.dailyClicks = sameDay(oldest, now) ? 1 : el.clicks.length / parseFloat(daysDiff);
             //json.monthlyClicks = el.clicks.length /parseFloat(monthsDiff);
         }
 
         urls.push(json);
     }
     return urls;
+}
+
+function sameDay(date1, date2) {
+    return date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate();
 }

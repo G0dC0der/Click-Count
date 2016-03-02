@@ -1,6 +1,7 @@
 package com.pmoradi.entities.dao;
 
 import com.pmoradi.entities.User;
+import com.pmoradi.security.Role;
 import com.pmoradi.system.SessionFactory;
 
 import javax.persistence.EntityManager;
@@ -28,10 +29,11 @@ public class UserDao {
 
     public void deleteByName(String username) {
         EntityManager manager = sessionFactory.newSession();
+        manager.getTransaction().begin();
         Query query = manager.createQuery("delete from User where username = :username");
         query.setParameter("username", username);
         query.executeUpdate();
-
+        manager.getTransaction().commit();
         manager.close();
     }
 
@@ -39,6 +41,17 @@ public class UserDao {
         EntityManager manager = sessionFactory.newSession();
         manager.getTransaction().begin();
         manager.persist(user);
+        manager.getTransaction().commit();
+        manager.close();
+    }
+
+    public void updateRole(String username, Role newRole) {
+        EntityManager manager = sessionFactory.newSession();
+        manager.getTransaction().begin();
+        Query query = manager.createQuery("update User set role = :role where username = :username");
+        query.setParameter("role", newRole);
+        query.setParameter("username", username);
+        query.executeUpdate();
         manager.getTransaction().commit();
         manager.close();
     }

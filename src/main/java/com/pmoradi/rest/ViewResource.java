@@ -18,6 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 
 @Path("/")
@@ -67,12 +68,12 @@ public class ViewResource {
         }
 
         if(error)
-            return Response.status(Response.Status.FORBIDDEN).entity(out).build();
+            return Response.status(Status.FORBIDDEN).entity(out).build();
 
         GroupEntry groupEntry = logic.getGroupData(in.getGroupName(), in.getPassword());
         if(groupEntry == null) {
             out.setGroupError("Group and password mismatch.");
-            return Response.status(Response.Status.NOT_FOUND).entity(out).build();
+            return Response.status(Status.NOT_FOUND).entity(out).build();
         } else {
             return Response.ok(groupEntry).build();
         }
@@ -86,8 +87,8 @@ public class ViewResource {
 
         UrlEntry urlData = logic.getUrlData("default", urlName.trim().toLowerCase());
         if(urlData == null) {
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, "default", "URL not found."));
-            return Response.status(Response.Status.NOT_FOUND).entity("URL not found.").build();
+            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(Status.NOT_FOUND, urlName, "default", "URL not found."));
+            return Response.status(Status.NOT_FOUND).entity("URL not found.").build();
         } else {
             ServletOutputStream out = null;
             try{
@@ -111,8 +112,8 @@ public class ViewResource {
 
         UrlEntry urlData = logic.getUrlData(groupName.toLowerCase(), urlName.toLowerCase());
         if(urlData == null) {
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, groupName, "URL not found."));
-            return Response.status(Response.Status.NOT_FOUND).entity("URL not found.").build();
+            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(Status.NOT_FOUND, urlName, groupName, "URL not found."));
+            return Response.status(Status.NOT_FOUND).entity("URL not found.").build();
         } else {
             ServletOutputStream out = null;
             try {

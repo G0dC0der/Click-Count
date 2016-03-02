@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 
 @Path("/")
@@ -34,8 +35,8 @@ public class RedirectResource {
             response.sendRedirect(link);
             return Response.ok().build();
         } else {
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, "default", "URL not found."));
-            return Response.status(Response.Status.NOT_FOUND).build();
+            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(Status.NOT_FOUND, urlName, "default", "URL not found."));
+            return Response.status(Status.NOT_FOUND).build();
         }
     }
 
@@ -51,8 +52,8 @@ public class RedirectResource {
             response.sendRedirect(link);
             return Response.ok().build();
         } else {
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(404, urlName, groupName, "URL not found."));
-            return Response.status(Response.Status.NOT_FOUND).build();
+            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(Status.NOT_FOUND, urlName, groupName, "URL not found."));
+            return Response.status(Status.NOT_FOUND).build();
         }
     }
 }

@@ -9,6 +9,7 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -29,17 +30,17 @@ public class AuthenticationFilter implements ContainerRequestFilter{
             String password = getHeader(requestContext, "password");
 
             if (username == null || password == null) {
-                requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).entity("Incomplete request. Credentials not found in header.").build());
+                requestContext.abortWith(Response.status(Status.FORBIDDEN).entity("Incomplete request. Credentials not found in header.").build());
                 return;
             }
 
             User user = userDao.findByName(username);
             if (user == null || !user.getPassword().equals(SecureStrings.md5(password + SecureStrings.getSalt()))) {
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("Access denied! Wrong username and password combination.").build());
+                requestContext.abortWith(Response.status(Status.UNAUTHORIZED).entity("Access denied! Wrong username and password combination.").build());
                 return;
             }
             if (requiredRole.isAbove(user.getRole())) {
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("The request was aborted. Role not sufficient enough.").build());
+                requestContext.abortWith(Response.status(Status.UNAUTHORIZED).entity("The request was aborted. Role not sufficient enough.").build());
                 return;
             }
         }
