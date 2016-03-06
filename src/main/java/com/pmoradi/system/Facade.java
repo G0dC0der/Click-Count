@@ -8,17 +8,15 @@ import com.pmoradi.entities.dao.GroupDao;
 import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.essentials.Marshaller;
 import com.pmoradi.essentials.UrlUnavailableException;
-import com.pmoradi.essentials.WebUtil;
-import com.pmoradi.rest.entries.DataEntry;
 import com.pmoradi.rest.entries.GroupEntry;
 import com.pmoradi.rest.entries.UrlEntry;
-import com.pmoradi.rest.entries.ViewEntry;
 import com.pmoradi.security.SecureStrings;
 import com.pmoradi.system.LockManager.Key;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.security.auth.login.CredentialException;
+import javax.ws.rs.NotFoundException;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -128,14 +126,18 @@ public class Facade {
         return clickDAO.clicks();
     }
 
-    public void delete(String groupName, String password, String urlName) throws CredentialException {
+    public void deleteUrl(String groupName, String password, String urlName) throws CredentialException, NotFoundException {
         String hash = SecureStrings.md5(password + SecureStrings.getSalt());
 
         Group group = groupDAO.find(groupName);
         if (group == null || !hash.equals(group.getPassword()))
             throw new CredentialException("Group name and password mismatch.");
 
-        urlDAO.delete(urlDAO.findByGroupAndUrl(groupName, urlName));
+        URL url = urlDAO.findByGroupAndUrl(groupName, urlName);
+        if(url == null)
+            throw new NotFoundException("URL not found.");
+
+        urlDAO.delete(url);
     }
 
     public byte[] toBytes(BufferedImage img) {
@@ -147,19 +149,6 @@ public class Facade {
             return null;
         }
         return baos.toByteArray();
-    }
-
-    public void fix(DataEntry entry) {
-        entry.setUrlName(polish(entry.getUrlName()));
-        entry.setGroupName(polish(entry.getGroupName()));
-    }
-
-    public void fix(ViewEntry entry) {
-        entry.setGroupName(polish(entry.getGroupName()));
-    }
-
-    public String polish(String string) {
-        return string.trim().toLowerCase();
     }
 
     private void click(URL url) {
@@ -179,5 +168,4 @@ public class Facade {
         }
         return defaultGroup;
     }
-
 }

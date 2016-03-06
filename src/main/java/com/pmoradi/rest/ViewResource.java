@@ -1,5 +1,6 @@
 package com.pmoradi.rest;
 
+import com.pmoradi.essentials.EntryUtil;
 import com.pmoradi.rest.entries.*;
 import com.pmoradi.security.Captcha;
 import com.pmoradi.system.Facade;
@@ -41,24 +42,28 @@ public class ViewResource {
     @POST
     @Path("view/all")
     public Response viewAll(@Context HttpServletRequest request, ViewEntry in) throws IOException {
-        String word = in.getCaptcha();
-        Captcha captcha = (Captcha) request.getSession().getAttribute("captcha");
-        request.getSession().removeAttribute("captcha");
-
-        logic.fix(in);
-        AddOutEntry out = new AddOutEntry();
+        EntryUtil.shrink(in);
+        DataOutEntry out = new DataOutEntry();
         out.setGroupName(in.getGroupName());
         out.setPassword(in.getPassword());
 
         boolean error = false;
 
-        if(captcha == null){
-            out.setCaptchaError("Captcha has expired or was never requested.");
-            error = true;
-        } else if(!captcha.isCorrect(word)) {
-            out.setCaptchaError("Captcha is incorrect.");
-            error = true;
+        if(!WebUtil.isLocalAddress(request.getRemoteAddr())) {
+            Captcha captcha = (Captcha) request.getSession().getAttribute("captcha");
+            request.getSession().removeAttribute("captcha");
+            if(captcha == null){
+                out.setCaptchaError("Captcha has expired or was never requested.");
+                error = true;
+            } else if(captcha.hasExpired()) {
+                out.setCaptchaError("Captcha has expired.");
+                error = true;
+            } else if(!captcha.isCorrect(in.getCaptcha())) {
+                out.setCaptchaError("Captcha is incorrect.");
+                error = true;
+            }
         }
+
         if(in.getGroupName().isEmpty()){
             out.setGroupError("Group can not be empty");
             error = true;
@@ -82,13 +87,12 @@ public class ViewResource {
     @GET
     @Path("{url}/view")
     public Response viewSingle(@Context HttpServletRequest request,
-                           @Context HttpServletResponse response,
-                           @PathParam("url") String urlName) throws IOException {
+                               @Context HttpServletResponse response,
+                               @PathParam("url") String urlName) throws IOException {
 
         UrlEntry urlData = logic.getUrlData("default", urlName.trim().toLowerCase());
         if(urlData == null) {
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(Status.NOT_FOUND, urlName, "default", "URL not found."));
-            return Response.status(Status.NOT_FOUND).entity("URL not found.").build();
+            return Response.status(Status.NOT_FOUND).build();
         } else {
             ServletOutputStream out = null;
             try{
@@ -112,8 +116,7 @@ public class ViewResource {
 
         UrlEntry urlData = logic.getUrlData(groupName.toLowerCase(), urlName.toLowerCase());
         if(urlData == null) {
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(Status.NOT_FOUND, urlName, groupName, "URL not found."));
-            return Response.status(Status.NOT_FOUND).entity("URL not found.").build();
+            return Response.status(Status.NOT_FOUND).build();
         } else {
             ServletOutputStream out = null;
             try {

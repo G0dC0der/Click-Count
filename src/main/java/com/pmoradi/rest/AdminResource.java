@@ -20,7 +20,7 @@ public class AdminResource {
     @GET
     @Guarded(Role.TRUSTED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("group/view/{groupName}")
+    @Path("group/{groupName}/view")
     public Response viewGroup(@PathParam("groupName") String groupName) {
         try {
             GroupEntry data = adminFacade.viewGroupData(groupName);
@@ -29,14 +29,14 @@ public class AdminResource {
             return Response.status(Status.NOT_FOUND).entity("Group '" + groupName + "' was not found.").build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal Error").build();
+            return Response.serverError().build();
         }
     }
 
     @DELETE
     @Guarded(Role.MAINTAINER)
     @Produces(MediaType.TEXT_PLAIN)
-    @Path("group/delete/{groupName}")
+    @Path("group/{groupName}/delete")
     public Response deleteGroup(@PathParam("groupName") String groupName) {
         if(groupName.equals("default")) {
             return Response.status(Status.FORBIDDEN).entity("The default group can not be removed.").build();
@@ -49,14 +49,14 @@ public class AdminResource {
             return Response.status(Status.NOT_FOUND).entity("Can't delete a group that doesn't exist.").build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal Error").build();
+            return Response.serverError().build();
         }
     }
 
     @DELETE
     @Guarded(Role.MAINTAINER)
     @Produces(MediaType.TEXT_PLAIN)
-    @Path("url/delete/{groupName}/{urlName}")
+    @Path("url/{groupName}/{urlName}/delete")
     public Response deleteUrl(@PathParam("groupName") String groupName,
                               @PathParam("urlName") String urlName) {
         try {
@@ -66,7 +66,7 @@ public class AdminResource {
             return Response.status(Status.NOT_FOUND).entity("Url or group doesn't exist.").build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal Error").build();
+            return Response.serverError().build();
         }
     }
 
@@ -81,7 +81,7 @@ public class AdminResource {
             return Response.ok("User '" + user.getUsername() + "' was successfully added to the database!").build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal Error").build();
+            return Response.serverError().build();
         }
     }
 
@@ -98,7 +98,7 @@ public class AdminResource {
             return Response.status(Status.NOT_FOUND).entity("The given user doesn't exist.").build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal Error").build();
+            return Response.serverError().build();
         }
     }
 
@@ -115,7 +115,7 @@ public class AdminResource {
             return Response.status(Status.NOT_FOUND).entity("The given user doesn't exist.").build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal Error").build();
+            return Response.serverError().build();
         }
     }
 }

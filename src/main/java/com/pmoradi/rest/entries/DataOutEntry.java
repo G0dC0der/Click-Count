@@ -4,19 +4,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AddOutEntry {
+public class DataOutEntry {
 
     private String urlName, urlError, link, linkError, groupName, groupError, password, passwordError, captcha, captchaError;
-
-    public AddOutEntry(){}
-
-    public AddOutEntry(DataEntry inEntry){
-        urlName = inEntry.getUrlName();
-        link = inEntry.getLink();
-        groupName = inEntry.getGroupName();
-        password = inEntry.getPassword();
-        captcha = inEntry.getCaptcha();
-    }
 
     public String getUrlName() {
         return urlName;

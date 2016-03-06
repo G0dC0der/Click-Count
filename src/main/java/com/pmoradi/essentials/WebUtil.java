@@ -1,6 +1,8 @@
 package com.pmoradi.essentials;
 
 import javax.ws.rs.core.Response.Status;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Random;
 
 public class WebUtil {
@@ -37,8 +39,8 @@ public class WebUtil {
         }
     }
 
-    public static String errorPage(Status status, String urlName, String groupName, String description) {
-        return String.format("/error.html?status=%d&url=%s&group=%s&description=%s", status.getStatusCode(), urlName, groupName, description);
+    public static boolean isLocalAddress(String addr) {
+        return addr.equals("127.0.0.1") || addr.equals("localhost") || addr.equals("0:0:0:0:0:0:0:1");
     }
 
     public static boolean validUrl(String url){

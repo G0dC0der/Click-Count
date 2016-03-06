@@ -3,11 +3,21 @@ package com.pmoradi.essentials;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public abstract class Loop<T> {
+
+    public static <T> List<T> create(int size, Supplier<T> func) {
+        List<T> list = new ArrayList<>(size);
+        for(int i = 0; i < size; i++) {
+            list.add(func.get());
+        }
+        return list;
+    }
 
     public static Loop<Integer> range(int inclusive, int exclusive) {
         return new Loop<Integer>() {

@@ -15,10 +15,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Path("/")
-@Produces(MediaType.APPLICATION_JSON)
 public class RedirectResource {
 
     @Inject
@@ -28,14 +30,12 @@ public class RedirectResource {
     @Path("{url}")
     public Response redirect(@Context HttpServletRequest request,
                              @Context HttpServletResponse response,
-                             @PathParam("url") String urlName) throws ServletException, IOException {
+                             @PathParam("url") String urlName) throws ServletException, IOException, URISyntaxException {
 
         String link = logic.getLinkAndClick("default", urlName.toLowerCase());
         if(link != null) {
-            response.sendRedirect(link);
-            return Response.ok().build();
+            return Response.seeOther(UriBuilder.fromPath(link).build()).build();
         } else {
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(Status.NOT_FOUND, urlName, "default", "URL not found."));
             return Response.status(Status.NOT_FOUND).build();
         }
     }
@@ -49,10 +49,8 @@ public class RedirectResource {
 
         String link = logic.getLinkAndClick(groupName.toLowerCase(), urlName.toLowerCase());
         if(link != null) {
-            response.sendRedirect(link);
-            return Response.ok().build();
+            return Response.seeOther(UriBuilder.fromPath(link).build()).build();
         } else {
-            response.sendRedirect(request.getContextPath() + WebUtil.errorPage(Status.NOT_FOUND, urlName, groupName, "URL not found."));
             return Response.status(Status.NOT_FOUND).build();
         }
     }
