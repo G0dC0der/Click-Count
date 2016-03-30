@@ -81,12 +81,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.template</groupId>
-            <artifactId>soy</artifactId>
-            <version>2015-04-10</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>2.22.1</version>
@@ -102,26 +96,6 @@
         <finalName>click-count</finalName>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
-        <resources>
-            <resource>
-                <directory>src/main/resources/soy</directory>
-                <excludes>
-                    <exclude>*.soy</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>src/main/resources/sql</directory>
-                <excludes>
-                    <exclude>*.sql</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>META-INF/*.*</include>
-                </includes>
-            </resource>
-        </resources>
 
         <plugins>
             <plugin>
@@ -131,81 +105,6 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.4.0</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>com.pmoradi.essentials.SoyCompiler</mainClass>
-                            <arguments>
-                                <argument>src/main/resources/soy</argument>
-                                <argument>${project.build.directory}/${project.build.finalName}/scripts</argument>
-                            </arguments>
-                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>com.samaxes.maven</groupId>
-                <artifactId>minify-maven-plugin</artifactId>
-                <version>1.7.4</version>
-                <executions>
-                    <execution>
-                        <id>default-minify</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <charset>UTF-8</charset>
-                            <jsEngine>CLOSURE</jsEngine>
-                            <webappSourceDir>${project.build.directory}/${project.build.finalName}</webappSourceDir>
-                            <webappTargetDir>${project.build.directory}/${project.build.finalName}/minify</webappTargetDir>
-
-                            <cssSourceDir>css</cssSourceDir>
-                            <cssSourceIncludes>
-                                <cssSourceInclude>**</cssSourceInclude>
-                            </cssSourceIncludes>
-
-                            <jsSourceDir>scripts</jsSourceDir>
-                            <jsSourceFiles>
-                                <!-- External Libraries -->
-                                <jsSourceFile>lib/jquery-1.11.3.min.js</jsSourceFile>
-                                <jsSourceFile>lib/soyutils.js</jsSourceFile>
-                                <!-- Soy Files -->
-                                <jsSourceFile>dialogs.soy.js</jsSourceFile>
-                                <jsSourceFile>add-stuff.soy.js</jsSourceFile>
-                                <jsSourceFile>show-stuff.soy.js</jsSourceFile>
-                                <jsSourceFile>index-stuff.soy.js</jsSourceFile>
-                                <jsSourceFile>pictogram.soy.js</jsSourceFile>
-                                <!-- Utils -->
-                                <jsSourceFile>utils/ajax.js</jsSourceFile>
-                                <jsSourceFile>utils/constants.js</jsSourceFile>
-                                <jsSourceFile>utils/dialogs.js</jsSourceFile>
-                                <jsSourceFile>utils/objects.js</jsSourceFile>
-                                <jsSourceFile>utils/utils.js</jsSourceFile>
-                                <jsSourceFile>utils/captcha.js</jsSourceFile>
-                            </jsSourceFiles>
-                            <jsSourceIncludes>
-                                <!-- Page Specific -->
-                                <jsSourceInclude>addInit.js</jsSourceInclude>
-                                <jsSourceInclude>mainInit.js</jsSourceInclude>
-                                <jsSourceInclude>errorInit.js</jsSourceInclude>
-                                <jsSourceInclude>showInit.js</jsSourceInclude>
-                            </jsSourceIncludes>
-                        </configuration>
-                        <goals>
-                            <goal>minify</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
