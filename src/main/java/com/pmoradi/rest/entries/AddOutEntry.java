@@ -1,6 +1,6 @@
 package com.pmoradi.rest.entries;
 
-public class ErrorEntry {
+public class AddOutEntry {
 
     private String urlError, linkError, groupError, passwordError, captchaError;
 

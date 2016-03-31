@@ -1,6 +1,5 @@
 package com.pmoradi.system;
 
-import com.pmoradi.entities.dao.ClickDao;
 import com.pmoradi.entities.dao.GroupDao;
 import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.entities.dao.UserDao;
@@ -9,21 +8,9 @@ import org.glassfish.hk2.api.ServiceLocator;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.Context;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.concurrent.Executors;
 
 class InjectFactory {
-
-    static Factory<ClickDao> getClickDaoFactory(SessionFactory sessionFactory){
-        return new Factory<ClickDao>() {
-            @Override
-            public ClickDao provide() {
-                return new ClickDao(sessionFactory);
-            }
-
-            @Override public void dispose(ClickDao clickDao) {}
-        };
-    }
 
     static Factory<GroupDao> getGroupDaoFactory(SessionFactory sessionFactory){
         return new Factory<GroupDao>() {
@@ -66,7 +53,7 @@ class InjectFactory {
 
             @Override
             public Facade provide() {
-                Facade facade = new Facade(manager);
+                Facade facade = new Facade(manager, Executors.newFixedThreadPool(500));
                 locator.inject(facade);
                 return facade;
             }
@@ -91,20 +78,6 @@ class InjectFactory {
 
             @Override
             public void dispose(AdminFacade facade) {}
-        };
-    }
-
-    static Factory<?> getShutdownCleaner(EntityManagerFactory entityManagerFactory) {
-        return new Factory<Object>() {
-            @Override
-            public Object provide() {
-                return null;
-            }
-
-            @Override
-            public void dispose(Object o) {
-                entityManagerFactory.close();
-            }
         };
     }
 }

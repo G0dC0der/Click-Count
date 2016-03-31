@@ -29,56 +29,32 @@ public class ViewResource {
     @Inject
     private Facade logic;
 
-    @GET
-    @Path("view/total")
-    public Response totalData(){
-        TotalEntry totalOut = new TotalEntry();
-        totalOut.setTotalUrls(logic.totalURLs());
-        totalOut.setTotalClicks(logic.totalClicks());
-
-        return Response.ok(totalOut).build();
-    }
-
     @POST
     @Path("view/all")
     public Response viewAll(@Context HttpServletRequest request, ViewEntry in) throws IOException {
         EntryUtil.shrink(in);
-        DataOutEntry out = new DataOutEntry();
-        out.setGroupName(in.getGroupName());
-        out.setPassword(in.getPassword());
-
-        boolean error = false;
 
         if(!WebUtil.isLocalAddress(request.getRemoteAddr())) {
             Captcha captcha = (Captcha) request.getSession().getAttribute("captcha");
             request.getSession().removeAttribute("captcha");
             if(captcha == null){
-                out.setCaptchaError("Captcha has expired or was never requested.");
-                error = true;
+                return Response.status(Status.FORBIDDEN).entity("Captcha has expired or was never requested.").build();
             } else if(captcha.hasExpired()) {
-                out.setCaptchaError("Captcha has expired.");
-                error = true;
+                return Response.status(Status.FORBIDDEN).entity("Captcha has expired.").build();
             } else if(!captcha.isCorrect(in.getCaptcha())) {
-                out.setCaptchaError("Captcha is incorrect.");
-                error = true;
+                return Response.status(Status.FORBIDDEN).entity("Captcha is incorrect").build();
             }
         }
 
         if(in.getGroupName().isEmpty()){
-            out.setGroupError("Group can not be empty");
-            error = true;
+            return Response.status(Status.FORBIDDEN).entity("Group can not be empty").build();
         } else if(in.getGroupName().equals("default")) {
-            out.setGroupError("Can not fetch data from the default group");
-            error = true;
+            return Response.status(Status.FORBIDDEN).entity("Can not fetch data from the default group").build();
         }
-
-        if(error)
-            return Response.status(Status.FORBIDDEN).entity(out).build();
 
         GroupEntry groupEntry = logic.getGroupData(in.getGroupName(), in.getPassword());
         if(groupEntry == null) {
-            out.setGroupError("Group and password mismatch.");
-            return Response.status(Status.NOT_FOUND).entity(out).build();
+            return Response.status(Status.NOT_FOUND).entity("Group and password mismatch.").build();
         } else {
             return Response.ok(groupEntry).build();
         }
@@ -99,7 +75,7 @@ public class ViewResource {
                 out = response.getOutputStream();
                 out.println("URL: " + urlData.getUrlName());
                 out.println("Link: " + urlData.getLink());
-                out.println("Clicks: " + urlData.getClicks().length);
+                out.println("Clicks: " + urlData.getClicks());
                 return Response.ok().build();
             } finally {
                 IOUtils.closeQuietly(out);

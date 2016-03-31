@@ -1,6 +1,6 @@
 package com.pmoradi.test.util;
 
-import com.pmoradi.rest.entries.DataEntry;
+import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.UrlEditEntry;
 import com.pmoradi.rest.entries.ViewEntry;
 
@@ -28,8 +28,8 @@ public class Randomization {
         return "http://www." + randomString() + ".com";
     }
 
-    public static DataEntry randomDataEntry() {
-        DataEntry entry = new DataEntry();
+    public static AddInEntry randomDataEntry() {
+        AddInEntry entry = new AddInEntry();
         entry.setCaptcha(randomString());
         entry.setGroupName(randomString());
         entry.setUrlName(randomString());

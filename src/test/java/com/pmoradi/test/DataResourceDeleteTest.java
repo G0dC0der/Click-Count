@@ -1,7 +1,7 @@
 package com.pmoradi.test;
 
-import com.pmoradi.rest.entries.DataEntry;
-import com.pmoradi.rest.entries.DataOutEntry;
+import com.pmoradi.rest.entries.AddInEntry;
+import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.rest.entries.UrlEditEntry;
 import com.pmoradi.test.util.*;
 import org.junit.Before;
@@ -47,9 +47,9 @@ public class DataResourceDeleteTest {
 
     @Test
     public void deleteValidUrl() {
-        DataEntry entry = Randomization.randomDataEntry();
+        AddInEntry entry = Randomization.randomDataEntry();
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         UrlEditEntry editEntry = new UrlEditEntry();
@@ -66,9 +66,9 @@ public class DataResourceDeleteTest {
 
     @Test
     public void deleteInvalidUrl() {
-        DataEntry entry = Randomization.randomDataEntry();
+        AddInEntry entry = Randomization.randomDataEntry();
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         UrlEditEntry editEntry = new UrlEditEntry();
@@ -90,9 +90,9 @@ public class DataResourceDeleteTest {
 
     @Test
     public void deleteWithInvalidPassword() {
-        DataEntry entry = Randomization.randomDataEntry();
+        AddInEntry entry = Randomization.randomDataEntry();
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         UrlEditEntry editEntry = new UrlEditEntry();

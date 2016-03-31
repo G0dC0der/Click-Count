@@ -1,7 +1,7 @@
 package com.pmoradi.test;
 
-import com.pmoradi.rest.entries.DataEntry;
-import com.pmoradi.rest.entries.DataOutEntry;
+import com.pmoradi.rest.entries.AddInEntry;
+import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.test.util.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,82 +22,67 @@ public class DataResourceAddTest {
     }
 
     @Test
-    public void serverGenerateUrl() {
-        RestResponse<DataOutEntry> resp = dataClient.add(new DataEntry());
-        assertTrue(!resp.entity.getUrlName().isEmpty());
-    }
-
-    @Test
     public void reservedUrl() {
-        DataEntry entry = new DataEntry();
+        AddInEntry entry = new AddInEntry();
         entry.setUrlName("default");
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isClientError());
         assertFalse(resp.entity.getUrlError().isEmpty());
     }
 
     @Test
     public void illegalUrlChars() {
-        DataEntry entry = new DataEntry();
+        AddInEntry entry = new AddInEntry();
         entry.setUrlName("/@");
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isClientError());
         assertFalse(resp.entity.getUrlError().isEmpty());
     }
     @Test
     public void reservedGroup() {
-        DataEntry entry = new DataEntry();
+        AddInEntry entry = new AddInEntry();
         entry.setGroupName("default");
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isClientError());
         assertFalse(resp.entity.getGroupError().isEmpty());
     }
 
     @Test
     public void illegalGroupChars() {
-        DataEntry entry = new DataEntry();
+        AddInEntry entry = new AddInEntry();
         entry.setGroupName("/");
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isClientError());
         assertFalse(resp.entity.getGroupError().isEmpty());
     }
 
     @Test
     public void passwordWithNoGroup() {
-        DataEntry entry = new DataEntry();
+        AddInEntry entry = new AddInEntry();
         entry.setPassword("info");
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isClientError());
         assertFalse(resp.entity.getPasswordError().isEmpty());
     }
 
     @Test
     public void emptyLink() {
-        RestResponse<DataOutEntry> resp = dataClient.add(new DataEntry());
+        RestResponse<AddOutEntry> resp = dataClient.add(new AddInEntry());
         assertTrue(!resp.entity.getLinkError().isEmpty());
     }
 
     @Test
-    public void addHttpToLink() {
-        DataEntry entry = new DataEntry();
-        entry.setLink("www.google.com");
-
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
-        assertTrue(resp.entity.getLink().startsWith("http://"));
-    }
-
-    @Test
     public void addDefaultUrl() {
-        DataEntry entry = new DataEntry();
+        AddInEntry entry = new AddInEntry();
         entry.setUrlName(Randomization.randomString());
         entry.setLink(Randomization.randomLink());
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         assertEquals(303, redirectClient.getLink(entry.getUrlName()).statusCode);
@@ -105,11 +90,11 @@ public class DataResourceAddTest {
 
     @Test
     public void addTakenDefaultUrl() {
-        DataEntry entry = new DataEntry();
+        AddInEntry entry = new AddInEntry();
         entry.setUrlName(Randomization.randomString());
         entry.setLink(Randomization.randomLink());
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         assertEquals(303, redirectClient.getLink(entry.getUrlName()).statusCode);
@@ -121,9 +106,9 @@ public class DataResourceAddTest {
 
     @Test
     public void addWithGroup() {
-        DataEntry entry = Randomization.randomDataEntry();
+        AddInEntry entry = Randomization.randomDataEntry();
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         assertEquals(303, redirectClient.getLink(entry.getUrlName(), entry.getGroupName()).statusCode);
@@ -131,9 +116,9 @@ public class DataResourceAddTest {
 
     @Test
     public void addWitGroupWrongPassword() {
-        DataEntry entry = Randomization.randomDataEntry();
+        AddInEntry entry = Randomization.randomDataEntry();
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         assertEquals(303, redirectClient.getLink(entry.getUrlName(), entry.getGroupName()).statusCode);
@@ -147,9 +132,9 @@ public class DataResourceAddTest {
 
     @Test
     public void addWitGroupTakenUrl() {
-        DataEntry entry = Randomization.randomDataEntry();
+        AddInEntry entry = Randomization.randomDataEntry();
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         resp = dataClient.add(entry);

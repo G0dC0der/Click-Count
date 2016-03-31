@@ -1,11 +1,11 @@
 package com.pmoradi.rest;
 
 import com.pmoradi.essentials.EntryUtil;
-import com.pmoradi.rest.entries.ErrorEntry;
+import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.rest.entries.UrlEditEntry;
 import com.pmoradi.system.Facade;
 import com.pmoradi.essentials.UrlUnavailableException;
-import com.pmoradi.rest.entries.DataEntry;
+import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.security.Captcha;
 import com.pmoradi.essentials.WebUtil;
 
@@ -32,9 +32,9 @@ public class DataResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response add(@Context HttpServletResponse response,
                         @Context HttpServletRequest request,
-                        DataEntry in) throws IOException {
+                        AddInEntry in) throws IOException {
         EntryUtil.shrink(in);
-        ErrorEntry errors = new ErrorEntry();
+        AddOutEntry errors = new AddOutEntry();
         boolean error = false;
 
         if(in.getUrlName().isEmpty()){
@@ -105,7 +105,7 @@ public class DataResource {
             }
         }
 
-        return Response.status(error ? Status.FORBIDDEN : Status.OK).entity(EntryUtil.merge(in, errors)).build();
+        return Response.status(error ? Status.FORBIDDEN : Status.OK).entity(errors).build();
     }
 
     @POST

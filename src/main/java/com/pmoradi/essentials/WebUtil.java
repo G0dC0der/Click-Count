@@ -1,8 +1,5 @@
 package com.pmoradi.essentials;
 
-import javax.ws.rs.core.Response.Status;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Random;
 
 public class WebUtil {

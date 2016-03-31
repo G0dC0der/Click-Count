@@ -33,17 +33,6 @@ public class URLDao {
         manager.close();
     }
 
-    public URL findById(Integer id){
-        EntityManager manager = sessionFactory.newSession();
-        manager.getTransaction().begin();
-        URL url = manager.find(URL.class, id);
-        Hibernate.initialize(url.getClicks());
-        manager.getTransaction().commit();
-        manager.close();
-
-        return url;
-    }
-
     public URL findByGroupAndUrl(String groupName, String urlName){
         EntityManager manager = sessionFactory.newSession();
 
@@ -66,15 +55,6 @@ public class URLDao {
         return urls;
     }
 
-    public URL clickInit(URL url) {
-        EntityManager manager = sessionFactory.newSession();
-        manager.getTransaction().begin();
-        url = manager.merge(url);
-        manager.close();
-
-        return url;
-    }
-
     public long urls() {
         EntityManager manager = sessionFactory.newSession();
 
@@ -83,5 +63,17 @@ public class URLDao {
 
         manager.close();
         return count;
+    }
+
+    public void click(URL url) {
+        EntityManager manager = sessionFactory.newSession();
+        manager.getTransaction().begin();
+
+        Query query  = manager.createQuery("update URL as u set u.clicks = u.clicks + 1 where u.id = :id");
+        query.setParameter("id", url.getId());
+        query.executeUpdate();
+
+        manager.getTransaction().commit();
+        manager.close();
     }
 }

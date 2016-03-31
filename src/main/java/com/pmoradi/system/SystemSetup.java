@@ -1,6 +1,5 @@
 package com.pmoradi.system;
 
-import com.pmoradi.entities.dao.ClickDao;
 import com.pmoradi.entities.dao.GroupDao;
 import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.entities.dao.UserDao;
@@ -32,11 +31,9 @@ public class SystemSetup extends ResourceConfig {
         register(new AbstractBinder() {
             @Override
             protected void configure() {
-                bindFactory(InjectFactory.getClickDaoFactory(sessionFactory)).to(ClickDao.class).in(Singleton.class);
                 bindFactory(InjectFactory.getGroupDaoFactory(sessionFactory)).to(GroupDao.class).in(Singleton.class);
                 bindFactory(InjectFactory.getURLDaoFactory(sessionFactory)).to(URLDao.class).in(Singleton.class);
                 bindFactory(InjectFactory.getUserDaoFactory(sessionFactory)).to(UserDao.class).in(Singleton.class);
-                bindFactory(InjectFactory.getShutdownCleaner(entityManagerFactory));
 
                 Factory<Facade> facadeFactory = InjectFactory.getFacadeFactory(new LockManager());
                 Factory<AdminFacade> adminFacadeFactory = InjectFactory.getAdminFacadeFactory();

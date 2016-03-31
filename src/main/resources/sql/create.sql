@@ -1,6 +1,6 @@
-DROP DATABASE clickcount;
-CREATE DATABASE clickcount;
-USE clickcount;
+DROP DATABASE clickcount_db;
+CREATE DATABASE clickcount_db;
+USE clickcount_db;
 
 CREATE TABLE groups(
     id INT NOT NULL auto_increment,
@@ -14,23 +14,16 @@ CREATE TABLE urls(
 	url VARCHAR(80) NOT NULL,
 	link VARCHAR(200) NOT NULL,
 	add_date TIMESTAMP,
+	clicks BIGINT UNSIGNED NOT NULL,
 	group_fk INT,
 	PRIMARY KEY (id),
 	FOREIGN KEY (group_fk) REFERENCES groups(id)
 );
 
-CREATE TABLE clicks(
-	id INT NOT NULL auto_increment,
-	click_date TIMESTAMP,
-	url_fk INT,
-	PRIMARY KEY (id),
-	FOREIGN KEY (url_fk) REFERENCES urls(id)
-);
-
 CREATE TABLE users(
-    user_name VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL,
-    role VARCHAR(50) NOT NULL,
+    user_name VARCHAR NOT NULL,
+    password VARCHAR NOT NULL,
+    role VARCHAR NOT NULL,
     PRIMARY KEY (user_name)
 );
 

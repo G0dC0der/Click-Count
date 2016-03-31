@@ -3,7 +3,6 @@ package com.pmoradi.system;
 import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;
 import com.pmoradi.entities.User;
-import com.pmoradi.entities.dao.ClickDao;
 import com.pmoradi.entities.dao.GroupDao;
 import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.entities.dao.UserDao;
@@ -18,8 +17,6 @@ import javax.ws.rs.NotFoundException;
 public class AdminFacade {
 
     @Inject
-    private ClickDao clickDAO;
-    @Inject
     private GroupDao groupDAO;
     @Inject
     private URLDao urlDAO;
@@ -27,7 +24,7 @@ public class AdminFacade {
     private UserDao userDao;
 
     public void deleteGroup(String groupName) throws NotFoundException {
-        Group group = groupDAO.find(groupName);
+        Group group = groupDAO.findByName(groupName);
         if(group == null)
             throw new NotFoundException("Group not found.");
         groupDAO.delete(group);
@@ -63,10 +60,10 @@ public class AdminFacade {
     }
 
     public GroupEntry viewGroupData(String groupName) throws NotFoundException {
-        Group group = groupDAO.find(groupName);
+        Group group = groupDAO.findByName(groupName);
         if(group == null)
             throw new NotFoundException("Group not found.");
 
-        return Marshaller.marshall(groupDAO.fullInit(group));
+        return Marshaller.marshall(group);
     }
 }

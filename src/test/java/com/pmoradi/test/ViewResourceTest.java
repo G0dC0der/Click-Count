@@ -3,7 +3,6 @@ package com.pmoradi.test;
 import com.pmoradi.essentials.Loop;
 import com.pmoradi.rest.entries.*;
 import com.pmoradi.test.util.*;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,25 +28,13 @@ public class ViewResourceTest {
     }
 
     @Test
-    public void totalDataTest() {
-        DataEntry entry = Randomization.randomDataEntry();
-        assertTrue(dataClient.add(entry).isOk());
-        assertTrue(redirectClient.getLink(entry.getUrlName(), entry.getGroupName()).isRedirection());
-
-        RestResponse<TotalEntry> resp = viewClient.getTotalData();
-        assertTrue(resp.isOk());
-        assertTrue(resp.entity.getTotalUrls() > 0);
-        assertTrue(resp.entity.getTotalClicks() > 0);
-    }
-
-    @Test
     public void viewAllNoGroup() {
         ViewEntry entry = Randomization.randomViewEntry();
         entry.setGroupName(null);
 
         RestResponse<Object> resp = viewClient.viewAll(entry);
         assertTrue(resp.isClientError());
-        assertFalse(((DataOutEntry)resp.entity).getGroupError().isEmpty());
+        assertFalse(((AddOutEntry)resp.entity).getGroupError().isEmpty());
     }
 
     @Test
@@ -57,7 +44,7 @@ public class ViewResourceTest {
 
         RestResponse<Object> resp = viewClient.viewAll(entry);
         assertTrue(resp.isClientError());
-        assertFalse(((DataOutEntry)resp.entity).getGroupError().isEmpty());
+        assertFalse(((AddOutEntry)resp.entity).getGroupError().isEmpty());
     }
 
     @Test
@@ -66,13 +53,13 @@ public class ViewResourceTest {
 
         RestResponse<Object> resp = viewClient.viewAll(entry);
         assertTrue(resp.isClientError());
-        assertFalse(((DataOutEntry)resp.entity).getGroupError().isEmpty());
+        assertFalse(((AddOutEntry)resp.entity).getGroupError().isEmpty());
     }
 
     @Test
     public void viewAllInvalidPassword() {
-        DataEntry dataEntry = Randomization.randomDataEntry();
-        RestResponse<DataOutEntry> addResp = dataClient.add(dataEntry);
+        AddInEntry dataEntry = Randomization.randomDataEntry();
+        RestResponse<AddOutEntry> addResp = dataClient.add(dataEntry);
         assertTrue(addResp.isOk());
 
         ViewEntry entry = new ViewEntry();
@@ -81,7 +68,7 @@ public class ViewResourceTest {
 
         RestResponse<Object> resp = viewClient.viewAll(entry);
         assertTrue(resp.isClientError());
-        assertFalse(((DataOutEntry)resp.entity).getGroupError().isEmpty());
+        assertFalse(((AddOutEntry)resp.entity).getGroupError().isEmpty());
     }
 
     @Test
@@ -91,7 +78,7 @@ public class ViewResourceTest {
         TODAY.setTime(new Date());
         List<String> urls = Loop.create(SIZE, Randomization::randomString);
         List<String> links = Loop.create(SIZE, Randomization::randomLink);
-        DataEntry dataEntry = Randomization.randomDataEntry();
+        AddInEntry dataEntry = Randomization.randomDataEntry();
 
         for(int i = 0; i < SIZE; i++) {
             String url = urls.get(i);
@@ -114,14 +101,14 @@ public class ViewResourceTest {
 
         RestResponse<Object> viewResp = viewClient.viewAll(viewEntry);
         assertTrue(viewResp.isOk());
-        GroupEntry groupEntry = (GroupEntry) viewResp.entity;
-        assertEquals(dataEntry.getGroupName(), groupEntry.getGroupName());
+        GroupEntry resultGroupEntry = (GroupEntry) viewResp.entity;
+        assertEquals(dataEntry.getGroupName(), resultGroupEntry.getGroupName());
         for(int i = 0; i < SIZE; i++) {
-            UrlEntry urlEntry = groupEntry.getUrls()[i];
+            UrlEntry urlEntry = resultGroupEntry.getUrls()[i];
 
             assertEquals(urls.get(i), urlEntry.getUrlName());
             assertEquals(links.get(i), urlEntry.getLink());
-            assertEquals(i, urlEntry.getClicks().length);
+            assertEquals(i, urlEntry.getClicks());
 
             Calendar createDate = Calendar.getInstance();
             createDate.setTime(new Date(urlEntry.getAddDate()));

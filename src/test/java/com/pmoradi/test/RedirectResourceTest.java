@@ -1,9 +1,8 @@
 package com.pmoradi.test;
 
-import com.pmoradi.rest.entries.DataEntry;
-import com.pmoradi.rest.entries.DataOutEntry;
+import com.pmoradi.rest.entries.AddInEntry;
+import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.test.util.*;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,25 +23,25 @@ public class RedirectResourceTest {
 
     @Test
     public void getValidLinkWithDefaultGroup() {
-        DataEntry entry = new DataEntry();
+        AddInEntry entry = new AddInEntry();
         entry.setLink(Randomization.randomLink());
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
-        RestResponse<String> linkResp = redirectClient.getLink(resp.entity.getUrlName());
+        RestResponse<String> linkResp = redirectClient.getLink(entry.getUrlName());
         assertTrue(linkResp.isRedirection());
         assertNotNull(linkResp.entity);
     }
 
     @Test
     public void getValidLinkWithRandomGroup() {
-        DataEntry entry = Randomization.randomDataEntry();
+        AddInEntry entry = Randomization.randomDataEntry();
 
-        RestResponse<DataOutEntry> resp = dataClient.add(entry);
+        RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
-        RestResponse<String> linkResp = redirectClient.getLink(resp.entity.getUrlName(), resp.entity.getGroupName());
+        RestResponse<String> linkResp = redirectClient.getLink(entry.getUrlName(), entry.getGroupName());
         assertTrue(linkResp.isRedirection());
         assertNotNull(linkResp.entity);
     }

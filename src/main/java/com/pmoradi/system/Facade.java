@@ -1,9 +1,7 @@
 package com.pmoradi.system;
 
-import com.pmoradi.entities.Click;
 import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;
-import com.pmoradi.entities.dao.ClickDao;
 import com.pmoradi.entities.dao.GroupDao;
 import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.essentials.Marshaller;
@@ -22,12 +20,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Facade {
 
-    @Inject
-    private ClickDao clickDAO;
     @Inject
     private GroupDao groupDAO;
     @Inject
@@ -37,16 +32,17 @@ public class Facade {
     private final LockManager manager;
     private final ExecutorService executorService;
 
-    public Facade(final LockManager manager) {
+    public Facade(final LockManager manager,
+                  final ExecutorService executorService) {
         this.manager = manager;
-        this.executorService = Executors.newFixedThreadPool(50);
+        this.executorService = executorService;
     }
 
     public void addUrl(String urlName, String link, String groupName, String password) throws UrlUnavailableException, CredentialException {
         Key key = manager.lock("group:" + groupName);
 
         try {
-            Group group = groupDAO.find(groupName);
+            Group group = groupDAO.findByName(groupName);
             String hash = SecureStrings.md5(password + SecureStrings.getSalt());
 
             if (group != null && !hash.equals(group.getPassword()))
@@ -100,7 +96,7 @@ public class Facade {
     public String getLinkAndClick(String groupName, String urlName) {
         URL url = urlDAO.findByGroupAndUrl(groupName, urlName);
         if (url != null) {
-            executorService.submit(()-> click(url));
+            executorService.submit(()-> urlDAO.click(url));
             return url.getLink();
         }
         return null;
@@ -108,28 +104,24 @@ public class Facade {
 
     public UrlEntry getUrlData(String groupName, String urlName) {
         URL url = urlDAO.findByGroupAndUrl(groupName, urlName);
-        return url != null ? Marshaller.marshall(urlDAO.clickInit(url)) : null;
+        return url != null ? Marshaller.marshall(url) : null;
     }
 
     public GroupEntry getGroupData(String groupName, String password) {
         String hash = SecureStrings.md5(password + SecureStrings.getSalt());
-        Group group = groupDAO.find(groupName, hash);
+        Group group = groupDAO.findByCredentials(groupName, hash);
 
-        return group != null ? Marshaller.marshall(groupDAO.fullInit(group)) : null;
+        return group != null ? Marshaller.marshall(group) : null;
     }
 
     public long totalURLs() {
         return urlDAO.urls();
     }
 
-    public long totalClicks() {
-        return clickDAO.clicks();
-    }
-
     public void deleteUrl(String groupName, String password, String urlName) throws CredentialException, NotFoundException {
         String hash = SecureStrings.md5(password + SecureStrings.getSalt());
 
-        Group group = groupDAO.find(groupName);
+        Group group = groupDAO.findByName(groupName);
         if (group == null || !hash.equals(group.getPassword()))
             throw new CredentialException("Group name and password mismatch.");
 
@@ -151,18 +143,11 @@ public class Facade {
         return baos.toByteArray();
     }
 
-    private void click(URL url) {
-        Click click = new Click();
-        click.setTime(new Timestamp(System.currentTimeMillis()));
-        click.setUrl(url);
-        clickDAO.save(click);
-    }
-
     private Group getDefaultGroup(){
         if(defaultGroup == null) {
             synchronized (this) {
                 if(defaultGroup == null) {
-                    defaultGroup = groupDAO.find("default");
+                    defaultGroup = groupDAO.findByName("default");
                 }
             }
         }

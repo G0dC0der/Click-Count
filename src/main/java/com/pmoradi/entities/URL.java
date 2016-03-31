@@ -1,14 +1,10 @@
 package com.pmoradi.entities;
 
-import org.hibernate.annotations.*;
-import org.hibernate.annotations.CascadeType;
-
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Table(name = "urls", indexes = {@Index(columnList = "url", name = "url_index", unique = false)})
@@ -31,9 +27,8 @@ public class URL {
     @JoinColumn(name = "group_fk")
     private Group group;
 
-    @OneToMany(mappedBy = "url")
-    @Cascade(CascadeType.DELETE)
-    private List<Click> clicks;
+    @Column(nullable = false)
+    private Long clicks = 0L;
 
     public Integer getId() {
         return id;
@@ -75,11 +70,11 @@ public class URL {
         this.group = group;
     }
 
-    public List<Click> getClicks() {
+    public Long getClicks() {
         return clicks;
     }
 
-    public void setClicks(List<Click> clicks) {
+    public void setClicks(Long clicks) {
         this.clicks = clicks;
     }
 }

@@ -33,7 +33,7 @@ public class GroupDao {
         manager.close();
     }
 
-    public Group find(String groupName){
+    public Group findByName(String groupName){
         EntityManager manager = sessionFactory.newSession();
         Query query = manager.createQuery("from Group where groupName = :groupName");
         query.setParameter("groupName", groupName);
@@ -44,28 +44,13 @@ public class GroupDao {
         return group;
     }
 
-    public Group find(String groupName, String password){
+    public Group findByCredentials(String groupName, String password){
         EntityManager manager = sessionFactory.newSession();
         Query query = manager.createQuery("from Group where groupName = :groupName and password = :password");
         query.setParameter("groupName", groupName);
         query.setParameter("password", password);
 
         Group group = query.getResultList().size() == 0 ? null : (Group) query.getSingleResult();
-
-        manager.close();
-        return group;
-    }
-
-    public Group fullInit(Group group){
-        EntityManager manager = sessionFactory.newSession();
-        manager.getTransaction().begin();
-        group = manager.merge(group);
-
-        Hibernate.initialize(group.getUrls());
-        for(URL url : group.getUrls()){
-            Hibernate.initialize(url.getClicks());
-            Hibernate.initialize(url.getGroup());
-        }
 
         manager.close();
         return group;
