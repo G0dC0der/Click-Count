@@ -30,7 +30,7 @@ public class DataResource {
     @POST
     @Path("add")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response add(@Context HttpServletResponse response,
+    public Response addURL(@Context HttpServletResponse response,
                         @Context HttpServletRequest request,
                         AddInEntry in) throws IOException {
         EntryUtil.shrink(in);
@@ -72,22 +72,6 @@ public class DataResource {
         } */
         in.setLink(WebUtil.addHttp(in.getLink()));
 
-        if(!WebUtil.isLocalAddress(request.getRemoteAddr())) {
-            Captcha captcha = (Captcha) request.getSession().getAttribute("captcha");
-            request.getSession().removeAttribute("captcha");
-            if(captcha == null){
-                errors.setCaptchaError("Captcha was never requested or browser are not accepting cookies to be stored.");
-                error = true;
-            } else if(captcha.hasExpired()) {
-                errors.setCaptchaError("Captcha has expired.");
-                error = true;
-            } else if(!captcha.isCorrect(in.getCaptcha())) {
-                errors.setCaptchaError("Captcha is incorrect.");
-                error = true;
-            }
-        }
-        in.setCaptcha("");
-
         if(!error) {
             try {
                 if(in.getGroupName().isEmpty())
@@ -111,7 +95,7 @@ public class DataResource {
 
     @POST
     @Path("delete")
-    public Response deleteUrl(UrlEditEntry in){
+    public Response deleteURL(UrlEditEntry in){
         EntryUtil.shrink(in);
 
         if(in.getGroupName().isEmpty())
@@ -130,21 +114,5 @@ public class DataResource {
             e.printStackTrace();
             return Response.serverError().entity("Internal Error").build();
         }
-    }
-
-    @GET
-    @Path("captcha")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response captcha(@Context HttpServletRequest request) {
-        Captcha captcha = new Captcha(200, 150, 6, 6, null, 60_000);
-        request.getSession().setAttribute("captcha", captcha);
-
-        StreamingOutput stream = (outputStream)->{
-            for(byte b : logic.toBytes(captcha.create()))
-                outputStream.write(b & 0xFF);
-            outputStream.close();
-        };
-
-        return Response.ok(stream).build();
     }
 }

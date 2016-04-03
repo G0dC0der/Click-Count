@@ -30,7 +30,6 @@ public class Randomization {
 
     public static AddInEntry randomDataEntry() {
         AddInEntry entry = new AddInEntry();
-        entry.setCaptcha(randomString());
         entry.setGroupName(randomString());
         entry.setUrlName(randomString());
         entry.setLink(randomLink());
@@ -50,7 +49,6 @@ public class Randomization {
 
     public static ViewEntry randomViewEntry() {
         ViewEntry entry = new ViewEntry();
-        entry.setCaptcha(randomString());
         entry.setGroupName(randomString());
         entry.setPassword(randomString());
 

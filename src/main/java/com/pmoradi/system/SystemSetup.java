@@ -4,6 +4,7 @@ import com.pmoradi.entities.dao.GroupDao;
 import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.entities.dao.UserDao;
 import com.pmoradi.security.AuthenticationFilter;
+import com.pmoradi.security.CaptchaFilter;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -24,6 +25,7 @@ public class SystemSetup extends ResourceConfig {
         packages("org.glassfish.jersey.jackson");
         register(JacksonFeature.class);
         register(AuthenticationFilter.class);
+        register(CaptchaFilter.class);
 
         final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("hibernate-engine");
         final SessionFactory sessionFactory = entityManagerFactory::createEntityManager;

@@ -34,18 +34,6 @@ public class ViewResource {
     public Response viewAll(@Context HttpServletRequest request, ViewEntry in) throws IOException {
         EntryUtil.shrink(in);
 
-        if(!WebUtil.isLocalAddress(request.getRemoteAddr())) {
-            Captcha captcha = (Captcha) request.getSession().getAttribute("captcha");
-            request.getSession().removeAttribute("captcha");
-            if(captcha == null){
-                return Response.status(Status.FORBIDDEN).entity("Captcha has expired or was never requested.").build();
-            } else if(captcha.hasExpired()) {
-                return Response.status(Status.FORBIDDEN).entity("Captcha has expired.").build();
-            } else if(!captcha.isCorrect(in.getCaptcha())) {
-                return Response.status(Status.FORBIDDEN).entity("Captcha is incorrect").build();
-            }
-        }
-
         if(in.getGroupName().isEmpty()){
             return Response.status(Status.FORBIDDEN).entity("Group can not be empty").build();
         } else if(in.getGroupName().equals("default")) {

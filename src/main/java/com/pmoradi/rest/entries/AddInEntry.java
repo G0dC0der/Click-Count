@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AddInEntry {
 
-    private String urlName, link, groupName, password, captcha;
+    private String urlName, link, groupName, password;
 
     public String getUrlName() {
         return urlName;
@@ -38,13 +38,5 @@ public class AddInEntry {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getCaptcha() {
-        return captcha;
-    }
-
-    public void setCaptcha(String captcha) {
-        this.captcha = captcha;
     }
 }

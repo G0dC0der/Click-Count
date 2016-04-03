@@ -8,7 +8,6 @@ public class ViewEntry {
 
     private String groupName;
     private String password;
-    private String captcha;
 
     public String getGroupName() {
         return groupName;
@@ -24,13 +23,5 @@ public class ViewEntry {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getCaptcha() {
-        return captcha;
-    }
-
-    public void setCaptcha(String captcha) {
-        this.captcha = captcha;
     }
 }
