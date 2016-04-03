@@ -23,8 +23,7 @@ public class RedirectResourceTest {
 
     @Test
     public void getValidLinkWithDefaultGroup() {
-        AddInEntry entry = new AddInEntry();
-        entry.setLink(Randomization.randomLink());
+        AddInEntry entry = Randomization.randomDataEntry();
 
         RestResponse<AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());

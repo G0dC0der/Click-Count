@@ -21,9 +21,9 @@ CREATE TABLE urls(
 );
 
 CREATE TABLE users(
-    user_name VARCHAR NOT NULL,
-    password VARCHAR NOT NULL,
-    role VARCHAR NOT NULL,
+    user_name VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    role VARCHAR(50) NOT NULL,
     PRIMARY KEY (user_name)
 );
 

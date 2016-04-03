@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ViewResourceTest {
@@ -34,7 +33,6 @@ public class ViewResourceTest {
 
         RestResponse<Object> resp = viewClient.viewAll(entry);
         assertTrue(resp.isClientError());
-        assertFalse(((AddOutEntry)resp.entity).getGroupError().isEmpty());
     }
 
     @Test
@@ -44,7 +42,6 @@ public class ViewResourceTest {
 
         RestResponse<Object> resp = viewClient.viewAll(entry);
         assertTrue(resp.isClientError());
-        assertFalse(((AddOutEntry)resp.entity).getGroupError().isEmpty());
     }
 
     @Test
@@ -53,7 +50,6 @@ public class ViewResourceTest {
 
         RestResponse<Object> resp = viewClient.viewAll(entry);
         assertTrue(resp.isClientError());
-        assertFalse(((AddOutEntry)resp.entity).getGroupError().isEmpty());
     }
 
     @Test
@@ -68,7 +64,6 @@ public class ViewResourceTest {
 
         RestResponse<Object> resp = viewClient.viewAll(entry);
         assertTrue(resp.isClientError());
-        assertFalse(((AddOutEntry)resp.entity).getGroupError().isEmpty());
     }
 
     @Test
@@ -117,4 +112,6 @@ public class ViewResourceTest {
             assertEquals(TODAY.get(Calendar.YEAR), createDate.get(Calendar.YEAR));
         }
     }
+
+    //TODO: View single tests
 }

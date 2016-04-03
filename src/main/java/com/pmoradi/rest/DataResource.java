@@ -37,16 +37,17 @@ public class DataResource {
         AddOutEntry errors = new AddOutEntry();
         boolean error = false;
 
-        if(in.getUrlName().isEmpty()){
-            in.setUrlName(WebUtil.randomUrl());
-        } else {
-            if(WebUtil.isReserved(in.getUrlName())) {
-                errors.setUrlError("The url can not be equal to a reserved word.");
-                error = true;
-            } else if(!WebUtil.validUrl(in.getUrlName())) {
-                errors.setUrlError("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
-                error = true;
-            }
+        if(in.getUrlName().trim().isEmpty()){
+            errors.setUrlError("URL field must be valid");
+            error = true;
+        }
+        if(WebUtil.isReserved(in.getUrlName())) {
+            errors.setUrlError("The url can not be equal to a reserved word.");
+            error = true;
+        }
+        if(!WebUtil.validUrl(in.getUrlName())) {
+            errors.setUrlError("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
+            error = true;
         }
 
         if(!in.getGroupName().isEmpty()) {
