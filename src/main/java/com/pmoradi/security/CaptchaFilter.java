@@ -1,5 +1,7 @@
 package com.pmoradi.security;
 
+import com.pmoradi.essentials.WebUtil;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -20,7 +22,7 @@ public class CaptchaFilter implements ContainerRequestFilter{
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        if(isRobotProtected()) {
+        if(!WebUtil.isLocalAddress(request.getRemoteAddr()) && isRobotProtected()) {
             String input = getHeader(requestContext, "captcha");
             Captcha captcha = (Captcha) request.getSession().getAttribute("captcha");
             request.getSession().removeAttribute("captcha");

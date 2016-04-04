@@ -2,7 +2,7 @@ package com.pmoradi.rest.entries;
 
 public class AddOutEntry {
 
-    private String urlError, linkError, groupError, passwordError, captchaError;
+    private String urlError, linkError, groupError, passwordError;
 
     public String getUrlError() {
         return urlError;
@@ -36,11 +36,7 @@ public class AddOutEntry {
         this.passwordError = passwordError;
     }
 
-    public String getCaptchaError() {
-        return captchaError;
-    }
-
-    public void setCaptchaError(String captchaError) {
-        this.captchaError = captchaError;
+    public boolean containErrors() {
+        return urlError != null || linkError != null || passwordError != null;
     }
 }

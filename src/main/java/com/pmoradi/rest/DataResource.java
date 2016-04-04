@@ -1,27 +1,24 @@
 package com.pmoradi.rest;
 
 import com.pmoradi.essentials.EntryUtil;
+import com.pmoradi.essentials.UrlUnavailableException;
+import com.pmoradi.essentials.WebUtil;
+import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
+import com.pmoradi.rest.entries.GenericMessage;
 import com.pmoradi.rest.entries.UrlEditEntry;
 import com.pmoradi.system.Facade;
-import com.pmoradi.essentials.UrlUnavailableException;
-import com.pmoradi.rest.entries.AddInEntry;
-import com.pmoradi.security.Captcha;
-import com.pmoradi.essentials.WebUtil;
 
 import javax.inject.Inject;
 import javax.security.auth.login.CredentialException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.StreamingOutput;
-import java.io.IOException;
 
 @Path("/")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class DataResource {
 
     @Inject
@@ -29,90 +26,80 @@ public class DataResource {
 
     @POST
     @Path("add")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response addURL(@Context HttpServletResponse response,
-                        @Context HttpServletRequest request,
-                        AddInEntry in) throws IOException {
+    public Response addURL(AddInEntry in) {
         EntryUtil.shrink(in);
-        AddOutEntry errors = new AddOutEntry();
-        boolean error = false;
+        AddOutEntry out = new AddOutEntry();
 
-        if(in.getUrlName().trim().isEmpty()){
-            errors.setUrlError("URL field must be valid");
-            error = true;
-        }
-        if(WebUtil.isReserved(in.getUrlName())) {
-            errors.setUrlError("The url can not be equal to a reserved word.");
-            error = true;
-        }
-        if(!WebUtil.validUrl(in.getUrlName())) {
-            errors.setUrlError("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
-            error = true;
+        if(in.getUrlName().isEmpty()) {
+            out.setUrlError("URL field must be valid");
+        }else if(WebUtil.isReserved(in.getUrlName())) {
+            out.setUrlError("The url can not be equal to a reserved word.");
+        }else if(!WebUtil.validUrl(in.getUrlName())) {
+            out.setUrlError("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
         }
 
         if(!in.getGroupName().isEmpty()) {
             if(WebUtil.isReserved(in.getGroupName())) {
-                errors.setGroupError("The group name is a reserved word.");
-                error = true;
+                out.setGroupError("The group name is a reserved word.");
             } else if(!WebUtil.validUrl(in.getGroupName())) {
-                errors.setGroupError("The group name contains illegal characters. Use A-Z a-z 0-9 .-_~");
-                error = true;
+                out.setGroupError("The group name contains illegal characters. Use A-Z a-z 0-9 .-_~");
             }
         } else if(!in.getPassword().isEmpty()) {
-            errors.setPasswordError("Password must be used with group.");
-            error = true;
+            out.setPasswordError("Password must be used along with group.");
         }
 
         if(in.getLink().isEmpty()) {
-            errors.setLinkError("The link may not be empty.");
-            error = true;
-        } /*else if(in.getLink().contains(settings.getServerDomain()) || in.getLink().contains(settings.getServerIP())) {
-            out.setLink("Referring to this website is disallowed.");
-            error = true;
-        } */
-        in.setLink(WebUtil.addHttp(in.getLink()));
+            out.setLinkError("The link may not be empty.");
+        } else {
+            if(!WebUtil.protocolBased(in.getLink())) {
+                in.setLink("http://" + in.getLink());
+            }
+            if(!WebUtil.exists(in.getLink())) {
+                out.setLinkError("The given link is invalid. Please use verify that the link is type of either http, https, ftp or sftp and exists.");
+            }
+        }
 
-        if(!error) {
+        if(!out.containErrors()) {
             try {
                 if(in.getGroupName().isEmpty())
                     logic.addUrl(in.getUrlName(), in.getLink());
                 else
                     logic.addUrl(in.getUrlName(), in.getLink(), in.getGroupName(), in.getPassword());
             } catch (UrlUnavailableException e) {
-                errors.setUrlError(e.getMessage());
-                error = true;
+                out.setUrlError(e.getMessage());
             } catch (CredentialException e) {
-                errors.setGroupError(e.getMessage());
-                error = true;
+                out.setGroupError(e.getMessage());
             } catch (Exception e) {
                 e.printStackTrace();
                 return Response.serverError().build();
             }
         }
 
-        return Response.status(error ? Status.FORBIDDEN : Status.OK).entity(errors).build();
+        return out.containErrors() ?
+                Response.status(Status.FORBIDDEN).entity(out).build() :
+                Response.ok(new GenericMessage("Success!")).build();
     }
 
     @POST
     @Path("delete")
-    public Response deleteURL(UrlEditEntry in){
+    public Response deleteURL(UrlEditEntry in) {
         EntryUtil.shrink(in);
 
         if(in.getGroupName().isEmpty())
-            return Response.status(Status.FORBIDDEN).entity("Group name shall not be empty.").build();
+            return Response.status(Status.FORBIDDEN).entity(new GenericMessage("Group name shall not be empty.")).build();
         else if(in.getGroupName().equals("default"))
-            return Response.status(Status.FORBIDDEN).entity("Group name can not be default.").build();
+            return Response.status(Status.FORBIDDEN).entity(new GenericMessage("Group name can not be default.")).build();
         else if(in.getUrlName().isEmpty())
-            return Response.status(Status.FORBIDDEN).entity("Must specify a url to delete.").build();
+            return Response.status(Status.FORBIDDEN).entity(new GenericMessage("Must specify a url to delete.")).build();
 
         try {
             logic.deleteUrl(in.getGroupName(), in.getPassword(), in.getUrlName());
-            return Response.ok().build();
+            return Response.ok(new GenericMessage("Success!")).build();
         } catch (CredentialException | NotFoundException e) {
-            return Response.status(Status.FORBIDDEN).entity(e.getMessage()).build();
+            return Response.status(Status.FORBIDDEN).entity(new GenericMessage(e.getMessage())).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.serverError().entity("Internal Error").build();
+            return Response.serverError().entity(new GenericMessage("Internal Error")).build();
         }
     }
 }

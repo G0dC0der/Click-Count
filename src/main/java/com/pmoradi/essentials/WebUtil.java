@@ -1,5 +1,10 @@
 package com.pmoradi.essentials;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.*;
 import java.util.Random;
 
 public class WebUtil {
@@ -33,6 +38,23 @@ public class WebUtil {
                 return true;
             default:
                 return false;
+        }
+    }
+
+    public static boolean protocolBased(String link) {
+        return  link.startsWith("http://") || link.startsWith("https://") ||
+                link.startsWith("ftp://") || link.startsWith("sftp://");
+    }
+
+    public static boolean exists(String link) {
+        URI uri = URI.create(link);
+        String path = uri.getScheme() + "://" + uri.getHost();
+
+        try {
+            new URL(path).openStream().close();
+            return true;
+        } catch (IOException e) {
+            return false;
         }
     }
 

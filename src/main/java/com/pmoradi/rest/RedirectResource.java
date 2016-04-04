@@ -1,22 +1,20 @@
 package com.pmoradi.rest;
 
+import com.pmoradi.rest.entries.GenericMessage;
 import com.pmoradi.system.Facade;
 
 import javax.inject.Inject;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 @Path("/")
+@Produces(MediaType.APPLICATION_JSON)
 public class RedirectResource {
 
     @Inject
@@ -24,30 +22,26 @@ public class RedirectResource {
 
     @GET
     @Path("{url}")
-    public Response redirect(@Context HttpServletRequest request,
-                             @Context HttpServletResponse response,
-                             @PathParam("url") String urlName) throws ServletException, IOException, URISyntaxException {
+    public Response redirect(@PathParam("url") String urlName) {
 
         String link = logic.getLinkAndClick("default", urlName.toLowerCase());
         if(link != null) {
             return Response.seeOther(UriBuilder.fromPath(link).build()).build();
         } else {
-            return Response.status(Status.NOT_FOUND).build();
+            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found.")).build();
         }
     }
 
     @GET
     @Path("{group}/{url}")
-    public Response redirect(@Context HttpServletRequest request,
-                             @Context HttpServletResponse response,
-                             @PathParam("group") String groupName,
-                             @PathParam("url") String urlName) throws ServletException, IOException {
+    public Response redirect(@PathParam("group") String groupName,
+                             @PathParam("url") String urlName) {
 
         String link = logic.getLinkAndClick(groupName.toLowerCase(), urlName.toLowerCase());
         if(link != null) {
             return Response.seeOther(UriBuilder.fromPath(link).build()).build();
         } else {
-            return Response.status(Status.NOT_FOUND).build();
+            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found.")).build();
         }
     }
 }
