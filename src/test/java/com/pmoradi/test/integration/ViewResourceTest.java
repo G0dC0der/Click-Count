@@ -1,8 +1,12 @@
-package com.pmoradi.test;
+package com.pmoradi.test.integration;
 
 import com.pmoradi.essentials.Loop;
 import com.pmoradi.rest.entries.*;
-import com.pmoradi.test.util.*;
+import com.pmoradi.test.integration.clients.DataResourceClient;
+import com.pmoradi.test.integration.clients.RedirectResourceClient;
+import com.pmoradi.test.integration.clients.ViewResourceClient;
+import com.pmoradi.test.integration.rest.*;
+import com.pmoradi.test.util.Randomization;
 import org.junit.Before;
 import org.junit.Test;
 

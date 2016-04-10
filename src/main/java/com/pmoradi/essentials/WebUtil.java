@@ -1,10 +1,8 @@
 package com.pmoradi.essentials;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.*;
+import java.net.URI;
+import java.net.URL;
 import java.util.Random;
 
 public class WebUtil {
@@ -22,12 +20,6 @@ public class WebUtil {
         return bu.toString();
     }
 
-    public static String addHttp(String str){
-        if(str.startsWith("http://") || str.startsWith("https://"))
-            return str;
-        return "http://" + str;
-    }
-
     public static boolean isReserved(String token){
         switch (token){
             case "add":
@@ -35,6 +27,7 @@ public class WebUtil {
             case "view":
             case "all":
             case "service":
+            case "admin":
                 return true;
             default:
                 return false;
@@ -43,7 +36,7 @@ public class WebUtil {
 
     public static boolean protocolBased(String link) {
         return  link.startsWith("http://") || link.startsWith("https://") ||
-                link.startsWith("ftp://") || link.startsWith("sftp://");
+                link.startsWith("ftp://")  || link.startsWith("sftp://");
     }
 
     public static boolean exists(String link) {

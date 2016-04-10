@@ -1,10 +1,6 @@
 package com.pmoradi.security;
 
-import com.pmoradi.system.SystemSetup;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 

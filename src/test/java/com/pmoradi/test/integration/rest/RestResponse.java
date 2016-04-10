@@ -1,4 +1,4 @@
-package com.pmoradi.test.util;
+package com.pmoradi.test.integration.rest;
 
 public class RestResponse<T> {
 

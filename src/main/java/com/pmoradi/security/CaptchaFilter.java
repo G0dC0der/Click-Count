@@ -1,6 +1,7 @@
 package com.pmoradi.security;
 
 import com.pmoradi.essentials.WebUtil;
+import com.pmoradi.rest.entries.GenericMessage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+@Deprecated
 public class CaptchaFilter implements ContainerRequestFilter{
 
     @Context
@@ -22,17 +24,17 @@ public class CaptchaFilter implements ContainerRequestFilter{
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        if(!WebUtil.isLocalAddress(request.getRemoteAddr()) && isRobotProtected()) {
+        if(isRobotProtected()) {
             String input = getHeader(requestContext, "captcha");
             Captcha captcha = (Captcha) request.getSession().getAttribute("captcha");
             request.getSession().removeAttribute("captcha");
 
             if(captcha == null){
-                requestContext.abortWith(Response.status(Status.FORBIDDEN).entity("Captcha was never requested.").build());
+                requestContext.abortWith(Response.status(Status.FORBIDDEN).entity(new GenericMessage("Captcha was never requested.")).build());
             } else if(captcha.hasExpired()) {
-                requestContext.abortWith(Response.status(Status.FORBIDDEN).entity("Captcha has expired.").build());
+                requestContext.abortWith(Response.status(Status.FORBIDDEN).entity(new GenericMessage("Captcha has hasExpired.")).build());
             } else if(!captcha.isCorrect(input)) {
-                requestContext.abortWith(Response.status(Status.FORBIDDEN).entity("Captcha is incorrect.").build());
+                requestContext.abortWith(Response.status(Status.FORBIDDEN).entity(new GenericMessage("Captcha is incorrect.")).build());
             }
         }
     }

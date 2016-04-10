@@ -2,6 +2,7 @@ package com.pmoradi.security;
 
 import com.pmoradi.entities.User;
 import com.pmoradi.entities.dao.UserDao;
+import com.pmoradi.rest.entries.GenericMessage;
 
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -30,17 +31,17 @@ public class AuthenticationFilter implements ContainerRequestFilter{
             String password = getHeader(requestContext, "password");
 
             if (username == null || password == null) {
-                requestContext.abortWith(Response.status(Status.FORBIDDEN).entity("Incomplete request. Credentials not found in header.").build());
+                requestContext.abortWith(Response.status(Status.FORBIDDEN).entity(new GenericMessage("Incomplete request. Credentials not found in header.")).build());
                 return;
             }
 
             User user = userDao.findByName(username);
             if (user == null || !user.getPassword().equals(SecureStrings.md5(password + SecureStrings.getSalt()))) {
-                requestContext.abortWith(Response.status(Status.UNAUTHORIZED).entity("Access denied! Wrong username and password combination.").build());
+                requestContext.abortWith(Response.status(Status.UNAUTHORIZED).entity(new GenericMessage("Access denied! Wrong username and password combination.")).build());
                 return;
             }
             if (requiredRole.isAbove(user.getRole())) {
-                requestContext.abortWith(Response.status(Status.UNAUTHORIZED).entity("The request was aborted. Role not sufficient enough.").build());
+                requestContext.abortWith(Response.status(Status.UNAUTHORIZED).entity(new GenericMessage("The request was aborted. Role not sufficient enough.")).build());
                 return;
             }
         }

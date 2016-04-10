@@ -1,8 +1,9 @@
-package com.pmoradi.test.util;
+package com.pmoradi.test.integration.clients;
 
 import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.rest.entries.UrlEditEntry;
+import com.pmoradi.test.integration.rest.RestResponse;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;

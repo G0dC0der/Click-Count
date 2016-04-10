@@ -2,7 +2,7 @@ package com.pmoradi.rest;
 
 import com.pmoradi.essentials.EntryUtil;
 import com.pmoradi.rest.entries.*;
-import com.pmoradi.security.RobotSecure;
+import com.pmoradi.security.RequestInterval;
 import com.pmoradi.system.Facade;
 
 import javax.inject.Inject;
@@ -20,7 +20,7 @@ public class ViewResource {
     private Facade logic;
 
     @POST
-    @RobotSecure
+    @RequestInterval(5000)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("view/all")
     public Response viewAll(ViewEntry in) throws IOException {

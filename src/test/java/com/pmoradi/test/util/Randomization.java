@@ -54,4 +54,16 @@ public class Randomization {
 
         return  entry;
     }
+
+    public static long randomLong() {
+        return RANDOM.nextLong();
+    }
+
+    public static int randomInt() {
+        return RANDOM.nextInt();
+    }
+
+    public static int randomInt(int max) {
+        return RANDOM.nextInt(max);
+    }
 }

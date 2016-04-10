@@ -7,6 +7,7 @@ import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.rest.entries.GenericMessage;
 import com.pmoradi.rest.entries.UrlEditEntry;
+import com.pmoradi.security.RequestInterval;
 import com.pmoradi.system.Facade;
 
 import javax.inject.Inject;
@@ -25,6 +26,7 @@ public class DataResource {
     private Facade logic;
 
     @POST
+    @RequestInterval(3000)
     @Path("add")
     public Response addURL(AddInEntry in) {
         EntryUtil.shrink(in);

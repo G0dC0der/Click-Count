@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
-@Deprecated
-public @interface RobotSecure {
+public @interface RequestInterval {
+
+    long value();
 }

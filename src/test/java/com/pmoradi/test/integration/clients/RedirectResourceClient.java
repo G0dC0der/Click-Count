@@ -1,5 +1,6 @@
-package com.pmoradi.test.util;
+package com.pmoradi.test.integration.clients;
 
+import com.pmoradi.test.integration.rest.RestResponse;
 import org.glassfish.jersey.client.ClientProperties;
 
 import javax.ws.rs.client.Client;
