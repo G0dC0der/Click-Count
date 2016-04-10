@@ -26,10 +26,11 @@ public class SystemSetup extends ResourceConfig {
         register(JacksonFeature.class);
         register(AuthenticationFilter.class);
         register(SpamFilter.class);
-        //register(CaptchaFilter.class);
 
         final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("hibernate-engine");
         final SessionFactory sessionFactory = entityManagerFactory::createEntityManager;
+
+        Runtime.getRuntime().addShutdownHook(new Thread(entityManagerFactory::close));
 
         register(new AbstractBinder() {
             @Override
