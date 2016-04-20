@@ -1,5 +1,9 @@
 package com.pmoradi.essentials;
 
+import com.pmoradi.rest.entries.AddInEntry;
+import com.pmoradi.system.ServerInfo;
+
+import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -34,7 +38,7 @@ public class WebUtil {
         }
     }
 
-    public static boolean protocolBased(String link) {
+    public static boolean isProtocolBased(String link) {
         return  link.startsWith("http://") || link.startsWith("https://") ||
                 link.startsWith("ftp://")  || link.startsWith("sftp://");
     }
@@ -49,10 +53,6 @@ public class WebUtil {
         } catch (IOException e) {
             return false;
         }
-    }
-
-    public static boolean isLocalAddress(String addr) {
-        return addr.equals("127.0.0.1") || addr.equals("localhost") || addr.equals("0:0:0:0:0:0:0:1");
     }
 
     public static boolean validUrl(String url){
@@ -130,5 +130,14 @@ public class WebUtil {
             }
         }
         return true;
+    }
+
+    public static String constructURL(AddInEntry in) {
+        return UriBuilder
+                .fromPath(ServerInfo.REST_PATH)
+                .path(in.getGroupName() != null ? in.getGroupName() : "")
+                .path(in.getUrlName())
+                .build()
+                .toString();
     }
 }

@@ -37,6 +37,6 @@ public class AddOutEntry {
     }
 
     public boolean containErrors() {
-        return urlError != null || linkError != null || passwordError != null;
+        return urlError != null || linkError != null || passwordError != null || groupError != null;
     }
 }
