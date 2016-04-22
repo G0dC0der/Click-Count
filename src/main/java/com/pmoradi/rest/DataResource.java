@@ -26,61 +26,6 @@ public class DataResource {
     @Inject
     private Facade logic;
 
-    /*
-     * Why this is commented out:
-     * It would require everyone to use groups. Thus, longer registration time. Pro: The link it redirects to gets visible.
-     */
-//    @POST
-//    @RequestInterval(3000)
-//    @Path("add/visible")
-//    public Response addVisibleURL(AddInEntry in) {
-//        EntryUtil.shrink(in);
-//        AddOutEntry out = new AddOutEntry();
-//
-//        if(!in.getGroupName().isEmpty())  {
-//            in.setGroupName(WebUtil.randomUrl());
-//        } else {
-//            if(WebUtil.isReserved(in.getGroupName())) {
-//                out.setGroupError("The group name is a reserved word.");
-//            } else if(!WebUtil.validUrl(in.getGroupName())) {
-//                out.setGroupError("The group name contains illegal characters. Use A-Z a-z 0-9 .-_~");
-//            }
-//        }
-//
-//        if(in.getLink().isEmpty()) {
-//            out.setLinkError("The link may not be empty.");
-//        } else {
-//            if(!WebUtil.isProtocolBased(in.getLink())) {
-//                in.setLink("http://" + in.getLink());
-//            }
-//            if(in.getLink().contains(ServerInfo.REST_PATH_STRIPPED) || in.getLink().contains(ServerInfo.HOST_REST_PATH_STRIPPED)) {
-//                out.setLinkError("The given link may not have any relations to ClickCount.");
-//            } else if(!WebUtil.exists(in.getLink())) {
-//                out.setLinkError("The given link is invalid. Please use verify that the link is type of either http, https, ftp or sftp and exists.");
-//            }
-//        }
-//
-//        String withoutProtocol = in.getLink().substring(in.getLink().indexOf("//") + 2);
-//        in.setUrlName(withoutProtocol);
-//
-//        if(!out.containErrors()) {
-//            try {
-//                logic.addUrl(in.getUrlName(), in.getLink(), in.getGroupName(), in.getPassword());
-//            } catch (UrlUnavailableException e) {
-//                out.setUrlError(e.getMessage());
-//            } catch (CredentialException e) {
-//                out.setGroupError(e.getMessage());
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                return Response.serverError().build();
-//            }
-//        }
-//
-//        return out.containErrors() ?
-//                Response.status(Status.FORBIDDEN).entity(out).build() :
-//                Response.ok(new GenericMessage(WebUtil.constructURL(in))).build();
-//    }
-
     @POST
     @RequestInterval(3000)
     @Path("add/hidden")

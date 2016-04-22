@@ -8,6 +8,7 @@ import com.pmoradi.security.Role;
 import com.pmoradi.system.AdminFacade;
 
 import javax.inject.Inject;
+import javax.security.auth.login.CredentialException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -78,6 +79,8 @@ public class AdminResource {
         try {
             adminFacade.addUser(user.getUsername(), user.getPassword(), user.getRole());
             return Response.ok(new GenericMessage("User '" + user.getUsername() + "' was successfully added to the database!")).build();
+        } catch (CredentialException e) {
+            return Response.status(Status.FORBIDDEN).entity(new GenericMessage(e.getMessage())).build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.serverError().build();

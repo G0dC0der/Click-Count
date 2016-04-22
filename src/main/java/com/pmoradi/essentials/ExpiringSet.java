@@ -49,7 +49,11 @@ public class ExpiringSet<T> {
 
     public boolean hasExpired(T obj) {
         ExpiringObject expiringObject = map.get(obj);
-        return expiringObject == null || expiringObject.hasExpired();
+        if(expiringObject == null || expiringObject.hasExpired()) {
+            map.remove(obj);
+            return true;
+        }
+        return false;
     }
 
     public void setCleanDelay(long cleanDelay){

@@ -12,6 +12,7 @@ import com.pmoradi.security.Role;
 import com.pmoradi.security.SecureStrings;
 
 import javax.inject.Inject;
+import javax.security.auth.login.CredentialException;
 import javax.ws.rs.NotFoundException;
 
 public class AdminFacade {
@@ -37,7 +38,11 @@ public class AdminFacade {
         urlDAO.delete(url);
     }
 
-    public void addUser(String username, String password, Role role) {
+    public void addUser(String username, String password, Role role) throws CredentialException {
+        if(userDao.findByName(username) != null) {
+            throw new CredentialException("Username is taken.");
+        }
+
         User user = new User();
         user.setUsername(username);
         user.setPassword(SecureStrings.md5(password + SecureStrings.getSalt()));
@@ -48,14 +53,14 @@ public class AdminFacade {
     public void removeUser(String username) throws NotFoundException {
         User user = userDao.findByName(username);
         if(user == null)
-            throw new NotFoundException("Group not found.");
+            throw new NotFoundException("User not found.");
         userDao.deleteByName(username);
     }
 
     public void changeRole(String username, Role newRole) throws NotFoundException {
         User user = userDao.findByName(username);
         if(user == null)
-            throw new NotFoundException("Group not found.");
+            throw new NotFoundException("User not found.");
         userDao.updateRole(username, newRole);
     }
 
