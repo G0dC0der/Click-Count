@@ -2,7 +2,7 @@ package com.pmoradi.test.util;
 
 import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.UrlEditEntry;
-import com.pmoradi.rest.entries.ViewEntry;
+import com.pmoradi.rest.entries.GroupView;
 
 import java.util.Random;
 
@@ -47,8 +47,8 @@ public class Randomization {
         return entry;
     }
 
-    public static ViewEntry randomViewEntry() {
-        ViewEntry entry = new ViewEntry();
+    public static GroupView randomViewEntry() {
+        GroupView entry = new GroupView();
         entry.setGroupName(randomString());
         entry.setPassword(randomString());
 

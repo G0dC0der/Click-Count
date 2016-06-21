@@ -6,11 +6,43 @@ import com.pmoradi.entities.dao.UserDao;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.ServiceLocator;
 
-import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.Context;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.util.Properties;
 import java.util.concurrent.Executors;
 
 class InjectFactory {
+
+    static Factory<Application> getApplicationFactory(InputStream properties) {
+        try {
+            Properties props = new Properties();
+            props.load(properties);
+
+            return new Factory<Application>() {
+                @Override
+                public Application provide() {
+                    return new Application() {
+                        @Override
+                        public String getRestPath() {
+                            return props.getProperty("restUrl");
+                        }
+
+                        @Override
+                        public String getDomain() {
+                            return props.getProperty("domain");
+                        }
+                    };
+                }
+
+                @Override
+                public void dispose(Application application) {}
+            };
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
     static Factory<GroupDao> getGroupDaoFactory(SessionFactory sessionFactory){
         return new Factory<GroupDao>() {

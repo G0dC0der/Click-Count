@@ -17,7 +17,7 @@ public class EntryUtil {
         entry.setPassword(requireNonNull(entry.getPassword()).trim().toLowerCase());
     }
 
-    public static void shrink(ViewEntry entry) {
+    public static void shrink(GroupView entry) {
         entry.setGroupName(requireNonNull(entry.getGroupName()).trim().toLowerCase());
         entry.setPassword(requireNonNull(entry.getPassword()).trim().toLowerCase());
     }

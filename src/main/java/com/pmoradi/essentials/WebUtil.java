@@ -1,11 +1,9 @@
 package com.pmoradi.essentials;
 
-import com.pmoradi.rest.entries.AddInEntry;
-import com.pmoradi.system.ServerInfo;
+import org.apache.commons.io.IOUtils;
 
-import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
-import java.net.URI;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Random;
 
@@ -44,11 +42,33 @@ public class WebUtil {
     }
 
     public static boolean exists(String link) {
-        URI uri = URI.create(link);
-        String path = uri.getScheme() + "://" + uri.getHost();
+        if (link.startsWith("http://") || link.startsWith("https://"))
+            return httpExists(link);
+        else if (link.startsWith("ftp://") || link.startsWith("sftp://"))
+            return urlExists(link);
+        else
+            throw new IllegalArgumentException("Unknown protocol for " + link);
+    }
 
+    private static boolean httpExists(String link) {
+        HttpURLConnection con = null;
         try {
-            new URL(path).openStream().close();
+            URL url = new URL(link);
+            con =  (HttpURLConnection)  url.openConnection ();
+            con.setRequestMethod ("HEAD");
+            con.connect();
+            int code = con.getResponseCode() ;
+            return code >= 200 && code <= 299;
+        } catch (IOException e) {
+            return false;
+        } finally {
+            IOUtils.close(con);
+        }
+    }
+
+    private static boolean urlExists(String link) {
+        try {
+            new URL(link).openStream().close();
             return true;
         } catch (IOException e) {
             return false;
@@ -130,14 +150,5 @@ public class WebUtil {
             }
         }
         return true;
-    }
-
-    public static String constructURL(AddInEntry in) {
-        return UriBuilder
-                .fromPath(ServerInfo.REST_PATH)
-                .path(in.getGroupName() != null ? in.getGroupName() : "")
-                .path(in.getUrlName())
-                .build()
-                .toString();
     }
 }

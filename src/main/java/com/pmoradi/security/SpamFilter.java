@@ -2,7 +2,12 @@ package com.pmoradi.security;
 
 import com.pmoradi.essentials.ExpiringSet;
 import com.pmoradi.rest.entries.GenericMessage;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -49,5 +54,4 @@ public class SpamFilter implements ContainerRequestFilter{
         }
         return -1;
     }
-
 }

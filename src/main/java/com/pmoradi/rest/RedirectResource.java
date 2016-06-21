@@ -30,7 +30,7 @@ public class RedirectResource {
         if(link != null) {
             return Response.seeOther(UriBuilder.fromPath(link).build()).build();
         } else {
-            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found.")).build();
+            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found: " + urlName)).build();
         }
     }
 
@@ -43,7 +43,7 @@ public class RedirectResource {
         if(link != null) {
             return Response.seeOther(UriBuilder.fromPath(link).build()).build();
         } else {
-            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found.")).build();
+            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found: " + groupName + "/" + urlName)).build();
         }
     }
 }

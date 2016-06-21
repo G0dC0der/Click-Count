@@ -23,7 +23,7 @@ public class ViewResource {
     @RequestInterval(5000)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("view/all")
-    public Response viewAll(ViewEntry in) throws IOException {
+    public Response viewAll(GroupView in) throws IOException {
         EntryUtil.shrink(in);
 
         if(in.getGroupName().isEmpty()){
@@ -47,33 +47,32 @@ public class ViewResource {
         UrlEntry urlData = logic.getUrlData("default", urlName.trim().toLowerCase());
 
         if(urlData == null) {
-            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found.")).build();
+            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found: " + urlName)).build();
         } else {
-            URLInfoEntry entry = new URLInfoEntry();
-            entry.setLink(urlData.getLink());
-            entry.setUrl(urlData.getUrlName());
-            entry.setGroup("default");
-            entry.setClicks(urlData.getClicks());
+            GroupEntry groupEntry = new GroupEntry();
+            groupEntry.setGroupName("default");
+            groupEntry.setUrls(new UrlEntry[]{urlData});
 
-            return Response.ok(entry).build();
+            return Response.ok(groupEntry).build();
         }
     }
 
     @GET
     @Path("{group}/{url}/view")
     public Response viewSingle(@PathParam("group") String groupName,
-                               @PathParam("url") String urlName) throws IOException {
+                               @PathParam("url")   String urlName) throws IOException {
 
         UrlEntry urlData = logic.getUrlData(groupName.toLowerCase(), urlName.toLowerCase());
         if(urlData == null) {
-            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found.")).build();
+            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found:" + groupName + "/" + urlName)).build();
         } else {
-            URLInfoEntry entry = new URLInfoEntry();
-            entry.setLink(urlData.getLink());
-            entry.setUrl(urlData.getUrlName());
-            entry.setGroup(groupName);
+            urlData.setClicks(null);
 
-            return Response.ok(entry).build();
+            GroupEntry groupEntry = new GroupEntry();
+            groupEntry.setGroupName(groupName);
+            groupEntry.setUrls(new UrlEntry[]{urlData});
+
+            return Response.ok(groupEntry).build();
         }
     }
 }

@@ -4,8 +4,8 @@ public class UrlEntry {
 
     private String urlName;
     private String link;
-    private long addDate;
-    private long clicks;
+    private Long addDate;
+    private Long clicks;
 
     public String getUrlName() {
         return urlName;
@@ -31,11 +31,11 @@ public class UrlEntry {
         this.addDate = addDate;
     }
 
-    public long getClicks() {
+    public Long getClicks() {
         return clicks;
     }
 
-    public void setClicks(long clicks) {
+    public void setClicks(Long clicks) {
         this.clicks = clicks;
     }
 }

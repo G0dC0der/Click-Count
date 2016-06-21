@@ -2,7 +2,9 @@ package com.pmoradi.rest.entries;
 
 public class UrlEditEntry {
 
-    private String urlName, groupName, password;
+    private String urlName;
+    private String groupName;
+    private String password;
 
     public String getUrlName() {
         return urlName;

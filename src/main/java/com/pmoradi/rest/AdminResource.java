@@ -6,6 +6,7 @@ import com.pmoradi.rest.entries.UserEntry;
 import com.pmoradi.security.Guarded;
 import com.pmoradi.security.Role;
 import com.pmoradi.system.AdminFacade;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javax.inject.Inject;
 import javax.security.auth.login.CredentialException;
@@ -28,12 +29,9 @@ public class AdminResource {
     public Response viewGroup(@PathParam("groupName") String groupName) {
         try {
             GroupEntry data = adminFacade.viewGroupData(groupName);
-            return Response.ok().entity(data).build();
+            return Response.ok(data).build();
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).entity(new GenericMessage("Group '" + groupName + "' was not found.")).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.serverError().build();
         }
     }
 
@@ -50,9 +48,6 @@ public class AdminResource {
             return Response.ok(new GenericMessage("Group '" + groupName + "' was successfully removed!")).build();
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).entity(new GenericMessage("Can't delete a group that doesn't exist.")).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.serverError().build();
         }
     }
 
@@ -66,9 +61,6 @@ public class AdminResource {
             return Response.ok(new GenericMessage("URL '" + urlName + "' from group '" + groupName + "' was successfully removed!")).build();
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).entity(new GenericMessage("Url or group doesn't exist.")).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.serverError().build();
         }
     }
 
@@ -81,9 +73,6 @@ public class AdminResource {
             return Response.ok(new GenericMessage("User '" + user.getUsername() + "' was successfully added to the database!")).build();
         } catch (CredentialException e) {
             return Response.status(Status.FORBIDDEN).entity(new GenericMessage(e.getMessage())).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.serverError().build();
         }
     }
 
@@ -96,9 +85,6 @@ public class AdminResource {
             return Response.ok(new GenericMessage("User '" + user.getUsername() + "' changed role to " + user.getRole() + "!")).build();
         } catch (NotFoundException e){
             return Response.status(Status.NOT_FOUND).entity(new GenericMessage("The given user doesn't exist.")).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.serverError().build();
         }
     }
 
@@ -111,9 +97,6 @@ public class AdminResource {
             return Response.ok(new GenericMessage("User '" + user.getUsername() + "' successfully removed!")).build();
         } catch (NotFoundException e){
             return Response.status(Status.NOT_FOUND).entity(new GenericMessage("The given user doesn't exist.")).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.serverError().build();
         }
     }
 }

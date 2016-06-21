@@ -27,8 +27,8 @@ public class SecureStrings {
     private static String hash(MessageDigest md, String str){
         byte[] array = md.digest(str.getBytes());
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < array.length; ++i) {
-            sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+        for (byte b : array) {
+            sb.append(Integer.toHexString((b & 0xFF) | 0x100).substring(1, 3));
         }
         return sb.toString();
     }

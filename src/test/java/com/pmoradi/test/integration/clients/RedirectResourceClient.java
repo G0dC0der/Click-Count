@@ -1,5 +1,7 @@
 package com.pmoradi.test.integration.clients;
 
+import com.pmoradi.rest.entries.GenericMessage;
+import com.pmoradi.test.integration.rest.RestInfo;
 import com.pmoradi.test.integration.rest.RestResponse;
 import org.glassfish.jersey.client.ClientProperties;
 
@@ -13,33 +15,32 @@ public class RedirectResourceClient {
     private String restUrl;
     private Client client;
 
+    public RedirectResourceClient() {
+        this(RestInfo.LOCAL_REST_URL);
+    }
+
     public RedirectResourceClient(String restUrl) {
         this.restUrl = restUrl;
         this.client = ClientBuilder.newClient();
     }
 
-    public RestResponse<String> getLink(String url) {
+    public RestResponse<String, GenericMessage> getLink(String url) {
         Response resp = client.target(restUrl)
                 .path(url)
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
                 .request(MediaType.TEXT_PLAIN)
                 .get();
 
-        return getResponse(resp);
+        return RestResponse.fromResponse(resp, String.class, GenericMessage.class);
     }
 
-    public RestResponse<String> getLink(String url, String group) {
+    public RestResponse<String, GenericMessage> getLink(String url, String group) {
         Response resp = client.target(restUrl)
                 .path(group + "/" + url)
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
                 .request(MediaType.TEXT_PLAIN)
                 .get();
 
-        return getResponse(resp);
-    }
-
-    private RestResponse<String> getResponse(Response resp) {
-        int statusCode = resp.getStatus();
-        return new RestResponse<>(statusCode, statusCode >= 400 ? null : (String) resp.getHeaders().get("Location").get(0));
+        return RestResponse.fromResponse(resp, String.class, GenericMessage.class);
     }
 }

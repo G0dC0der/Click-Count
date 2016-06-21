@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.security.auth.login.CredentialException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.UriBuilder;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,6 +28,8 @@ public class Facade {
     private GroupDao groupDAO;
     @Inject
     private URLDao urlDAO;
+    @Inject
+    private Application app;
 
     private Group defaultGroup;
     private final LockManager manager;
@@ -141,6 +144,23 @@ public class Facade {
             return null;
         }
         return baos.toByteArray();
+    }
+
+    public String constructRedirectURL(String urlName) {
+        return UriBuilder
+                .fromPath(app.getRestPath())
+                .path(urlName)
+                .build()
+                .toString();
+    }
+
+    public String constructRedirectURL(String groupName, String urlName) {
+        return UriBuilder
+                .fromPath(app.getRestPath())
+                .path(groupName)
+                .path(urlName)
+                .build()
+                .toString();
     }
 
     private Group getDefaultGroup(){

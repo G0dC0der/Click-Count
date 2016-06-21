@@ -5,6 +5,7 @@ import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.entities.dao.UserDao;
 import com.pmoradi.security.AuthenticationFilter;
 import com.pmoradi.security.SpamFilter;
+import org.apache.commons.io.IOUtils;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -16,6 +17,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Context;
+import java.io.InputStream;
 
 @ApplicationPath("/service")
 public class SystemSetup extends ResourceConfig {
@@ -38,6 +40,10 @@ public class SystemSetup extends ResourceConfig {
                 bindFactory(InjectFactory.getGroupDaoFactory(sessionFactory)).to(GroupDao.class).in(Singleton.class);
                 bindFactory(InjectFactory.getURLDaoFactory(sessionFactory)).to(URLDao.class).in(Singleton.class);
                 bindFactory(InjectFactory.getUserDaoFactory(sessionFactory)).to(UserDao.class).in(Singleton.class);
+
+                InputStream properties = Thread.currentThread().getContextClassLoader().getResourceAsStream("connection.properties");
+                bindFactory(InjectFactory.getApplicationFactory(properties)).to(Application.class).in(Singleton.class);
+                IOUtils.closeQuietly(properties);
 
                 Factory<Facade> facadeFactory = InjectFactory.getFacadeFactory(new LockManager());
                 Factory<AdminFacade> adminFacadeFactory = InjectFactory.getAdminFacadeFactory();

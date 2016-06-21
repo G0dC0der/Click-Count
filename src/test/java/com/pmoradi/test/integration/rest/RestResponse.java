@@ -1,13 +1,17 @@
 package com.pmoradi.test.integration.rest;
 
-public class RestResponse<T> {
+import javax.ws.rs.core.Response;
+
+public class RestResponse<SUCCESS, FAIL> {
 
     public final int statusCode;
-    public final T entity;
+    public final SUCCESS successEntity;
+    public final FAIL failEntity;
 
-    public RestResponse(int statusCode, T entity) {
+    public RestResponse(int statusCode, SUCCESS successEntity, FAIL failEntity) {
         this.statusCode = statusCode;
-        this.entity = entity;
+        this.successEntity = successEntity;
+        this.failEntity = failEntity;
     }
 
     public boolean isOk() {
@@ -28,6 +32,19 @@ public class RestResponse<T> {
 
     @Override
     public String toString() {
-        return "statusCode=" + statusCode + "\nentity=" + entity;
+        return "RestResponse{" +
+                "statusCode=" + statusCode +
+                ", successEntity=" + successEntity +
+                ", failEntity=" + failEntity +
+                '}';
+    }
+
+    public static <SUCCESS, FAIL> RestResponse<SUCCESS, FAIL> fromResponse(Response resp, Class<SUCCESS> successClass, Class<FAIL> failClass) {
+        boolean isOk = resp.getStatus() >= 200 && resp.getStatus() <= 299;
+        if(isOk) {
+            return new RestResponse(resp.getStatus(), resp.readEntity(successClass), null);
+        } else {
+            return new RestResponse(resp.getStatus(), null, resp.readEntity(failClass));
+        }
     }
 }

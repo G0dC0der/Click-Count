@@ -24,7 +24,7 @@ public class LockManager {
 
         @Override
         public boolean equals(Object obj) {
-            if(obj == null || obj instanceof Key == false)
+            if(obj == null || !(obj instanceof Key))
                 return false;
 
             Key lock = (Key) obj;
@@ -45,7 +45,7 @@ public class LockManager {
         while (keys.contains(key)) {
             try {
                 wait();
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException ignored) {}
         }
         keys.add(key);
         return key;
