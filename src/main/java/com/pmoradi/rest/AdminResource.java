@@ -6,7 +6,6 @@ import com.pmoradi.rest.entries.UserEntry;
 import com.pmoradi.security.Guarded;
 import com.pmoradi.security.Role;
 import com.pmoradi.system.AdminFacade;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javax.inject.Inject;
 import javax.security.auth.login.CredentialException;
@@ -88,7 +87,7 @@ public class AdminResource {
         }
     }
 
-    @DELETE
+    @POST
     @Guarded(Role.ADMINISTRATOR)
     @Path("user/delete")
     public Response removeUser(UserEntry user) {
