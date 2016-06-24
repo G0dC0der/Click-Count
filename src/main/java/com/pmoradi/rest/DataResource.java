@@ -5,15 +5,14 @@ import com.pmoradi.essentials.UrlUnavailableException;
 import com.pmoradi.essentials.WebUtil;
 import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
-import com.pmoradi.rest.entries.GenericMessage;
-import com.pmoradi.rest.entries.UrlEditEntry;
-import com.pmoradi.security.RequestInterval;
 import com.pmoradi.system.Facade;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javax.inject.Inject;
 import javax.security.auth.login.CredentialException;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -27,7 +26,6 @@ public class DataResource {
     private Facade logic;
 
     @POST
-    @RequestInterval(3000)
     @Path("add")
     public Response addHiddenURL(AddInEntry in) {
         EntryUtil.shrink(in);
@@ -60,7 +58,7 @@ public class DataResource {
                 in.setLink("http://" + in.getLink());
             }
             if (!WebUtil.exists(in.getLink())) {
-                out.setLinkError("The link does not exist or responded with a redirect status.");
+                out.setLinkError("The link does not exist or responded with a non-ok status.");
             }
         }
 

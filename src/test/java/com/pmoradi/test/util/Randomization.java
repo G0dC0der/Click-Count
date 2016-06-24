@@ -1,8 +1,8 @@
 package com.pmoradi.test.util;
 
 import com.pmoradi.rest.entries.AddInEntry;
-import com.pmoradi.rest.entries.UrlEditEntry;
 import com.pmoradi.rest.entries.GroupView;
+import com.pmoradi.rest.entries.UrlEditEntry;
 
 import java.util.Random;
 
@@ -32,7 +32,7 @@ public class Randomization {
         AddInEntry entry = new AddInEntry();
         entry.setGroupName(randomString());
         entry.setUrlName(randomString());
-        entry.setLink(randomLink());
+        entry.setLink("http://google.se");
         entry.setPassword(randomString());
 
         return entry;

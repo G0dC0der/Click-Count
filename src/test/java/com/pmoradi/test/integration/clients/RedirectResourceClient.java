@@ -9,6 +9,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status.Family;
 
 public class RedirectResourceClient {
 
@@ -28,19 +29,26 @@ public class RedirectResourceClient {
         Response resp = client.target(restUrl)
                 .path(url)
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
-                .request(MediaType.TEXT_PLAIN)
+                .request(MediaType.APPLICATION_JSON)
                 .get();
 
-        return RestResponse.fromResponse(resp, String.class, GenericMessage.class);
+        return parse(resp);
     }
 
     public RestResponse<String, GenericMessage> getLink(String url, String group) {
         Response resp = client.target(restUrl)
                 .path(group + "/" + url)
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
-                .request(MediaType.TEXT_PLAIN)
+                .request(MediaType.APPLICATION_JSON)
                 .get();
 
-        return RestResponse.fromResponse(resp, String.class, GenericMessage.class);
+        return parse(resp);
+    }
+
+    private RestResponse<String, GenericMessage> parse(Response resp) {
+        if (resp.getStatusInfo().getFamily() == Family.REDIRECTION)
+            return new RestResponse<>(resp.getStatus(), resp.getLocation().toString(), null);
+        else
+            return new RestResponse<>(resp.getStatus(), null, resp.readEntity(GenericMessage.class));
     }
 }

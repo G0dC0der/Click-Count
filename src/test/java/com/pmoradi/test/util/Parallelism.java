@@ -28,9 +28,10 @@ public class Parallelism {
                     ref.compareAndSet(null, t);
                 }
             });
-            thread.start();
             threads.add(thread);
         });
+
+        threads.forEach(Thread::start);
 
         for(Thread thread : threads) {
             try {

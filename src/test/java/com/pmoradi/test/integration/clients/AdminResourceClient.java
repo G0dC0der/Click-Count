@@ -100,7 +100,7 @@ public class AdminResourceClient {
                 .path("delete")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(userEntry, MediaType.APPLICATION_JSON));
-        
+
         return RestResponse.fromResponse(resp, GenericMessage.class, GenericMessage.class);
     }
 }

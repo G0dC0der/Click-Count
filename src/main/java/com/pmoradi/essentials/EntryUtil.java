@@ -1,6 +1,8 @@
 package com.pmoradi.essentials;
 
-import com.pmoradi.rest.entries.*;
+import com.pmoradi.rest.entries.AddInEntry;
+import com.pmoradi.rest.entries.GroupView;
+import com.pmoradi.rest.entries.UrlEditEntry;
 
 public class EntryUtil {
 

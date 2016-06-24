@@ -3,14 +3,24 @@ package com.pmoradi.essentials;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Random;
 
 public class WebUtil {
 
     private static final char[] URL_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
     private static final Random r = new Random();
+
+    public static String getIPFromDomain(String domain) {
+        try {
+            return java.net.InetAddress.getByName(domain).getHostAddress();
+        } catch (UnknownHostException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
     public static String randomUrl(){
         final int size = 8;
@@ -144,6 +154,24 @@ public class WebUtil {
                 case '-':
                 case '_':
                 case '~':
+                case ':':
+                case '/':
+                case '?':
+                case '#':
+                case '[':
+                case ']':
+                case '@':
+                case '!':
+                case '$':
+                case '&':
+                case '\'':
+                case '(':
+                case ')':
+                case '*':
+                case '+':
+                case ',':
+                case ';':
+                case '=':
                     break;
                 default:
                     return false;

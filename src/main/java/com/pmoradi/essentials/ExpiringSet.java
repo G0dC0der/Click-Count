@@ -72,7 +72,7 @@ public class ExpiringSet<T> {
         WeakReference<ExpiringSet<T>> ref = new WeakReference<>(expiringSet);
         expiringSet = null;
 
-        Thread cleaner = new Thread(()->{
+        return new Thread(()->{
             try {
                 while(!Thread.interrupted()) {
                     ref.get().map.entrySet()
@@ -86,8 +86,6 @@ public class ExpiringSet<T> {
                 System.out.println("Cleaner thread terminated.");
             }
         });
-
-        return cleaner;
     }
 
     private static void sleep(long millis) {

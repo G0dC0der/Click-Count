@@ -1,7 +1,6 @@
 package com.pmoradi.rest;
 
 import com.pmoradi.rest.entries.GenericMessage;
-import com.pmoradi.security.RequestInterval;
 import com.pmoradi.system.Facade;
 
 import javax.inject.Inject;
@@ -15,7 +14,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
 @Path("/")
-@RequestInterval(1000)
 @Produces(MediaType.APPLICATION_JSON)
 public class RedirectResource {
 

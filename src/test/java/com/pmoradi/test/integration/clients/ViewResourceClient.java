@@ -28,7 +28,8 @@ public class ViewResourceClient {
 
     public RestResponse<GroupEntry, GenericMessage> viewAll(GroupView entry) {
         Response resp = client.target(restUrl)
-                .path("view/all")
+                .path("view")
+                .path("all")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(entry, MediaType.APPLICATION_JSON));
 

@@ -1,9 +1,6 @@
 package com.pmoradi.entities;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Entity

@@ -42,7 +42,6 @@ public class AuthenticationFilter implements ContainerRequestFilter{
             }
             if (requiredRole.isAbove(user.getRole())) {
                 requestContext.abortWith(Response.status(Status.UNAUTHORIZED).entity(new GenericMessage("The request was aborted. Role not sufficient enough.")).build());
-                return;
             }
         }
     }

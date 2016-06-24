@@ -1,8 +1,10 @@
 package com.pmoradi.rest;
 
 import com.pmoradi.essentials.EntryUtil;
-import com.pmoradi.rest.entries.*;
-import com.pmoradi.security.RequestInterval;
+import com.pmoradi.rest.entries.GenericMessage;
+import com.pmoradi.rest.entries.GroupEntry;
+import com.pmoradi.rest.entries.GroupView;
+import com.pmoradi.rest.entries.UrlEntry;
 import com.pmoradi.system.Facade;
 
 import javax.inject.Inject;
@@ -20,7 +22,6 @@ public class ViewResource {
     private Facade logic;
 
     @POST
-    @RequestInterval(5000)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("view/all")
     public Response viewAll(GroupView in) throws IOException {

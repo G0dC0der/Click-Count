@@ -2,7 +2,6 @@ package com.pmoradi.entities.dao;
 
 import com.pmoradi.entities.URL;
 import com.pmoradi.system.SessionFactory;
-import org.hibernate.Hibernate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
