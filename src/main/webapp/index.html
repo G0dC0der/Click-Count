@@ -1,0 +1,55 @@
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.gitcdn.link/cdn/angular/bower-material/v1.1.0-rc.5-master-15da974/angular-material.css" rel="stylesheet" >
+        <link href="https://material.angularjs.org/1.1.0-rc.5-master-15da974/docs.css" rel="stylesheet" >
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="css/clickcount.css" rel="stylesheet">
+    </head>
+    <body ng-app="ClickCount" ng-cloak>
+        <!--<md-toolbar class="md-warn">-->
+            <!--<div class="md-toolbar-tools">-->
+                <!--<h2 class="md-flex">The backend server will be down for maintenance.</h2>-->
+            <!--</div>-->
+        <!--</md-toolbar>-->
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2 class="md-flex">Click Count</h2>
+            </div>
+        </md-toolbar>
+
+        <div ng-controller="NavbarController" ng-cloak>
+            <md-content class="md-padding">
+                <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
+                    <md-nav-item ng-repeat="item in navbarItems" name="{{'page' + ($index + 1)}}" md-nav-click="nav(item.url)">
+                        <md-icon md-font-set="material-icons" class="menu-button">{{item.icon}}</md-icon>{{item.label}}
+                    </md-nav-item>
+                </md-nav-bar>
+                <div id="view-div" flex="98"></div>
+            </md-content>
+        </div>
+
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.min.js"></script>
+        <script src="https://cdn.gitcdn.link/cdn/angular/bower-material/v1.1.0-rc.5-master-15da974/angular-material.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+        <script type="text/javascript">
+            var module = angular
+                    .module('ClickCount', ['ngMaterial'])
+                    .config(function($mdThemingProvider) {
+                        $mdThemingProvider.theme('default')
+                                .primaryPalette('blue-grey')
+                                .accentPalette('grey');
+                    });
+        </script>
+
+        <script src="services/DataService.js"></script>
+
+        <script src="controllers/NavbarController.js"></script>
+        <script src="controllers/AddController.js"></script>
+    </body>
+</html>

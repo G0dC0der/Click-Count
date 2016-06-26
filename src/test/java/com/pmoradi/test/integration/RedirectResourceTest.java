@@ -5,7 +5,7 @@ import com.pmoradi.rest.entries.AddOutEntry;
 import com.pmoradi.rest.entries.GenericMessage;
 import com.pmoradi.test.integration.clients.DataResourceClient;
 import com.pmoradi.test.integration.clients.RedirectResourceClient;
-import com.pmoradi.test.integration.rest.*;
+import com.pmoradi.test.integration.rest.RestResponse;
 import com.pmoradi.test.util.Randomization;
 import org.junit.Before;
 import org.junit.Test;

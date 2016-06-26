@@ -10,9 +10,6 @@ import com.pmoradi.test.util.Randomization;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-
 import static org.junit.Assert.*;
 
 public class ClickTest {

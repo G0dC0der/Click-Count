@@ -1,0 +1,12 @@
+.menu-button {
+    margin-top:-3px;
+    margin-right:2px;
+}
+
+.md-unselected .menu-button {
+    color:rgba(0,0,0,0.54) !important;
+}
+
+md-progress-circular svg {
+    top:initial;
+}

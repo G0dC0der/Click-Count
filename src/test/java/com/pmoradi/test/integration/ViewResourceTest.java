@@ -1,12 +1,12 @@
 package com.pmoradi.test.integration;
 
-import com.pmoradi.entities.Group;
 import com.pmoradi.essentials.Loop;
 import com.pmoradi.rest.entries.*;
 import com.pmoradi.test.integration.clients.DataResourceClient;
 import com.pmoradi.test.integration.clients.RedirectResourceClient;
 import com.pmoradi.test.integration.clients.ViewResourceClient;
-import com.pmoradi.test.integration.rest.*;
+import com.pmoradi.test.integration.rest.RestInfo;
+import com.pmoradi.test.integration.rest.RestResponse;
 import com.pmoradi.test.util.Randomization;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,8 +15,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ViewResourceTest {
 
@@ -118,5 +117,53 @@ public class ViewResourceTest {
         }
     }
 
-//    //TODO: View single tests
+    @Test
+    public void viewSingleWithInvalidUrl() {
+        RestResponse<GroupEntry, GenericMessage> resp = viewClient.viewSingle(Randomization.randomString());
+        assertTrue(resp.isClientError());
+    }
+
+    @Test
+    public void viewSingleWithInvalidGroup() {
+        AddInEntry entry = Randomization.randomDataEntry();
+        assertTrue(dataClient.add(entry).isOk());
+
+        RestResponse<GroupEntry, GenericMessage> resp = viewClient.viewSingle(Randomization.randomString(), entry.getGroupName());
+        assertTrue(resp.isClientError());
+    }
+
+    @Test
+    public void viewSingleWithGroupHidesClicks() {
+        AddInEntry entry = Randomization.randomDataEntry();
+        assertTrue(dataClient.add(entry).isOk());
+
+        final int size = Randomization.randomInt(10) + 10;
+        for (int i = 0; i < size; i++) {
+            RestResponse<String, GenericMessage> reResp = redirectClient.getLink(entry.getUrlName(), entry.getGroupName());
+            assertTrue(reResp.isRedirection());
+        }
+
+        RestResponse<GroupEntry, GenericMessage> resp = viewClient.viewSingle(entry.getUrlName(), entry.getGroupName());
+        UrlEntry urlEntry = resp.successEntity.getUrls()[0];
+        assertNull(urlEntry.getClicks());
+    }
+
+    @Test
+    public void viewSingleWithDefaultGroupShowClicks() {
+        AddInEntry entry = new AddInEntry();
+        entry.setUrlName(Randomization.randomString());
+        entry.setLink("http://google.se");
+        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        assertTrue(resp.isOk());
+
+        final int size = Randomization.randomInt(10) + 10;
+        for (int i = 0; i < size; i++) {
+            RestResponse<String, GenericMessage> reResp = redirectClient.getLink(entry.getUrlName());
+            assertTrue(reResp.isRedirection());
+        }
+
+        RestResponse<GroupEntry, GenericMessage> viewResp = viewClient.viewSingle(entry.getUrlName());
+        UrlEntry urlEntry = viewResp.successEntity.getUrls()[0];
+        assertEquals(size, urlEntry.getClicks().longValue());
+    }
 }

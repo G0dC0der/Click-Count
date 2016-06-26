@@ -1,0 +1,32 @@
+<p>An URL can be created by simply pasting the source URL in the <i>Source Link</i> field. This will create a minified URL which can be shared.</p>
+<p>If you wish to privatize the clicks on your URL as well as grouping them to be able to view them all at once at a later stage, fill in the <i>Group</i> and <i>password</i> fields. </p>
+
+<div flex-xs="80" flex-sm="70" flex="30" ng-controller="AddController">
+    <form name="addForm">
+        <md-input-container class="md-block" flex-gt-xs>
+            <label>Source Link</label>
+            <input ng-model="addInData.link" name="link" required ng-disabled="loading">
+            <div ng-messages="addForm.link.$error">
+                <div ng-message="required">This field required.</div>
+            </div>
+        </md-input-container>
+
+        <md-input-container class="md-block" flex-gt-xs>
+            <label>Alias</label>
+            <input ng-model="addInData.urlName" name="urlName" ng-disabled="loading">
+        </md-input-container>
+
+        <md-input-container class="md-block" flex-gt-xs>
+            <label>Group</label>
+            <input ng-model="addInData.groupName" name="groupName" ng-disabled="loading">
+        </md-input-container>
+
+        <md-input-container class="md-block" flex-gt-xs>
+            <label>Password</label>
+            <input ng-model="addInData.password" name="password" type="password" ng-disabled="loading">
+        </md-input-container>
+
+        <md-button ng-disabled="loading || !addInData.link.length" ng-click="submitAdd()" class="md-raised">Submit</md-button>
+        <md-progress-circular ng-show="loading" md-mode="indeterminate"></md-progress-circular>
+    </form>
+</div>
