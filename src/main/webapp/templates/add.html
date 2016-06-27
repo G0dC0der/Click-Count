@@ -1,0 +1,57 @@
+<div ng-controller="AddController">
+    <p>An URL can be created by simply pasting the source URL in the <i>Source Link</i> field. This will create a minified URL which can be shared.</p>
+    <p>If you wish to privatize the clicks on your URL as well as grouping them to be able to view them all at once at a later stage, fill in the <i>Group</i> and <i>password</i> fields. </p>
+
+    <div flex-xs="80" flex-sm="70" flex="30">
+        <form name="addForm">
+            <md-input-container class="md-block" flex-gt-xs>
+                <label>Source Link</label>
+                <input ng-model="addInData.link" name="link" required ng-disabled="loading">
+                <div ng-messages="addForm.link.$error" md-auto-hide="false">
+                    <div ng-message="addOutData.linkError">{{addOutData.linkError}}</div>
+                    <!--<div ng-message="addForm.link.$touched && addInData.link.length == 0">This field is required.</div>-->
+                </div>
+            </md-input-container>
+
+            <md-input-container class="md-block" flex-gt-xs>
+                <label>Alias</label>
+                <input ng-model="addInData.urlName" name="urlName" ng-disabled="loading">
+                <div ng-messages="addForm.urlName.$error" md-auto-hide="false">
+                    <div ng-message="addOutData.urlError">{{addOutData.urlError}}</div>
+                </div>
+            </md-input-container>
+
+            <md-input-container class="md-block" flex-gt-xs>
+                <label>Group</label>
+                <input ng-model="addInData.groupName" name="groupName" ng-disabled="loading">
+                <div ng-messages="addForm.urlName.$error" md-auto-hide="false">
+                    <div ng-message="addOutData.groupError">{{addOutData.groupError}}</div>
+                </div>
+            </md-input-container>
+
+            <md-input-container class="md-block" flex-gt-xs>
+                <label>Password</label>
+                <input ng-model="addInData.password" name="password" type="password" ng-disabled="loading">
+                <div ng-messages="addForm.urlName.$error" md-auto-hide="false">
+                    <div ng-message="addOutData.passwordError">{{addOutData.passwordError}}</div>
+                </div>
+            </md-input-container>
+
+            <md-button ng-disabled="loading || !addInData.link.length" ng-click="submitAdd()" class="md-raised add-button">Submit</md-button>
+            <md-progress-circular ng-show="loading" md-mode="indeterminate" class="add-loader"></md-progress-circular>
+        </form>
+    </div>
+
+    <md-toolbar class="md-hue-3 url-row" ng-repeat="url in urls" flex-xs="95" flex-gt-xs="97" flex-sm="97" flex="98">
+        <div class="md-toolbar-tools">
+            <span class="wrap-url">{{url}}</span>
+            <span flex></span>
+            <md-button class="md-icon-button" aria-label="More" ng-click="copyToClipboard(url)">
+                <md-icon md-font-set="material-icons">content_copy</md-icon>
+                <md-tooltip md-direction="top">
+                    Copy
+                </md-tooltip>
+            </md-button>
+        </div>
+    </md-toolbar>
+</div>

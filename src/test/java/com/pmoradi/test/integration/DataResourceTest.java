@@ -30,7 +30,7 @@ public class DataResourceTest {
         AddInEntry entry = Randomization.randomDataEntry();
         entry.setUrlName("default");
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isClientError());
         assertFalse(resp.failEntity.getUrlError().isEmpty());
     }
@@ -40,7 +40,7 @@ public class DataResourceTest {
         AddInEntry entry = Randomization.randomDataEntry();
         entry.setUrlName(Randomization.randomString() + "ö");
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isClientError());
         assertFalse(resp.failEntity.getUrlError().isEmpty());
     }
@@ -50,7 +50,7 @@ public class DataResourceTest {
         AddInEntry entry = Randomization.randomDataEntry();
         entry.setGroupName("default");
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isClientError());
         assertFalse(resp.failEntity.getGroupError().isEmpty());
     }
@@ -60,7 +60,7 @@ public class DataResourceTest {
         AddInEntry entry = Randomization.randomDataEntry();
         entry.setGroupName(Randomization.randomString() + "ö");
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isClientError());
         assertFalse(resp.failEntity.getGroupError().isEmpty());
     }
@@ -72,7 +72,7 @@ public class DataResourceTest {
         entry.setLink("google.se");
         entry.setUrlName(Randomization.randomString());
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isClientError());
         assertFalse(resp.failEntity.getPasswordError().isEmpty());
     }
@@ -83,7 +83,7 @@ public class DataResourceTest {
         entry.setGroupName(Randomization.randomString());
         entry.setUrlName(Randomization.randomString());
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isClientError());
         assertFalse(resp.failEntity.getLinkError().isEmpty());
     }
@@ -95,7 +95,7 @@ public class DataResourceTest {
         entry.setUrlName(Randomization.randomString());
         entry.setLink(Randomization.randomLink());
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isClientError());
         assertFalse(resp.failEntity.getLinkError().isEmpty());
     }
@@ -106,7 +106,7 @@ public class DataResourceTest {
         entry.setUrlName(Randomization.randomString());
         entry.setLink("http://www.google.se");
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         RestResponse<String, GenericMessage> resp2 = redirectClient.getLink(entry.getUrlName());
@@ -120,7 +120,7 @@ public class DataResourceTest {
         entry.setUrlName(Randomization.randomString());
         entry.setLink("google.se");
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         assertEquals(303, redirectClient.getLink(entry.getUrlName()).statusCode);
@@ -134,7 +134,7 @@ public class DataResourceTest {
     public void addWithGroup() {
         AddInEntry entry = Randomization.randomDataEntry();
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         assertEquals(303, redirectClient.getLink(entry.getUrlName(), entry.getGroupName()).statusCode);
@@ -144,7 +144,7 @@ public class DataResourceTest {
     public void addWitGroupWrongPassword() {
         AddInEntry entry = Randomization.randomDataEntry();
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         assertEquals(303, redirectClient.getLink(entry.getUrlName(), entry.getGroupName()).statusCode);
@@ -161,7 +161,7 @@ public class DataResourceTest {
     public void addWitGroupTakenUrl() {
         AddInEntry entry = Randomization.randomDataEntry();
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         resp = dataClient.add(entry);

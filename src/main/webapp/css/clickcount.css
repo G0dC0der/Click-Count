@@ -3,10 +3,28 @@
     margin-right:2px;
 }
 
-.md-unselected .menu-button {
-    color:rgba(0,0,0,0.54) !important;
-}
-
 md-progress-circular svg {
     top:initial;
+}
+
+.url-row {
+    margin-bottom:2px;
+}
+
+.add-button {
+    margin: initial !important;
+    top: 6px;
+}
+
+.content-container {
+    margin-left: 10px;
+    max-width: 99%;
+}
+
+.add-loader {
+    left: 15px;
+}
+
+.wrap-url {
+    word-break: break-all;
 }

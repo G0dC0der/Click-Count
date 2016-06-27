@@ -5,6 +5,7 @@ import com.pmoradi.essentials.UrlUnavailableException;
 import com.pmoradi.essentials.WebUtil;
 import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
+import com.pmoradi.rest.entries.GenericMessage;
 import com.pmoradi.system.Facade;
 
 import javax.inject.Inject;
@@ -73,7 +74,7 @@ public class DataResource {
                     logic.addUrl(in.getUrlName(), in.getLink(), in.getGroupName(), in.getPassword());
                     url = logic.constructRedirectURL(in.getGroupName(), in.getUrlName());
                 }
-                return Response.ok(url).build();
+                return Response.ok(new GenericMessage(url)).build();
             } catch (UrlUnavailableException e) {
                 out.setUrlError(e.getMessage());
             } catch (CredentialException e) {

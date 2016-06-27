@@ -2,6 +2,7 @@ package com.pmoradi.test.integration.clients;
 
 import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.AddOutEntry;
+import com.pmoradi.rest.entries.GenericMessage;
 import com.pmoradi.test.integration.rest.RestInfo;
 import com.pmoradi.test.integration.rest.RestResponse;
 
@@ -25,12 +26,12 @@ public class DataResourceClient {
         this.client = ClientBuilder.newClient();
     }
 
-    public RestResponse<String, AddOutEntry> add(AddInEntry entry) {
+    public RestResponse<GenericMessage, AddOutEntry> add(AddInEntry entry) {
         Response resp = client.target(restUrl)
                 .path("add")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.json(entry));
 
-        return RestResponse.fromResponse(resp, String.class, AddOutEntry.class);
+        return RestResponse.fromResponse(resp, GenericMessage.class, AddOutEntry.class);
     }
 }

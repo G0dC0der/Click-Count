@@ -59,7 +59,7 @@ public class ViewResourceTest {
     @Test
     public void viewAllInvalidPassword() {
         AddInEntry dataEntry = Randomization.randomDataEntry();
-        RestResponse<String, AddOutEntry> addResp = dataClient.add(dataEntry);
+        RestResponse<GenericMessage, AddOutEntry> addResp = dataClient.add(dataEntry);
         assertTrue(addResp.isOk());
 
         GroupView entry = new GroupView();
@@ -153,7 +153,7 @@ public class ViewResourceTest {
         AddInEntry entry = new AddInEntry();
         entry.setUrlName(Randomization.randomString());
         entry.setLink("http://google.se");
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         final int size = Randomization.randomInt(10) + 10;

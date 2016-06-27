@@ -6,13 +6,15 @@ angular.module("ClickCount").factory('DataService', ['$q', function($q) {
 
             $.ajax({
                 type: "POST",
-                url: 'http://localhost:9090/clicky/service/add',
+                url: 'service/add',
                 data: JSON.stringify(addEntry),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
                 success: function (data) {
-                    deferred.resolve(data);
+                    deferred.resolve(data.message);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    deferred.reject(jqXHR.statusText);
+                    deferred.reject(JSON.parse(jqXHR.responseText));
                 }
             });
 

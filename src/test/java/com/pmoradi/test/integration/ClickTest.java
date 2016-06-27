@@ -30,9 +30,9 @@ public class ClickTest {
         final long expectedClicks = Randomization.randomInt(200) + 200;
         final AddInEntry entry = Randomization.randomDataEntry();
 
-        RestResponse<String, AddOutEntry> addResp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> addResp = dataClient.add(entry);
         assertTrue(addResp.isOk());
-        assertFalse(addResp.successEntity.isEmpty());
+        assertFalse(addResp.successEntity.getMessage().isEmpty());
 
         for (int i = 0; i < expectedClicks; i++) {
             RestResponse<String, GenericMessage> reResp = redirectClient.getLink(entry.getUrlName(), entry.getGroupName());
@@ -54,9 +54,9 @@ public class ClickTest {
         final long expectedClicks = Randomization.randomInt(200) + 200;
         final AddInEntry entry = Randomization.randomDataEntry();
 
-        RestResponse<String, AddOutEntry> addResp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> addResp = dataClient.add(entry);
         assertTrue(addResp.isOk());
-        assertFalse(addResp.successEntity.isEmpty());
+        assertFalse(addResp.successEntity.getMessage().isEmpty());
 
         Parallelism.concurrentTasks((int)expectedClicks, ()-> {
             RestResponse<String, GenericMessage> reResp = redirectClient.getLink(entry.getUrlName(), entry.getGroupName());

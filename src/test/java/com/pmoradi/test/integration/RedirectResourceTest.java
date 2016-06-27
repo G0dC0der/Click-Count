@@ -30,7 +30,7 @@ public class RedirectResourceTest {
         entry.setUrlName(Randomization.randomString());
         entry.setLink("google.se");
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         RestResponse<String, GenericMessage> linkResp = redirectClient.getLink(entry.getUrlName());
@@ -42,7 +42,7 @@ public class RedirectResourceTest {
     public void validLinkWithRandomGroup() {
         AddInEntry entry = Randomization.randomDataEntry();
 
-        RestResponse<String, AddOutEntry> resp = dataClient.add(entry);
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
         RestResponse<String, GenericMessage> linkResp = redirectClient.getLink(entry.getUrlName(), entry.getGroupName());

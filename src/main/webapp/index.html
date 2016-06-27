@@ -19,13 +19,17 @@
         </md-toolbar>
 
         <div ng-controller="NavbarController" ng-cloak>
-            <md-content class="md-padding">
-                <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
-                    <md-nav-item ng-repeat="item in navbarItems" name="{{'page' + ($index + 1)}}" md-nav-click="nav(item.url)">
-                        <md-icon md-font-set="material-icons" class="menu-button">{{item.icon}}</md-icon>{{item.label}}
-                    </md-nav-item>
-                </md-nav-bar>
-                <div id="view-div" flex="98"></div>
+            <md-content>
+                <md-tabs md-selected="selectedIndex" md-border-bottom="true" md-dynamic-height="true" md-swipe-content="true">
+                    <md-tab ng-repeat="item in navbarItems">
+                        <md-tab-label>
+                            <md-icon md-font-set="material-icons" class="menu-button">{{item.icon}}</md-icon>{{item.label}}
+                        </md-tab-label>
+                        <md-tab-body>
+                            <div class="content-container" ng-include="item.url"></div>
+                        </md-tab-body>
+                    </md-tab>
+                </md-tabs>
             </md-content>
         </div>
 

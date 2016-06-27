@@ -41,6 +41,8 @@ public class AdminResourceClient {
                 .path(groupName)
                 .path("view")
                 .request(MediaType.APPLICATION_JSON)
+                .header("username", username)
+                .header("password", password)
                 .get();
 
         return RestResponse.fromResponse(resp, GroupEntry.class, GenericMessage.class);
@@ -53,6 +55,8 @@ public class AdminResourceClient {
                 .path(groupName)
                 .path("delete")
                 .request(MediaType.APPLICATION_JSON)
+                .header("username", username)
+                .header("password", password)
                 .delete();
 
         return RestResponse.fromResponse(resp, GenericMessage.class, GenericMessage.class);
@@ -66,6 +70,8 @@ public class AdminResourceClient {
                 .path(urlName)
                 .path("delete")
                 .request(MediaType.APPLICATION_JSON)
+                .header("username", username)
+                .header("password", password)
                 .delete();
 
         return RestResponse.fromResponse(resp, GenericMessage.class, GenericMessage.class);
@@ -77,6 +83,8 @@ public class AdminResourceClient {
                 .path("user")
                 .path("add")
                 .request(MediaType.APPLICATION_JSON)
+                .header("username", username)
+                .header("password", password)
                 .post(Entity.entity(userEntry, MediaType.APPLICATION_JSON));
 
         return RestResponse.fromResponse(resp, GenericMessage.class, GenericMessage.class);
@@ -88,6 +96,8 @@ public class AdminResourceClient {
                 .path("user")
                 .path("role")
                 .request(MediaType.APPLICATION_JSON)
+                .header("username", username)
+                .header("password", password)
                 .post(Entity.entity(userEntry, MediaType.APPLICATION_JSON));
 
         return RestResponse.fromResponse(resp, GenericMessage.class, GenericMessage.class);
@@ -99,6 +109,8 @@ public class AdminResourceClient {
                 .path("user")
                 .path("delete")
                 .request(MediaType.APPLICATION_JSON)
+                .header("username", username)
+                .header("password", password)
                 .post(Entity.entity(userEntry, MediaType.APPLICATION_JSON));
 
         return RestResponse.fromResponse(resp, GenericMessage.class, GenericMessage.class);
