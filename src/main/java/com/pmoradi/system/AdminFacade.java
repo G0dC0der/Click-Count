@@ -1,12 +1,10 @@
 package com.pmoradi.system;
 
-import com.pmoradi.entities.Group;
 import com.pmoradi.entities.URL;
-import com.pmoradi.entities.User;
-import com.pmoradi.entities.dao.GroupDao;
+import com.pmoradi.entities.Collaborator;
+import com.pmoradi.entities.dao.NamespaceDao;
 import com.pmoradi.entities.dao.URLDao;
-import com.pmoradi.entities.dao.UserDao;
-import com.pmoradi.essentials.Marshaller;
+import com.pmoradi.entities.dao.CollaboratorDao;
 import com.pmoradi.rest.entries.GroupEntry;
 import com.pmoradi.security.Role;
 import com.pmoradi.security.SecureStrings;
@@ -18,17 +16,17 @@ import javax.ws.rs.NotFoundException;
 public class AdminFacade {
 
     @Inject
-    private GroupDao groupDAO;
+    private NamespaceDao namespaceDAO;
     @Inject
     private URLDao urlDAO;
     @Inject
-    private UserDao userDao;
+    private CollaboratorDao collaboratorDao;
 
     public void deleteGroup(String groupName) throws NotFoundException {
-        Group group = groupDAO.findByName(groupName);
-        if(group == null)
+//        Group group = groupDAO.findByName(groupName);
+//        if(group == null)
             throw new NotFoundException("Group not found.");
-        groupDAO.delete(group);
+//        groupDAO.delete(group);
     }
 
     public void deleteURL(String groupName, String urlName) throws NotFoundException {
@@ -39,36 +37,36 @@ public class AdminFacade {
     }
 
     public void addUser(String username, String password, Role role) throws CredentialException {
-        if(userDao.findByName(username) != null) {
-            throw new CredentialException("Username is taken.");
-        }
-
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(SecureStrings.md5(password + SecureStrings.getSalt()));
-        user.setRole(role);
-        userDao.save(user);
+//        if(collaboratorDao.findByName(username) != null) {
+//            throw new CredentialException("Username is taken.");
+//        }
+//
+//        Collaborator user = new Collaborator();
+//        user.setUsername(username);
+//        user.setPassword(SecureStrings.md5(password + SecureStrings.getSalt()));
+//        user.setRole(role);
+//        collaboratorDao.save(user);
     }
 
     public void removeUser(String username) throws NotFoundException {
-        User user = userDao.findByName(username);
+        Collaborator user = collaboratorDao.findByName(username);
         if(user == null)
             throw new NotFoundException("User not found.");
-        userDao.deleteByName(username);
+        collaboratorDao.deleteByName(username);
     }
 
     public void changeRole(String username, Role newRole) throws NotFoundException {
-        User user = userDao.findByName(username);
+        Collaborator user = collaboratorDao.findByName(username);
         if(user == null)
             throw new NotFoundException("User not found.");
-        userDao.updateRole(username, newRole);
+        collaboratorDao.updateRole(username, newRole);
     }
 
     public GroupEntry viewGroupData(String groupName) throws NotFoundException {
-        Group group = groupDAO.findByName(groupName);
-        if(group == null)
+//        Group group = groupDAO.findByName(groupName);
+//        if(group == null)
             throw new NotFoundException("Group not found.");
 
-        return Marshaller.marshall(group);
+//        return Marshaller.marshall(group);
     }
 }

@@ -1,8 +1,8 @@
 package com.pmoradi.system;
 
-import com.pmoradi.entities.dao.GroupDao;
+import com.pmoradi.entities.dao.NamespaceDao;
 import com.pmoradi.entities.dao.URLDao;
-import com.pmoradi.entities.dao.UserDao;
+import com.pmoradi.entities.dao.CollaboratorDao;
 import com.pmoradi.security.AuthenticationFilter;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.hk2.api.Factory;
@@ -35,9 +35,9 @@ public class SystemSetup extends ResourceConfig {
         register(new AbstractBinder() {
             @Override
             protected void configure() {
-                bindFactory(InjectFactory.getGroupDaoFactory(sessionFactory)).to(GroupDao.class).in(Singleton.class);
+                bindFactory(InjectFactory.getGroupDaoFactory(sessionFactory)).to(NamespaceDao.class).in(Singleton.class);
                 bindFactory(InjectFactory.getURLDaoFactory(sessionFactory)).to(URLDao.class).in(Singleton.class);
-                bindFactory(InjectFactory.getUserDaoFactory(sessionFactory)).to(UserDao.class).in(Singleton.class);
+                bindFactory(InjectFactory.getUserDaoFactory(sessionFactory)).to(CollaboratorDao.class).in(Singleton.class);
 
                 InputStream properties = Thread.currentThread().getContextClassLoader().getResourceAsStream("connection.properties");
                 bindFactory(InjectFactory.getApplicationFactory(properties)).to(Application.class).in(Singleton.class);

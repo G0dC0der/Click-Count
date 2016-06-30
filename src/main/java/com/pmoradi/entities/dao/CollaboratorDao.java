@@ -1,43 +1,42 @@
 package com.pmoradi.entities.dao;
 
-import com.pmoradi.entities.User;
+import com.pmoradi.entities.Collaborator;
 import com.pmoradi.security.Role;
 import com.pmoradi.system.SessionFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-public class UserDao {
+public class CollaboratorDao {
 
     private final SessionFactory sessionFactory;
 
-    public UserDao(final SessionFactory sessionFactory) {
+    public CollaboratorDao(final SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
-    public User findByName(String username) {
+    public Collaborator findByName(String username) {
         EntityManager manager = sessionFactory.newSession();
-        Query query = manager.createQuery("from User where username = :username");
+        Query query = manager.createQuery("from Collaborator where username = :username");
         query.setParameter("username", username);
 
-        User user = query.getResultList().isEmpty() ? null : (User) query.getSingleResult();
+        Collaborator user = query.getResultList().isEmpty() ? null : (Collaborator) query.getSingleResult();
 
         manager.close();
         return user;
-
     }
 
     public void deleteByName(String username) {
         EntityManager manager = sessionFactory.newSession();
         manager.getTransaction().begin();
-        Query query = manager.createQuery("delete from User where username = :username");
+        Query query = manager.createQuery("delete from Collaborator where username = :username");
         query.setParameter("username", username);
         query.executeUpdate();
         manager.getTransaction().commit();
         manager.close();
     }
 
-    public void save(User user) {
+    public void save(Collaborator user) {
         EntityManager manager = sessionFactory.newSession();
         manager.getTransaction().begin();
         manager.persist(user);
@@ -48,7 +47,7 @@ public class UserDao {
     public void updateRole(String username, Role newRole) {
         EntityManager manager = sessionFactory.newSession();
         manager.getTransaction().begin();
-        Query query = manager.createQuery("update User set role = :role where username = :username");
+        Query query = manager.createQuery("update Collaborator set role = :role where username = :username");
         query.setParameter("role", newRole);
         query.setParameter("username", username);
         query.executeUpdate();

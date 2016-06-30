@@ -6,8 +6,10 @@
 
     <persistence-unit name="hibernate-engine" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>com.pmoradi.entities.Group</class>
+        <class>com.pmoradi.entities.Namespace</class>
         <class>com.pmoradi.entities.URL</class>
+        <!--<class>com.pmoradi.entities.Collaborator</class>-->
+        <!--<class>com.pmoradi.entities.Client</class>-->
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />

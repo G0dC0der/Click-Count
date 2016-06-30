@@ -1,8 +1,8 @@
 package com.pmoradi.system;
 
-import com.pmoradi.entities.dao.GroupDao;
+import com.pmoradi.entities.dao.NamespaceDao;
 import com.pmoradi.entities.dao.URLDao;
-import com.pmoradi.entities.dao.UserDao;
+import com.pmoradi.entities.dao.CollaboratorDao;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.ServiceLocator;
 
@@ -44,14 +44,14 @@ class InjectFactory {
         }
     }
 
-    static Factory<GroupDao> getGroupDaoFactory(SessionFactory sessionFactory){
-        return new Factory<GroupDao>() {
+    static Factory<NamespaceDao> getGroupDaoFactory(SessionFactory sessionFactory){
+        return new Factory<NamespaceDao>() {
             @Override
-            public GroupDao provide() {
-                return new GroupDao(sessionFactory);
+            public NamespaceDao provide() {
+                return new NamespaceDao(sessionFactory);
             }
 
-            @Override public void dispose(GroupDao groupDao) {}
+            @Override public void dispose(NamespaceDao namespaceDao) {}
         };
     }
 
@@ -66,14 +66,14 @@ class InjectFactory {
         };
     }
 
-    static Factory<UserDao> getUserDaoFactory(SessionFactory sessionFactory){
-        return new Factory<UserDao>() {
+    static Factory<CollaboratorDao> getUserDaoFactory(SessionFactory sessionFactory){
+        return new Factory<CollaboratorDao>() {
             @Override
-            public UserDao provide() {
-                return new UserDao(sessionFactory);
+            public CollaboratorDao provide() {
+                return new CollaboratorDao(sessionFactory);
             }
 
-            @Override public void dispose(UserDao userDao) {}
+            @Override public void dispose(CollaboratorDao collaboratorDao) {}
         };
     }
 

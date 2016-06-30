@@ -1,46 +1,66 @@
 package com.pmoradi.entities;
 
+import com.pmoradi.entities.URL.URLIdentifier;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.*;
-import java.sql.Timestamp;
+import javax.persistence.Entity;
 
 @Entity
-@Table(name = "urls", indexes = {@Index(columnList = "url", name = "url_index", unique = false)})
+@IdClass(URLIdentifier.class)
 public class URL {
 
+    public static class URLIdentifier implements java.io.Serializable{
+        private Namespace namespace;
+        private String alias;
+
+        public Namespace getNamespace() {
+            return namespace;
+        }
+
+        public void setNamespace(Namespace namespace) {
+            this.namespace = namespace;
+        }
+
+        public String getAlias() {
+            return alias;
+        }
+
+        public void setAlias(String alias) {
+            this.alias = alias;
+        }
+    }
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "namespace")
+    @Cascade(CascadeType.ALL)
+    private Namespace namespace;
 
-    @Column(nullable = false)
-    private String url;
+    @Id
+    private String alias;
 
-    @Column(nullable = false)
     private String link;
 
-    @Column(name = "add_date")
-    private Timestamp addDate;
+    private Long clicks;
 
-    @ManyToOne
-    @JoinColumn(name = "group_fk")
-    private Group group;
+    private Long added;
 
-    @Column(nullable = false)
-    private Long clicks = 0L;
-
-    public Integer getId() {
-        return id;
+    public Namespace getNamespace() {
+        return namespace;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setNamespace(Namespace namespace) {
+        this.namespace = namespace;
     }
 
-    public String getUrl() {
-        return url;
+    public String getAlias() {
+        return alias;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getLink() {
@@ -51,27 +71,19 @@ public class URL {
         this.link = link;
     }
 
-    public Timestamp getAddDate() {
-        return addDate;
-    }
-
-    public void setAddDate(Timestamp addDate) {
-        this.addDate = addDate;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
-    }
-
     public Long getClicks() {
         return clicks;
     }
 
     public void setClicks(Long clicks) {
         this.clicks = clicks;
+    }
+
+    public Long getAdded() {
+        return added;
+    }
+
+    public void setAdded(Long added) {
+        this.added = added;
     }
 }

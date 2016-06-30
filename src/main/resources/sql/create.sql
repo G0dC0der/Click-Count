@@ -21,16 +21,17 @@ CREATE TABLE URL
     Alias      VARCHAR(256) NOT NULL,
     Link       VARCHAR(256) NOT NULL,
     Clicks     BIGINT UNSIGNED DEFAULT 0,
+    Added      BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (Namespace, Alias),
     FOREIGN KEY (Namespace) REFERENCES Namespace(Name)
 );
 
 CREATE TABLE Client
 (
-    Identifier VARCHAR(15) PRIMARY KEY,
-    Expire BIGINT UNSIGNED NOT NULL,
-    Namespace VARCHAR(50) NOT NULL,
-    Alias VARCHAR(255) NOT NULL,
+    Identifier VARCHAR(15)     PRIMARY KEY,
+    Expire     BIGINT UNSIGNED NOT NULL,
+    Namespace  VARCHAR(50)     NOT NULL,
+    Alias      VARCHAR(255)    NOT NULL,
     FOREIGN KEY (Namespace, Alias) REFERENCES URL(Namespace, Alias)
 );
 
