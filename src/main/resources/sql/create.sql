@@ -2,33 +2,26 @@ DROP DATABASE clickcount_db;
 CREATE DATABASE clickcount_db;
 USE clickcount_db;
 
-CREATE TABLE groups(
-    id INT NOT NULL auto_increment,
-	group_name VARCHAR(50) NOT NULL,
-	password VARCHAR(50) NOT NULL,
-	PRIMARY KEY (id)
+CREATE TABLE users
+(
+    Username  VARCHAR(50)  NOT NULL PRIMARY KEY,
+    Password  VARCHAR(255) NOT NULL,
+    Role      VARCHAR      NOT NULL,
 );
-
-CREATE TABLE urls(
-	id INT NOT NULL auto_increment,
-	url VARCHAR(80) NOT NULL,
-	link VARCHAR(200) NOT NULL,
-	add_date TIMESTAMP,
-	clicks BIGINT UNSIGNED NOT NULL,
-	group_fk INT,
-	PRIMARY KEY (id),
-	FOREIGN KEY (group_fk) REFERENCES groups(id)
-);
-
-CREATE TABLE users(
-    user_name VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL,
-    role VARCHAR(50) NOT NULL,
-    PRIMARY KEY (user_name)
-);
-
-CREATE UNIQUE INDEX unique_group ON groups(group_name);
-CREATE UNIQUE INDEX username_index ON users(user_name);
-CREATE INDEX url_index ON urls(url);
-INSERT INTO groups (group_name, password) VALUES ('default', '');
 INSERT INTO users (user_name, password, role) VALUES ('admin', '95f47c8ba31358731223bdf16b87eecc', 'ADMINISTRATOR');
+
+CREATE TABLE Namespace
+(
+    Name     VARCHAR(50) PRIMARY KEY,
+    Password VARCHAR(255)
+);
+
+CREATE TABLE URL
+(
+    Namespace  VARCHAR(50)  NOT NULL,
+    Alias      VARCHAR(256) NOT NULL,
+    Link       VARCHAR(256) NOT NULL,
+    Clicks     BIGINT UNSIGNED DEFAULT 0,
+    CONSTRAINT URL_PK PRIMARY KEY(Namespace, Alias),
+    CONSTRAINT URL_FK FOREIGN KEY my_fk (Namespace) REFERENCES Namespace(Name)
+);
