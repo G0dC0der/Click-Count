@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 @IdClass(URLIdentifier.class)
 public class URL {
 
-    public static class URLIdentifier implements java.io.Serializable{
+    static class URLIdentifier implements java.io.Serializable{
         private Namespace namespace;
         private String alias;
 
@@ -34,8 +34,8 @@ public class URL {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "namespace")
-    @Cascade(CascadeType.ALL)
     private Namespace namespace;
 
     @Id
@@ -43,9 +43,19 @@ public class URL {
 
     private String link;
 
-    private Long clicks;
+    private Long clicks = 0L;
 
     private Long added;
+
+    public URL() {
+    }
+
+    public URL(String alias, String link, Long clicks, Long added) {
+        this.alias = alias;
+        this.link = link;
+        this.clicks = clicks;
+        this.added = added;
+    }
 
     public Namespace getNamespace() {
         return namespace;

@@ -1,11 +1,15 @@
 package com.pmoradi.test;
 
+import com.pmoradi.entities.Client;
 import com.pmoradi.entities.Namespace;
 import com.pmoradi.entities.URL;
+import com.pmoradi.entities.dao.ClientDao;
 import com.pmoradi.entities.dao.NamespaceDao;
 import com.pmoradi.entities.dao.URLDao;
-import com.pmoradi.system.SessionFactory;
+import com.pmoradi.essentials.Loop;
+import com.pmoradi.system.SessionProvider;
 import com.pmoradi.test.util.Randomization;
+import org.hibernate.SessionFactory;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -13,41 +17,38 @@ import org.junit.Test;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 public class NewTests {
 
-    private static EntityManagerFactory entityManagerFactory;
-    private SessionFactory sessionFactory;
+    private static SessionFactory sessionFactory;
+    private SessionProvider sessionProvider;
 
     @BeforeClass
     public static void setup() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("hibernate-engine");
+        sessionFactory = (SessionFactory) Persistence.createEntityManagerFactory("hibernate-engine");
     }
 
     @AfterClass
     public static void clean() {
-        entityManagerFactory.close();
+        sessionFactory.close();
     }
 
     @Before
     public void prepareTest() {
-        sessionFactory = entityManagerFactory::createEntityManager;
+        sessionProvider = sessionFactory::openSession;
     }
 
     @Test
-    public void namespaceTest() {
-        NamespaceDao dao = new NamespaceDao(sessionFactory);
-        URLDao urlDao = new URLDao(sessionFactory);
+    public void namespaceTest() throws InterruptedException {
+        NamespaceDao nameDao = new NamespaceDao(sessionProvider);
+        URLDao urlDao = new URLDao(sessionProvider);
+        ClientDao clientDao = new ClientDao(sessionProvider);
 
         Namespace namespace = new Namespace();
-        namespace.setName(Randomization.randomString());
-        namespace.setPassword(Randomization.randomString());
+        namespace.setName(Randomization.randomString() + "NAME");
+        namespace.setPassword(Randomization.randomString() + "PASSWORD");
 
-        dao.save(namespace);
+        nameDao.save(namespace);
 
         URL url = new URL();
         url.setNamespace(namespace);
@@ -57,22 +58,24 @@ public class NewTests {
 
         urlDao.save(url);
 
-        System.out.println(namespace.getName());
-        System.out.println(url.getAlias());
+        URL found = urlDao.findById(namespace.getName(), url.getAlias());
+        found = urlDao.findById(url.getNamespace().getName(), url.getAlias());
 
-//        URL url2 = new URL();
-//        url2.setNamespace(namespace);
-//        url2.setLink("google.se");
-//        url2.setAdded(System.currentTimeMillis());
-//        url2.setAlias(Randomization.randomString());
-//
-//        Set<URL> urls = new HashSet<>();
-//        urls.add(url);
-//        urls.add(url2);
-//
-//        namespace.setUrls(urls);
+        Client client = new Client();
+        client.setIdentifier(Randomization.randomString());
+        client.setAlias(Randomization.randomString());
+        client.setNamespace(Randomization.randomString());
+        client.setExpire(System.currentTimeMillis() + 10000);
 
-//        Namespace sp2 = dao.findByName(namespace.getName());
-//        System.out.println(sp2.getUrls().size());
+        clientDao.save(client);
+
+        while (true) {
+            Client client1 = clientDao.findByIdentifier(client.getIdentifier());
+            if(client1 == null)
+                break;
+            clientDao.deleteAllExpired();
+
+            Thread.sleep(100);
+        }
     }
 }

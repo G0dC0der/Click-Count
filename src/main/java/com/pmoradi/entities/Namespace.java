@@ -1,11 +1,9 @@
 package com.pmoradi.entities;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Namespace {
@@ -15,9 +13,16 @@ public class Namespace {
 
     private String password;
 
-    @OneToMany(mappedBy = "namespace", fetch = FetchType.LAZY)
-    @Cascade(CascadeType.DELETE)
-    private Set<URL> urls;
+    @OneToMany(mappedBy = "namespace")
+    private List<URL> urls;
+
+    public Namespace() {
+    }
+
+    public Namespace(String name, String password) {
+        this.name = name;
+        this.password = password;
+    }
 
     public String getName() {
         return name;
@@ -35,11 +40,11 @@ public class Namespace {
         this.password = password;
     }
 
-    public Set<URL> getUrls() {
+    public List<URL> getUrls() {
         return urls;
     }
 
-    public void setUrls(Set<URL> urls) {
+    public void setUrls(List<URL> urls) {
         this.urls = urls;
     }
 }

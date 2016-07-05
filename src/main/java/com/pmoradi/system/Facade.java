@@ -46,7 +46,7 @@ public class Facade {
 //            if (group != null && !hash.equals(group.getPassword()))
 //                throw new CredentialException("Group name and password mismatch.");
 //
-//            URL url = urlDAO.findByGroupAndUrl(groupName, urlName);
+//            URL url = urlDAO.findById(groupName, urlName);
 //            if (url != null)
 //                throw new UrlUnavailableException("The URL for the given group is already in use.");
 //
@@ -75,7 +75,7 @@ public class Facade {
 //        Key key = manager.lock("url:" + urlName);
 //
 //        try {
-//            URL url = urlDAO.findByGroupAndUrl("default", urlName);
+//            URL url = urlDAO.findById("default", urlName);
 //            if(url != null)
 //                throw new UrlUnavailableException("The URL for the default group is already in use.");
 //
@@ -92,7 +92,7 @@ public class Facade {
     }
 
     public String getLinkAndClick(String groupName, String urlName) {
-//        URL url = urlDAO.findByGroupAndUrl(groupName, urlName);
+//        URL url = urlDAO.findById(groupName, urlName);
 //        if (url != null) {
 //            executorService.submit(()-> urlDAO.click(url));
 //            return url.getLink();
@@ -101,7 +101,7 @@ public class Facade {
     }
 
     public UrlEntry getUrlData(String groupName, String urlName) {
-//        URL url = urlDAO.findByGroupAndUrl(groupName, urlName);
+//        URL url = urlDAO.findById(groupName, urlName);
 //        return url != null ? Marshaller.marshall(url) : null;
         return null;
     }
@@ -114,10 +114,6 @@ public class Facade {
         return null;
     }
 
-    public long totalURLs() {
-        return urlDAO.urls();
-    }
-
     public void deleteUrl(String groupName, String password, String urlName) throws CredentialException, NotFoundException {
 //        String hash = SecureStrings.md5(password + SecureStrings.getSalt());
 //
@@ -125,7 +121,7 @@ public class Facade {
 //        if (group == null || !hash.equals(group.getPassword()))
 //            throw new CredentialException("Group name and password mismatch.");
 //
-//        URL url = urlDAO.findByGroupAndUrl(groupName, urlName);
+//        URL url = urlDAO.findById(groupName, urlName);
 //        if(url == null)
 //            throw new NotFoundException("URL not found.");
 //

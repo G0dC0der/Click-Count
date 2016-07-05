@@ -18,7 +18,7 @@ CREATE TABLE Namespace
 CREATE TABLE URL
 (
     Namespace  VARCHAR(50)  NOT NULL,
-    Alias      VARCHAR(256) NOT NULL,
+    Alias      VARCHAR(50)  NOT NULL,
     Link       VARCHAR(256) NOT NULL,
     Clicks     BIGINT UNSIGNED DEFAULT 0,
     Added      BIGINT UNSIGNED NOT NULL,
@@ -31,8 +31,7 @@ CREATE TABLE Client
     Identifier VARCHAR(15)     PRIMARY KEY,
     Expire     BIGINT UNSIGNED NOT NULL,
     Namespace  VARCHAR(50)     NOT NULL,
-    Alias      VARCHAR(255)    NOT NULL,
-    FOREIGN KEY (Namespace, Alias) REFERENCES URL(Namespace, Alias)
+    Alias      VARCHAR(50)     NOT NULL
 );
 
 INSERT INTO Collaborator (Username, Password, Role) VALUES ('admin', '95f47c8ba31358731223bdf16b87eecc', 'ADMINISTRATOR');

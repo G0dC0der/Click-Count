@@ -44,33 +44,33 @@ class InjectFactory {
         }
     }
 
-    static Factory<NamespaceDao> getGroupDaoFactory(SessionFactory sessionFactory){
+    static Factory<NamespaceDao> getGroupDaoFactory(SessionProvider sessionProvider){
         return new Factory<NamespaceDao>() {
             @Override
             public NamespaceDao provide() {
-                return new NamespaceDao(sessionFactory);
+                return new NamespaceDao(sessionProvider);
             }
 
             @Override public void dispose(NamespaceDao namespaceDao) {}
         };
     }
 
-    static Factory<URLDao> getURLDaoFactory(SessionFactory sessionFactory){
+    static Factory<URLDao> getURLDaoFactory(SessionProvider sessionProvider){
         return new Factory<URLDao>() {
             @Override
             public URLDao provide() {
-                return new URLDao(sessionFactory);
+                return new URLDao(sessionProvider);
             }
 
             @Override public void dispose(URLDao urlDao) {}
         };
     }
 
-    static Factory<CollaboratorDao> getUserDaoFactory(SessionFactory sessionFactory){
+    static Factory<CollaboratorDao> getUserDaoFactory(SessionProvider sessionProvider){
         return new Factory<CollaboratorDao>() {
             @Override
             public CollaboratorDao provide() {
-                return new CollaboratorDao(sessionFactory);
+                return new CollaboratorDao(sessionProvider);
             }
 
             @Override public void dispose(CollaboratorDao collaboratorDao) {}

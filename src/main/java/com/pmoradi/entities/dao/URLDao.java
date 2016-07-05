@@ -1,87 +1,66 @@
 package com.pmoradi.entities.dao;
 
 import com.pmoradi.entities.URL;
-import com.pmoradi.system.SessionFactory;
+import com.pmoradi.system.SessionProvider;
 import org.hibernate.Session;
-
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.List;
 
 public class URLDao {
 
-    private final SessionFactory sessionFactory;
+    private final SessionProvider sessionProvider;
 
-    public URLDao(final SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public URLDao(final SessionProvider sessionProvider) {
+        this.sessionProvider = sessionProvider;
     }
 
     public void save(URL url){
-        EntityManager manager = sessionFactory.newSession();
-        Session session = manager.unwrap(Session.class);
+        Session session = sessionProvider.newSession();
         session.getTransaction().begin();
         session.saveOrUpdate(url);
         session.getTransaction().commit();
         session.close();
-//        manager.getTransaction().begin();
-//        manager.persist(url);
-//        manager.getTransaction().commit();
-//
-//        manager.close();
     }
 
     public void delete(URL url){
-//        EntityManager manager = sessionFactory.newSession();
-//        manager.getTransaction().begin();
-//        manager.remove(manager.contains(url) ? url : manager.merge(url));
-//        manager.getTransaction().commit();
-//        manager.close();
+        Session session = sessionProvider.newSession();
+        session.getTransaction().begin();
+        session.remove(session.contains(url) ? url : session.merge(url));
+        session.getTransaction().commit();
+        session.close();
     }
 
-    public URL findByGroupAndUrl(String groupName, String urlName){
-//        EntityManager manager = sessionFactory.newSession();
-//
-//        Query query = manager.createQuery("from URL as u inner join u.group as g where u.url = :urlName and g.groupName = :groupName");
-//        query.setParameter("urlName", urlName);
-//        query.setParameter("groupName", groupName);
-//        URL url = query.getResultList().isEmpty() ? null : (URL)((Object[])query.getSingleResult())[0];
-//        manager.close();
-//
-//        return url;
-        return null;
+    public void bulkDelete(String namespace) {
+        Session session = sessionProvider.newSession();
+        session.getTransaction().begin();
+        Query query = session.createQuery("delete from URL u where u.namespace.name = :name");
+        query.setParameter("name", namespace);
+        query.executeUpdate();
+        session.getTransaction().commit();
+        session.close();
     }
 
-    public List<URL> findByLink(String link){
-//        EntityManager manager = sessionFactory.newSession();
-//        Query query = manager.createQuery("from URL where link = :link");
-//        query.setParameter("link", link);
-//        List<URL> urls = query.getResultList();
-//        manager.close();
-//
-//        return urls;
-        return null;
+    public URL findById(String namespace, String alias){
+        Session session = sessionProvider.newSession();
+        Query query = session.createQuery("from URL where alias = :alias and namespace.name = :name");
+        query.setParameter("name", namespace);
+        query.setParameter("alias", alias);
+
+        URL url = query.getResultList().size() == 0 ? null : (URL) query.getSingleResult();
+
+        session.close();
+        return url;
     }
 
-    public long urls() {
-//        EntityManager manager = sessionFactory.newSession();
-//
-//        Query query = manager.createQuery("select count(*) from URL");
-//        long count = (long) query.getResultList().get(0);
-//
-//        manager.close();
-//        return count;
-        return -1;
-    }
+    public void click(String namespace, String alias) {
+        Session session = sessionProvider.newSession();
+        session.getTransaction().begin();
 
-    public void click(URL url) {
-//        EntityManager manager = sessionFactory.newSession();
-//        manager.getTransaction().begin();
-//
-//        Query query  = manager.createQuery("update URL as u set u.clicks = u.clicks + 1 where u.id = :id");
-//        query.setParameter("id", url.getId());
-//        query.executeUpdate();
-//
-//        manager.getTransaction().commit();
-//        manager.close();
+        Query query  = session.createQuery("update URL as u set u.clicks = u.clicks + 1 where u.alias = :alias and u.namespace.name = :name");
+        query.setParameter("alias", alias);
+        query.setParameter("name", namespace);
+        query.executeUpdate();
+
+        session.getTransaction().commit();
+        session.close();
     }
 }

@@ -10,6 +10,7 @@ import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.hibernate.SessionFactory;
 
 import javax.inject.Singleton;
 import javax.persistence.EntityManagerFactory;
@@ -27,17 +28,17 @@ public class SystemSetup extends ResourceConfig {
         register(JacksonFeature.class);
         register(AuthenticationFilter.class);
 
-        final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("hibernate-engine");
-        final SessionFactory sessionFactory = entityManagerFactory::createEntityManager;
+        final SessionFactory sessionFactory = (SessionFactory) Persistence.createEntityManagerFactory("hibernate-engine");
+        final SessionProvider sessionProvider = sessionFactory::openSession;
 
-        Runtime.getRuntime().addShutdownHook(new Thread(entityManagerFactory::close));
+        Runtime.getRuntime().addShutdownHook(new Thread(sessionFactory::close));
 
         register(new AbstractBinder() {
             @Override
             protected void configure() {
-                bindFactory(InjectFactory.getGroupDaoFactory(sessionFactory)).to(NamespaceDao.class).in(Singleton.class);
-                bindFactory(InjectFactory.getURLDaoFactory(sessionFactory)).to(URLDao.class).in(Singleton.class);
-                bindFactory(InjectFactory.getUserDaoFactory(sessionFactory)).to(CollaboratorDao.class).in(Singleton.class);
+                bindFactory(InjectFactory.getGroupDaoFactory(sessionProvider)).to(NamespaceDao.class).in(Singleton.class);
+                bindFactory(InjectFactory.getURLDaoFactory(sessionProvider)).to(URLDao.class).in(Singleton.class);
+                bindFactory(InjectFactory.getUserDaoFactory(sessionProvider)).to(CollaboratorDao.class).in(Singleton.class);
 
                 InputStream properties = Thread.currentThread().getContextClassLoader().getResourceAsStream("connection.properties");
                 bindFactory(InjectFactory.getApplicationFactory(properties)).to(Application.class).in(Singleton.class);

@@ -7,7 +7,6 @@ import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.entities.dao.CollaboratorDao;
 import com.pmoradi.rest.entries.GroupEntry;
 import com.pmoradi.security.Role;
-import com.pmoradi.security.SecureStrings;
 
 import javax.inject.Inject;
 import javax.security.auth.login.CredentialException;
@@ -30,7 +29,7 @@ public class AdminFacade {
     }
 
     public void deleteURL(String groupName, String urlName) throws NotFoundException {
-        URL url = urlDAO.findByGroupAndUrl(groupName, urlName);
+        URL url = urlDAO.findById(groupName, urlName);
         if(url == null)
             throw new NotFoundException("The URL was not found.");
         urlDAO.delete(url);
