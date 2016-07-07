@@ -27,7 +27,7 @@ public class AdminResource {
     @Path("group/{groupName}/view")
     public Response viewGroup(@PathParam("groupName") String groupName) {
         try {
-            GroupEntry data = adminFacade.viewGroupData(groupName);
+            GroupEntry data = adminFacade.sneakPeek(groupName);
             return Response.ok(data).build();
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).entity(new GenericMessage("Group '" + groupName + "' was not found.")).build();

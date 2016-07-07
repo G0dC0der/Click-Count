@@ -35,3 +35,4 @@ CREATE TABLE Client
 );
 
 INSERT INTO Collaborator (Username, Password, Role) VALUES ('admin', '95f47c8ba31358731223bdf16b87eecc', 'ADMINISTRATOR');
+INSERT INTO Namespace (Name, Password) VALUES ('default', '');

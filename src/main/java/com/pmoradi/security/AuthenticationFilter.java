@@ -24,26 +24,26 @@ public class AuthenticationFilter implements ContainerRequestFilter{
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-//        final Role requiredRole = findRole();
-//
-//        if(requiredRole != null) {
-//            String username = getHeader(requestContext, "username");
-//            String password = getHeader(requestContext, "password");
-//
-//            if (username == null || password == null) {
-//                requestContext.abortWith(Response.status(Status.FORBIDDEN).entity(new GenericMessage("Incomplete request. Credentials not found in header.")).build());
-//                return;
-//            }
-//
-//            Collaborator user = collaboratorDao.findByName(username);
-//            if (user == null || !user.getPassword().equals(SecureStrings.md5(password + SecureStrings.getSalt()))) {
-//                requestContext.abortWith(Response.status(Status.UNAUTHORIZED).entity(new GenericMessage("Access denied! Wrong username and password combination.")).build());
-//                return;
-//            }
-//            if (requiredRole.isAbove(user.getRole())) {
-//                requestContext.abortWith(Response.status(Status.UNAUTHORIZED).entity(new GenericMessage("The request was aborted. Role not sufficient enough.")).build());
-//            }
-//        }
+        final Role requiredRole = findRole();
+
+        if(requiredRole != null) {
+            String username = getHeader(requestContext, "username");
+            String password = getHeader(requestContext, "password");
+
+            if (username == null || password == null) {
+                requestContext.abortWith(Response.status(Status.FORBIDDEN).entity(new GenericMessage("Incomplete request. Credentials not found in header.")).build());
+                return;
+            }
+
+            Collaborator user = collaboratorDao.findByName(username);
+            if (user == null || !user.getPassword().equals(SecureStrings.md5(password + SecureStrings.getSalt()))) {
+                requestContext.abortWith(Response.status(Status.UNAUTHORIZED).entity(new GenericMessage("Access denied! Wrong username and password combination.")).build());
+                return;
+            }
+            if (requiredRole.isAbove(user.getRole())) {
+                requestContext.abortWith(Response.status(Status.UNAUTHORIZED).entity(new GenericMessage("The request was aborted. Role not sufficient enough.")).build());
+            }
+        }
     }
 
     private String getHeader(ContainerRequestContext requestContext, String key) {

@@ -1,5 +1,6 @@
 package com.pmoradi.rest;
 
+import com.pmoradi.essentials.WebUtil;
 import com.pmoradi.rest.entries.GenericMessage;
 import com.pmoradi.system.Facade;
 
@@ -23,8 +24,9 @@ public class RedirectResource {
     @GET
     @Path("{url}")
     public Response redirect(@PathParam("url") String urlName) {
-
+        urlName = WebUtil.shrink(urlName);
         String link = logic.getLinkAndClick("default", urlName.toLowerCase());
+
         if(link != null) {
             return Response.seeOther(UriBuilder.fromPath(link).build()).build();
         } else {
@@ -36,8 +38,10 @@ public class RedirectResource {
     @Path("{group}/{url}")
     public Response redirect(@PathParam("group") String groupName,
                              @PathParam("url") String urlName) {
+        groupName = WebUtil.shrink(groupName);
+        urlName = WebUtil.shrink(urlName);
+        String link = logic.getLinkAndClick(groupName, urlName);
 
-        String link = logic.getLinkAndClick(groupName.toLowerCase(), urlName.toLowerCase());
         if(link != null) {
             return Response.seeOther(UriBuilder.fromPath(link).build()).build();
         } else {

@@ -1,8 +1,8 @@
 package com.pmoradi.system;
 
+import com.pmoradi.entities.dao.CollaboratorDao;
 import com.pmoradi.entities.dao.NamespaceDao;
 import com.pmoradi.entities.dao.URLDao;
-import com.pmoradi.entities.dao.CollaboratorDao;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.ServiceLocator;
 
@@ -77,7 +77,7 @@ class InjectFactory {
         };
     }
 
-    static Factory<Facade> getFacadeFactory(LockManager manager) {
+    static Factory<Facade> getFacadeFactory() {
         return new Factory<Facade>() {
 
             @Context
@@ -85,7 +85,7 @@ class InjectFactory {
 
             @Override
             public Facade provide() {
-                Facade facade = new Facade(manager, Executors.newFixedThreadPool(500));
+                Facade facade = new Facade(Executors.newFixedThreadPool(500));
                 locator.inject(facade);
                 return facade;
             }

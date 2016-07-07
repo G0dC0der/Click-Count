@@ -16,7 +16,7 @@ public class URLDao {
     public void save(URL url){
         Session session = sessionProvider.newSession();
         session.getTransaction().begin();
-        session.saveOrUpdate(url);
+        session.save(url);
         session.getTransaction().commit();
         session.close();
     }
@@ -49,6 +49,18 @@ public class URLDao {
 
         session.close();
         return url;
+    }
+
+    public String findLinkById(String namespace, String alias){
+        Session session = sessionProvider.newSession();
+        Query query = session.createQuery("select link from URL where alias = :alias and namespace.name = :name");
+        query.setParameter("name", namespace);
+        query.setParameter("alias", alias);
+
+        String link = query.getResultList().size() == 0 ? null : (String) query.getSingleResult();
+
+        session.close();
+        return link;
     }
 
     public void click(String namespace, String alias) {

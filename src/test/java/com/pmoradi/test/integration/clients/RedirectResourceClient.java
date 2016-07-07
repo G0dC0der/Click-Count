@@ -37,7 +37,8 @@ public class RedirectResourceClient {
 
     public RestResponse<String, GenericMessage> getLink(String url, String group) {
         Response resp = client.target(restUrl)
-                .path(group + "/" + url)
+                .path(group)
+                .path(url)
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
                 .request(MediaType.APPLICATION_JSON)
                 .get();

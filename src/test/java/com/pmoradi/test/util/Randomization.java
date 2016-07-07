@@ -32,7 +32,7 @@ public class Randomization {
         AddInEntry entry = new AddInEntry();
         entry.setGroupName(randomString());
         entry.setUrlName(randomString());
-        entry.setLink("http://google.se");
+        entry.setLink("http://clickcount.se");
         entry.setPassword(randomString());
 
         return entry;

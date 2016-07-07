@@ -1,6 +1,5 @@
 package com.pmoradi.rest;
 
-import com.pmoradi.essentials.EntryUtil;
 import com.pmoradi.essentials.UrlUnavailableException;
 import com.pmoradi.essentials.WebUtil;
 import com.pmoradi.rest.entries.AddInEntry;
@@ -28,37 +27,40 @@ public class DataResource {
 
     @POST
     @Path("add")
-    public Response addHiddenURL(AddInEntry in) {
-        EntryUtil.shrink(in);
-        AddOutEntry out = new AddOutEntry();
+    public Response addURL(AddInEntry in) {
+        final AddOutEntry out = new AddOutEntry();
+        String urlName = WebUtil.shrink(in.getUrlName());
+        String link = WebUtil.shrink(in.getLink());
+        String groupName = WebUtil.shrink(in.getGroupName());
+        String password = in.getPassword();
 
-        if (in.getUrlName().isEmpty()) {
-            in.setUrlName(WebUtil.randomUrl());
+        if (urlName.isEmpty()) {
+            urlName = WebUtil.randomUrl();
         } else {
-            if (WebUtil.isReserved(in.getUrlName())) {
+            if (WebUtil.isReserved(urlName)) {
                 out.setUrlError("The url can not be equal to a reserved word.");
-            } else if (!WebUtil.validUrl(in.getUrlName())) {
+            } else if (!WebUtil.validUrl(urlName)) {
                 out.setUrlError("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
             }
         }
 
-        if (!in.getGroupName().isEmpty()) {
-            if (WebUtil.isReserved(in.getGroupName())) {
+        if (!groupName.isEmpty()) {
+            if (WebUtil.isReserved(groupName)) {
                 out.setGroupError("The group name is a reserved word.");
-            } else if (!WebUtil.validUrl(in.getGroupName())) {
+            } else if (!WebUtil.validUrl(groupName)) {
                 out.setGroupError("The group name contains illegal characters. Use A-Z a-z 0-9 .-_~");
             }
-        } else if (!in.getPassword().isEmpty()) {
+        } else if (!password.isEmpty()) {
             out.setPasswordError("Password must be used along with group.");
         }
 
-        if (in.getLink().isEmpty()) {
+        if (link.isEmpty()) {
             out.setLinkError("The link may not be empty.");
         } else {
-            if (!WebUtil.isProtocolBased(in.getLink())) {
-                in.setLink("http://" + in.getLink());
+            if (!WebUtil.isProtocolBased(link)) {
+                link = "http://" + link;
             }
-            if (!WebUtil.exists(in.getLink())) {
+            if (!WebUtil.exists(link)) {
                 out.setLinkError("The link does not exist or responded with a non-ok status.");
             }
         }
@@ -66,13 +68,13 @@ public class DataResource {
         if (!out.containErrors()) {
             try {
                 String url;
-                if (in.getGroupName().isEmpty()) {
-                    logic.addUrl(in.getUrlName(), in.getLink());
-                    url = logic.constructRedirectURL(in.getUrlName());
+                if (groupName.isEmpty()) {
+                    logic.addUrl(urlName, link);
+                    url = logic.constructRedirectURL(urlName);
 
                 } else {
-                    logic.addUrl(in.getUrlName(), in.getLink(), in.getGroupName(), in.getPassword());
-                    url = logic.constructRedirectURL(in.getGroupName(), in.getUrlName());
+                    logic.addUrl(urlName, link, groupName, password);
+                    url = logic.constructRedirectURL(groupName, urlName);
                 }
                 return Response.ok(new GenericMessage(url)).build();
             } catch (UrlUnavailableException e) {

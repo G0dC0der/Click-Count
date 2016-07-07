@@ -44,7 +44,7 @@ public class SystemSetup extends ResourceConfig {
                 bindFactory(InjectFactory.getApplicationFactory(properties)).to(Application.class).in(Singleton.class);
                 IOUtils.closeQuietly(properties);
 
-                Factory<Facade> facadeFactory = InjectFactory.getFacadeFactory(new LockManager());
+                Factory<Facade> facadeFactory = InjectFactory.getFacadeFactory();
                 Factory<AdminFacade> adminFacadeFactory = InjectFactory.getAdminFacadeFactory();
 
                 locator.inject(facadeFactory);

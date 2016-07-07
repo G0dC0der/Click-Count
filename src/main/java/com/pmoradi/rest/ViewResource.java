@@ -1,6 +1,6 @@
 package com.pmoradi.rest;
 
-import com.pmoradi.essentials.EntryUtil;
+import com.pmoradi.essentials.WebUtil;
 import com.pmoradi.rest.entries.GenericMessage;
 import com.pmoradi.rest.entries.GroupEntry;
 import com.pmoradi.rest.entries.GroupView;
@@ -25,15 +25,15 @@ public class ViewResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("view/all")
     public Response viewAll(GroupView in) throws IOException {
-        EntryUtil.shrink(in);
+        String groupName = WebUtil.shrink(in.getGroupName());
 
-        if(in.getGroupName().isEmpty()){
+        if(groupName.isEmpty()){
             return Response.status(Status.FORBIDDEN).entity(new GenericMessage("Group can not be empty")).build();
-        } else if(in.getGroupName().equals("default")) {
+        } else if(groupName.equals("default")) {
             return Response.status(Status.FORBIDDEN).entity(new GenericMessage("Can not fetch data from the default group")).build();
         }
 
-        GroupEntry groupEntry = logic.getGroupData(in.getGroupName(), in.getPassword());
+        GroupEntry groupEntry = logic.getGroupData(groupName, in.getPassword());
         if(groupEntry == null) {
             return Response.status(Status.NOT_FOUND).entity(new GenericMessage("Group and password mismatch.")).build();
         } else {
@@ -44,8 +44,8 @@ public class ViewResource {
     @GET
     @Path("{url}/view")
     public Response viewSingle(@PathParam("url") String urlName) throws IOException {
-
-        UrlEntry urlData = logic.getUrlData("default", urlName.trim().toLowerCase());
+        urlName = WebUtil.shrink(urlName);
+        UrlEntry urlData = logic.getUrlData("default", urlName);
 
         if(urlData == null) {
             return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found: " + urlName)).build();
@@ -62,8 +62,10 @@ public class ViewResource {
     @Path("{group}/{url}/view")
     public Response viewSingle(@PathParam("group") String groupName,
                                @PathParam("url")   String urlName) throws IOException {
+        groupName = WebUtil.shrink(groupName);
+        urlName = WebUtil.shrink(urlName);
+        UrlEntry urlData = logic.getUrlData(groupName, urlName);
 
-        UrlEntry urlData = logic.getUrlData(groupName.toLowerCase(), urlName.toLowerCase());
         if(urlData == null) {
             return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found:" + groupName + "/" + urlName)).build();
         } else {

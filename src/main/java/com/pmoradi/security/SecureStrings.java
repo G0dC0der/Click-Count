@@ -5,23 +5,20 @@ import java.security.NoSuchAlgorithmException;
 
 public class SecureStrings {
 
-    private static MessageDigest MD5, SHA1;
-
-    static {
-        try {
-            MD5 = MessageDigest.getInstance("MD5");
-            SHA1 = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static String md5(String str){
-        return hash(MD5, str);
+        return hash(getDigest("MD5"), str);
     }
 
     public static String sha1(String str){
-        return hash(SHA1, str);
+        return hash(getDigest("SHA-1"), str);
+    }
+
+    private static MessageDigest getDigest(String alg){
+        try {
+            return MessageDigest.getInstance(alg);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static String hash(MessageDigest md, String str){
