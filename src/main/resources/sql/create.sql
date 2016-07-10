@@ -28,10 +28,11 @@ CREATE TABLE URL
 
 CREATE TABLE Client
 (
-    Identifier VARCHAR(15)     PRIMARY KEY,
+    Identifier VARCHAR(15)     NOT NULL,
     Expire     BIGINT UNSIGNED NOT NULL,
     Namespace  VARCHAR(50)     NOT NULL,
-    Alias      VARCHAR(50)     NOT NULL
+    Alias      VARCHAR(50)     NOT NULL,
+    PRIMARY KEY (Identifier, Namespace, Alias)
 );
 
 INSERT INTO Collaborator (Username, Password, Role) VALUES ('admin', '95f47c8ba31358731223bdf16b87eecc', 'ADMINISTRATOR');

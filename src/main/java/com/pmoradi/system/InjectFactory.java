@@ -1,5 +1,6 @@
 package com.pmoradi.system;
 
+import com.pmoradi.entities.dao.ClientDao;
 import com.pmoradi.entities.dao.CollaboratorDao;
 import com.pmoradi.entities.dao.NamespaceDao;
 import com.pmoradi.entities.dao.URLDao;
@@ -87,6 +88,7 @@ class InjectFactory {
             public Facade provide() {
                 Facade facade = new Facade(Executors.newFixedThreadPool(500));
                 locator.inject(facade);
+                facade.init();
                 return facade;
             }
 
@@ -110,6 +112,18 @@ class InjectFactory {
 
             @Override
             public void dispose(AdminFacade facade) {}
+        };
+    }
+
+    public static Factory<ClientDao> getClientDaoFactory(SessionProvider sessionProvider) {
+        return new Factory<ClientDao>() {
+            @Override
+            public ClientDao provide() {
+                return new ClientDao(sessionProvider);
+            }
+
+            @Override
+            public void dispose(ClientDao clientDao) {}
         };
     }
 }

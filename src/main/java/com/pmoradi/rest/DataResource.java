@@ -32,7 +32,7 @@ public class DataResource {
         String urlName = WebUtil.shrink(in.getUrlName());
         String link = WebUtil.shrink(in.getLink());
         String groupName = WebUtil.shrink(in.getGroupName());
-        String password = in.getPassword();
+        String password = in.getPassword() == null ? "" : in.getPassword();
 
         if (urlName.isEmpty()) {
             urlName = WebUtil.randomUrl();

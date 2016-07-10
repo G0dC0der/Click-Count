@@ -1,5 +1,6 @@
 package com.pmoradi.system;
 
+import com.pmoradi.entities.dao.ClientDao;
 import com.pmoradi.entities.dao.NamespaceDao;
 import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.entities.dao.CollaboratorDao;
@@ -39,6 +40,7 @@ public class SystemSetup extends ResourceConfig {
                 bindFactory(InjectFactory.getGroupDaoFactory(sessionProvider)).to(NamespaceDao.class).in(Singleton.class);
                 bindFactory(InjectFactory.getURLDaoFactory(sessionProvider)).to(URLDao.class).in(Singleton.class);
                 bindFactory(InjectFactory.getUserDaoFactory(sessionProvider)).to(CollaboratorDao.class).in(Singleton.class);
+                bindFactory(InjectFactory.getClientDaoFactory(sessionProvider)).to(ClientDao.class).in(Singleton.class);
 
                 InputStream properties = Thread.currentThread().getContextClassLoader().getResourceAsStream("connection.properties");
                 bindFactory(InjectFactory.getApplicationFactory(properties)).to(Application.class).in(Singleton.class);

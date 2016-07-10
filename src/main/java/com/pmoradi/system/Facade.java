@@ -1,7 +1,9 @@
 package com.pmoradi.system;
 
+import com.pmoradi.entities.Client;
 import com.pmoradi.entities.Namespace;
 import com.pmoradi.entities.URL;
+import com.pmoradi.entities.dao.ClientDao;
 import com.pmoradi.entities.dao.NamespaceDao;
 import com.pmoradi.entities.dao.URLDao;
 import com.pmoradi.essentials.Marshaller;
@@ -15,13 +17,18 @@ import javax.persistence.RollbackException;
 import javax.security.auth.login.CredentialException;
 import javax.ws.rs.core.UriBuilder;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Facade {
+
+    public static final long CLICK_DELAY = TimeUnit.HOURS.toMillis(1);
 
     @Inject
     private NamespaceDao namespaceDAO;
     @Inject
     private URLDao urlDAO;
+    @Inject
+    private ClientDao clientDAO;
     @Inject
     private Application app;
 
@@ -30,6 +37,23 @@ public class Facade {
 
     public Facade(final ExecutorService executorService) {
         this.executorService = executorService;
+    }
+
+    void init(){
+        Thread cleanerThread = new Thread(()->{
+            while (true) {
+                try {
+                    Thread.sleep(CLICK_DELAY / 10);
+                    clientDAO.deleteAllExpired();
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+        });
+        cleanerThread.setDaemon(true);
+        cleanerThread.start();
+
+        defaultNamespace = namespaceDAO.findByName("default", false);
     }
 
     public void addUrl(String urlName, String link, String groupName, String password) throws UrlUnavailableException, CredentialException {
@@ -67,7 +91,7 @@ public class Facade {
         url.setLink(link);
         url.setAdded(System.currentTimeMillis());
         url.setClicks(0L);
-        url.setNamespace(getDefaultNamespace());
+        url.setNamespace(defaultNamespace);
 
         try {
             urlDAO.save(url);
@@ -76,10 +100,10 @@ public class Facade {
         }
     }
 
-    public String getLinkAndClick(String groupName, String urlName) {
+    public String getLinkAndClick(String identifier, String groupName, String urlName) {
         String link = urlDAO.findLinkById(groupName, urlName);
         if (link != null) {
-            executorService.submit(()-> urlDAO.click(groupName, urlName));
+            executorService.submit(()-> click(identifier, groupName, urlName));
             return link;
         }
         return null;
@@ -113,14 +137,22 @@ public class Facade {
                 .toString();
     }
 
-    private Namespace getDefaultNamespace(){
-        if (defaultNamespace == null) {
-            synchronized (this) {
-                if (defaultNamespace == null) {
-                    defaultNamespace = namespaceDAO.findByName("default", false);
-                }
-            }
+    private void click(String identifier, String groupName, String urlName){
+        Client client = clientDAO.findById(identifier, groupName, urlName);
+        if (client == null) {
+            client = new Client();
+            client.setIdentifier(identifier);
+            client.setNamespace(groupName);
+            client.setAlias(urlName);
+            client.setExpire(System.currentTimeMillis() + CLICK_DELAY);
+
+            clientDAO.save(client);
+            urlDAO.click(groupName, urlName);
+        } else if (client.getExpire() < System.currentTimeMillis()){
+            client.setExpire(System.currentTimeMillis() + CLICK_DELAY);
+
+            clientDAO.update(client);
+            urlDAO.click(groupName, urlName);
         }
-        return defaultNamespace;
     }
 }

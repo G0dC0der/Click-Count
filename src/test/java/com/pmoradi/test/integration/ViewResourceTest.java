@@ -72,27 +72,22 @@ public class ViewResourceTest {
 
     @Test
     public void viewAllTest() {
-        final int SIZE = 10;
         final Calendar TODAY = Calendar.getInstance();
         TODAY.setTime(new Date());
-        List<String> urls = Loop.create(SIZE, Randomization::randomString);
-        List<String> links = Loop.create(SIZE, ()-> "http://google.se");
+        List<String> urls = Loop.create(1, Randomization::randomString);
+        List<String> links = Loop.create(1, ()-> "http://google.se");
         AddInEntry dataEntry = Randomization.randomDataEntry();
 
-        for(int i = 0; i < SIZE; i++) {
-            String url = urls.get(i);
-            String link = links.get(i);
+        String url = urls.get(0);
+        String link = links.get(0);
 
-            dataEntry.setUrlName(url);
-            dataEntry.setLink(link);
-            assertTrue(dataClient.add(dataEntry).isOk());
+        dataEntry.setUrlName(url);
+        dataEntry.setLink(link);
+        assertTrue(dataClient.add(dataEntry).isOk());
 
-            for(int j = 0; j < i; j++) {
-                RestResponse<String, GenericMessage> redirectResp = redirectClient.getLink(url, dataEntry.getGroupName());
-                assertTrue(redirectResp.isRedirection());
-                assertEquals(link, redirectResp.successEntity);
-            }
-        }
+        RestResponse<String, GenericMessage> redirectResp = redirectClient.getLink(url, dataEntry.getGroupName());
+        assertTrue(redirectResp.isRedirection());
+        assertEquals(link, redirectResp.successEntity);
 
         GroupView viewEntry = new GroupView();
         viewEntry.setGroupName(dataEntry.getGroupName());
@@ -102,19 +97,18 @@ public class ViewResourceTest {
         assertTrue(viewResp.isOk());
         GroupEntry resultGroupEntry = (GroupEntry) viewResp.successEntity;
         assertEquals(dataEntry.getGroupName(), resultGroupEntry.getGroupName());
-        for(int i = 0; i < SIZE; i++) {
-            UrlEntry urlEntry = resultGroupEntry.getUrls()[i];
 
-            assertEquals(urls.get(i), urlEntry.getUrlName());
-            assertEquals(links.get(i), urlEntry.getLink());
-            assertEquals(i, urlEntry.getClicks().longValue());
+        UrlEntry urlEntry = resultGroupEntry.getUrls()[0];
 
-            Calendar createDate = Calendar.getInstance();
-            createDate.setTime(new Date(urlEntry.getAddDate()));
-            assertEquals(TODAY.get(Calendar.DAY_OF_YEAR), createDate.get(Calendar.DAY_OF_YEAR));
-            assertEquals(TODAY.get(Calendar.MONTH), createDate.get(Calendar.MONTH));
-            assertEquals(TODAY.get(Calendar.YEAR), createDate.get(Calendar.YEAR));
-        }
+        assertEquals(urls.get(0), urlEntry.getUrlName());
+        assertEquals(links.get(0), urlEntry.getLink());
+        assertEquals(1, urlEntry.getClicks().longValue());
+
+        Calendar createDate = Calendar.getInstance();
+        createDate.setTime(new Date(urlEntry.getAddDate()));
+        assertEquals(TODAY.get(Calendar.DAY_OF_YEAR), createDate.get(Calendar.DAY_OF_YEAR));
+        assertEquals(TODAY.get(Calendar.MONTH), createDate.get(Calendar.MONTH));
+        assertEquals(TODAY.get(Calendar.YEAR), createDate.get(Calendar.YEAR));
     }
 
     @Test
@@ -156,14 +150,11 @@ public class ViewResourceTest {
         RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
-        final int size = Randomization.randomInt(10) + 10;
-        for (int i = 0; i < size; i++) {
-            RestResponse<String, GenericMessage> reResp = redirectClient.getLink(entry.getUrlName());
-            assertTrue(reResp.isRedirection());
-        }
+        RestResponse<String, GenericMessage> reResp = redirectClient.getLink(entry.getUrlName());
+        assertTrue(reResp.isRedirection());
 
         RestResponse<GroupEntry, GenericMessage> viewResp = viewClient.viewSingle(entry.getUrlName());
         UrlEntry urlEntry = viewResp.successEntity.getUrls()[0];
-        assertEquals(size, urlEntry.getClicks().longValue());
+        assertEquals(1, urlEntry.getClicks().longValue());
     }
 }

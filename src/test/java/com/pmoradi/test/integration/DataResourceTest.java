@@ -104,7 +104,7 @@ public class DataResourceTest {
     public void addUrlWithDefaultGroup() {
         AddInEntry entry = new AddInEntry();
         entry.setUrlName(Randomization.randomString());
-        entry.setLink("http://www.google.se");
+        entry.setLink("http://clickcount.se");
 
         RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
@@ -118,7 +118,7 @@ public class DataResourceTest {
     public void addTakenUrlWithDefaultGroup() throws InterruptedException {
         AddInEntry entry = new AddInEntry();
         entry.setUrlName(Randomization.randomString());
-        entry.setLink("google.se");
+        entry.setLink("clickcount.se");
 
         RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());

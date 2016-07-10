@@ -16,6 +16,11 @@ function NavbarController($scope) {
             label: 'View'
         },
         {
+            url: 'templates/stats.html',
+            icon:  'insert_chart',
+            label: 'Statistics'
+        },
+        {
             url: 'templates/terms.html',
             icon:  'assignment',
             label: 'Terms of Use'
@@ -23,7 +28,7 @@ function NavbarController($scope) {
         {
             url: 'templates/contact.html',
             icon:  'email',
-            label: 'Contact'
+            label: 'Support'
         }
     ];
 }

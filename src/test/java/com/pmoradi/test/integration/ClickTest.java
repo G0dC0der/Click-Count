@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -63,5 +64,27 @@ public class ClickTest {
             assertTrue(viewResp.isOk());
             assertEquals(1, viewResp.successEntity.getUrls()[0].getClicks().longValue());
         });
+    }
+
+    @Test
+    public void uniqueClicks() throws InterruptedException {
+        AddInEntry entry = Randomization.randomDataEntry();
+        assertTrue(dataClient.add(entry).isOk());
+        assertTrue(redirectClient.getLink(entry.getUrlName(), entry.getGroupName()).isRedirection());
+
+        Thread.sleep(100);
+
+        IntStream
+                .range(0, 100)
+                .parallel()
+                .forEach(i -> assertTrue(redirectClient.getLink(entry.getUrlName(), entry.getGroupName()).isRedirection()));
+
+        GroupView groupView = new GroupView();
+        groupView.setGroupName(entry.getGroupName());
+        groupView.setPassword(entry.getPassword());
+
+        RestResponse<GroupEntry, GenericMessage> viewResp = viewClient.viewAll(groupView);
+        assertTrue(viewResp.isOk());
+        assertEquals(1, viewResp.successEntity.getUrls()[0].getClicks().longValue());
     }
 }
