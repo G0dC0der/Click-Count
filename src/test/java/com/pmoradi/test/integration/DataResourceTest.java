@@ -26,6 +26,15 @@ public class DataResourceTest {
     }
 
     @Test
+    public void withGroupAndUrl() {
+        AddInEntry entry = Randomization.randomDataEntry();
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
+
+        assertTrue(resp.isOk());
+        assertTrue(resp.successEntity.getMessage().endsWith(entry.getGroupName() + "/" + entry.getUrlName()));
+    }
+
+    @Test
     public void reservedUrl() {
         AddInEntry entry = Randomization.randomDataEntry();
         entry.setUrlName("default");
@@ -89,11 +98,57 @@ public class DataResourceTest {
     }
 
     @Test
+    public void redirectToTwitter() {
+        AddInEntry entry = Randomization.randomDataEntry();
+        entry.setLink("http://www.twitter.com");
+
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
+        assertTrue(resp.isOk());
+    }
+
+    @Test
+    public void redirectToTinyURL() {
+        AddInEntry entry = Randomization.randomDataEntry();
+        entry.setLink("http://tinyurl.com/dtrkv");
+
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
+        assertTrue(resp.isClientError());
+    }
+
+    @Test
     public void invalidLink() {
         AddInEntry entry = new AddInEntry();
         entry.setGroupName(Randomization.randomString());
         entry.setUrlName(Randomization.randomString());
         entry.setLink(Randomization.randomLink());
+
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
+        assertTrue(resp.isClientError());
+        assertFalse(resp.failEntity.getLinkError().isEmpty());
+    }
+
+    @Test
+    public void seeOtherLink() {
+        AddInEntry dummyEntry = Randomization.randomDataEntry();
+        RestResponse<GenericMessage, AddOutEntry> addResp = dataClient.add(dummyEntry);
+        assertTrue(addResp.isOk());
+
+        AddInEntry entry = new AddInEntry();
+        entry.setGroupName(Randomization.randomString());
+        entry.setUrlName(Randomization.randomString());
+        entry.setLink(addResp.successEntity.getMessage());
+
+        RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
+        assertTrue(resp.isClientError());
+        assertFalse(resp.failEntity.getLinkError().isEmpty());
+    }
+
+    @Test
+    public void notFoundLink() {
+        AddInEntry entry = new AddInEntry();
+        entry.setGroupName(Randomization.randomString());
+        entry.setUrlName(Randomization.randomString());
+        entry.setLink("http://google.com/i_dont_really_exists");
 
         RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isClientError());

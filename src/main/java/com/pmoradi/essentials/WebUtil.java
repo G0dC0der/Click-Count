@@ -59,9 +59,10 @@ public class WebUtil {
             URL url = new URL(link);
             con =  (HttpURLConnection)  url.openConnection ();
             con.setRequestMethod ("HEAD");
+            con.setInstanceFollowRedirects(false);
             con.connect();
             int code = con.getResponseCode() ;
-            return code >= 200 && code <= 299;
+            return (code >= 200 && code <= 299) || code == 301 || code == 302 || code == 303;
         } catch (IOException e) {
             return false;
         } finally {

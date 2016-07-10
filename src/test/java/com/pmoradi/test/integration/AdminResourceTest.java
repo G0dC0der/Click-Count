@@ -29,6 +29,10 @@ public class AdminResourceTest {
         adminClient.setPassword("1234");
     }
 
+    //Role tests
+
+    //Test the rest
+
     @Test
     public void denyOnWrongPassword() {
         AddInEntry entry = Randomization.randomDataEntry();

@@ -95,7 +95,7 @@ public class ViewResourceTest {
 
         RestResponse<GroupEntry, GenericMessage> viewResp = viewClient.viewAll(viewEntry);
         assertTrue(viewResp.isOk());
-        GroupEntry resultGroupEntry = (GroupEntry) viewResp.successEntity;
+        GroupEntry resultGroupEntry = viewResp.successEntity;
         assertEquals(dataEntry.getGroupName(), resultGroupEntry.getGroupName());
 
         UrlEntry urlEntry = resultGroupEntry.getUrls()[0];
@@ -156,5 +156,37 @@ public class ViewResourceTest {
         RestResponse<GroupEntry, GenericMessage> viewResp = viewClient.viewSingle(entry.getUrlName());
         UrlEntry urlEntry = viewResp.successEntity.getUrls()[0];
         assertEquals(1, urlEntry.getClicks().longValue());
+    }
+
+    @Test
+    public void viewSingleWithGroup(){
+        AddInEntry entry = Randomization.randomDataEntry();
+        assertTrue(dataClient.add(entry).isOk());
+
+        RestResponse<GroupEntry, GenericMessage> viewResp = viewClient.viewSingle(entry.getUrlName(), entry.getGroupName());
+        assertTrue(viewResp.isOk());
+        assertEquals(entry.getGroupName(), viewResp.successEntity.getGroupName());
+        assertEquals(1, viewResp.successEntity.getUrls().length);
+
+        UrlEntry urlEntry = viewResp.successEntity.getUrls()[0];
+        assertEquals(entry.getUrlName(), urlEntry.getUrlName());
+        assertEquals(entry.getLink(), urlEntry.getLink());
+    }
+
+    @Test
+    public void viewSingleWithDefaultGroup(){
+        AddInEntry entry = new AddInEntry();
+        entry.setUrlName(Randomization.randomString());
+        entry.setLink("http://clickcount.se");
+        assertTrue(dataClient.add(entry).isOk());
+
+        RestResponse<GroupEntry, GenericMessage> viewResp = viewClient.viewSingle(entry.getUrlName());
+        assertTrue(viewResp.isOk());
+        assertEquals("default", viewResp.successEntity.getGroupName());
+        assertEquals(1, viewResp.successEntity.getUrls().length);
+
+        UrlEntry urlEntry = viewResp.successEntity.getUrls()[0];
+        assertEquals(entry.getUrlName(), urlEntry.getUrlName());
+        assertEquals(entry.getLink(), urlEntry.getLink());
     }
 }
