@@ -48,7 +48,7 @@ public class ViewResource {
         UrlEntry urlData = logic.getUrlData("default", urlName);
 
         if(urlData == null) {
-            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found: " + urlName)).build();
+            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("Alias not found: " + urlName)).build();
         } else {
             GroupEntry groupEntry = new GroupEntry();
             groupEntry.setGroupName("default");

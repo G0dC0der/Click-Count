@@ -1,1 +1,46 @@
-<p>View Page</p>
+<div class="view-controller-div" ng-controller="ViewController">
+    <p>This is where you can view all URLs for a given group with their full data.</p>
+    <p>To view an individual URL, simply append <code>/view</code> to it and hit enter.</p>
+    <p ng-show="error" class="error-text md-subhead" ng-bind="error"></p>
+    <form name="viewForm">
+        <div flex-xs="95" flex-sm="95" flex="30">
+            <md-input-container class="md-block" flex-gt-xs>
+                <label>Group</label>
+                <input ng-model="viewData.groupName" name="groupName" required ng-disabled="loading">
+            </md-input-container>
+
+            <md-input-container class="md-block" flex-gt-xs>
+                <label>Password</label>
+                <input ng-model="viewData.password" name="password" type="password" ng-disabled="loading">
+            </md-input-container>
+
+            <md-button ng-disabled="loading || !viewData.groupName" class="md-raised add-button" ng-click="fetchData();">View</md-button>
+            <md-progress-circular ng-show="loading" md-mode="indeterminate" class="add-loader"></md-progress-circular>
+        </div>
+    </form>
+
+    <div class="view-data" ng-show="group">
+        <div class="view-data-header">{{urls.length}} URLs found for {{group}} with combined clicks of {{totalClicks}}.</div>
+        <div ng-repeat="url in urls">
+            <table class="view-data-entry">
+                <tr class="view-row">
+                    <td class="view-key">Alias</td>
+                    <td class="view-value">{{url.urlName}}</td>
+                </tr>
+                <tr class="view-row">
+                    <td class="view-key">Clicks</td>
+                    <td class="view-value">{{url.clicks}}</td>
+                </tr>
+                <tr class="view-row">
+                    <td class="view-key">Add Date</td>
+                    <td class="view-value">{{url.addDate | date :  "dd.MM.y"}}</td>
+                </tr>
+                <tr class="view-row">
+                    <td class="view-key">Source URL</td>
+                    <td class="view-value">{{url.link}}</td>
+                </tr>
+            </table>
+            <md-divider flex-xs="95" flex-sm="95" flex="30" ng-if="!$last"></md-divider>
+        </div>
+    </div>
+</div>

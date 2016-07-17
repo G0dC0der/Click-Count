@@ -40,7 +40,7 @@ public class DataResource {
             if (WebUtil.isReserved(urlName)) {
                 out.setUrlError("The url can not be equal to a reserved word.");
             } else if (!WebUtil.validUrl(urlName)) {
-                out.setUrlError("URL contains illegal characters. Use A-Z a-z 0-9 .-_~");
+                out.setUrlError("URL contains illegal characters. Use A-Z a-z 0-9 -_");
             }
         }
 
@@ -48,20 +48,20 @@ public class DataResource {
             if (WebUtil.isReserved(groupName)) {
                 out.setGroupError("The group name is a reserved word.");
             } else if (!WebUtil.validUrl(groupName)) {
-                out.setGroupError("The group name contains illegal characters. Use A-Z a-z 0-9 .-_~");
+                out.setGroupError("The group name contains illegal characters. Use A-Z a-z 0-9 -_");
             }
         } else if (!password.isEmpty()) {
             out.setPasswordError("Password must be used along with group.");
         }
 
         if (link.isEmpty()) {
-            out.setLinkError("The link may not be empty.");
+            out.setLinkError("The source URL may not be empty.");
         } else {
             if (!WebUtil.isProtocolBased(link)) {
                 link = "http://" + link;
             }
             if (!WebUtil.exists(link)) {
-                out.setLinkError("The link does not exist or responded with a non-ok status.");
+                out.setLinkError("The source URL does not exist or responded with a non-ok status.");
             }
         }
 

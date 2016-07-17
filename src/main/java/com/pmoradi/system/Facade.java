@@ -77,14 +77,14 @@ public class Facade {
         try {
             urlDAO.save(url);
         } catch (RollbackException e) {
-            throw new UrlUnavailableException("The URL for the given group already exists.");
+            throw new UrlUnavailableException("The alias for the given group already exists.");
         }
     }
 
     public void addUrl(String urlName, String link) throws UrlUnavailableException {
         URL url = urlDAO.findById("default", urlName);
         if (url != null)
-            throw new UrlUnavailableException("The URL for the default group is already in use.");
+            throw new UrlUnavailableException("The alias for the default group is already in use.");
 
         url = new URL();
         url.setAlias(urlName);
@@ -96,7 +96,7 @@ public class Facade {
         try {
             urlDAO.save(url);
         } catch (RollbackException e) {
-            throw new UrlUnavailableException("The given URL for the default group already exists.");
+            throw new UrlUnavailableException("The given alias for the default group already exists.");
         }
     }
 

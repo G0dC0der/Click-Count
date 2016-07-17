@@ -28,3 +28,61 @@ md-progress-circular svg {
 .wrap-url {
     word-break: break-all;
 }
+
+.view-data-header{
+    padding: 20px 0px;
+}
+
+.view-data-entry{
+    padding: 20px 0px;
+}
+
+.view-value{
+    font-style: italic;
+    color:rgba(0,0,0,0.63);
+}
+
+.view-key{
+    width:150px;
+}
+
+code:not(.highlight) {
+    color: #106CC8;
+    margin-left: 1px;
+    margin-right: 1px;
+    -webkit-font-smoothing: auto;
+    padding: 0.125em 0.35em;
+    border-radius: 2px;
+}
+code {
+    background: rgba(0, 0, 0, 0.065);
+}
+
+.error-text{
+    color: rgb(221,44,0);
+    font-size:12px;
+}
+
+.advanced-mode-header {
+    padding-bottom:1px;
+}
+
+.footer {
+    width: 98%;
+    border-top: 1px solid rgba(0,0,0,.1);
+    margin: auto;
+    text-align: center;
+}
+
+.footer-space{
+    padding-bottom:50px;
+}
+
+.add-tab-link{
+    color:dodgerblue;
+}
+
+.add-tab-link:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}

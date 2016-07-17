@@ -7,11 +7,11 @@
         <link href="css/clickcount.css" rel="stylesheet">
     </head>
     <body ng-app="ClickCount" ng-cloak>
-        <!--<md-toolbar class="md-warn">-->
-            <!--<div class="md-toolbar-tools">-->
-                <!--<h2 class="md-flex">The backend server will be down for maintenance.</h2>-->
-            <!--</div>-->
-        <!--</md-toolbar>-->
+        <md-toolbar class="md-warn" ng-if="false">
+            <div class="md-toolbar-tools">
+                <h2 class="md-flex">The backend server will be down for maintenance.</h2>
+            </div>
+        </md-toolbar>
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <h2 class="md-flex">Click Count</h2>
@@ -20,8 +20,8 @@
 
         <div ng-controller="NavbarController" ng-cloak>
             <md-content>
-                <md-tabs md-selected="selectedIndex" md-border-bottom="true" md-dynamic-height="true" md-swipe-content="true">
-                    <md-tab ng-repeat="item in navbarItems">
+                <md-tabs md-selected="selectedTab" md-border-bottom="true" md-dynamic-height="true">
+                    <md-tab ng-repeat="item in navbarItems" md-on-select="navTo(item.alias);">
                         <md-tab-label>
                             <md-icon md-font-set="material-icons" class="menu-button">{{item.icon}}</md-icon>{{item.label}}
                         </md-tab-label>
@@ -33,6 +33,11 @@
             </md-content>
         </div>
 
+        <!--<div class="footer-space"></div>-->
+        <!--<div class="footer">-->
+            <!--<p>ClickCount.se</p>-->
+        <!--</div>-->
+
         <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
@@ -40,20 +45,23 @@
         <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.min.js"></script>
         <script src="https://cdn.gitcdn.link/cdn/angular/bower-material/v1.1.0-rc.5-master-15da974/angular-material.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
 
         <script type="text/javascript">
-            var module = angular
-                    .module('ClickCount', ['ngMaterial'])
-                    .config(function($mdThemingProvider) {
-                        $mdThemingProvider.theme('default')
-                                .primaryPalette('blue-grey')
-                                .accentPalette('grey');
-                    });
+            angular
+                .module('ClickCount', ['ngMaterial'])
+                .config(function($mdThemingProvider) {
+                    $mdThemingProvider.theme('default')
+                            .primaryPalette('indigo')
+                            .accentPalette('grey');
+                });
         </script>
 
         <script src="services/DataService.js"></script>
+        <script src="services/ViewService.js"></script>
 
         <script src="controllers/NavbarController.js"></script>
         <script src="controllers/AddController.js"></script>
+        <script src="controllers/ViewController.js"></script>
     </body>
 </html>
