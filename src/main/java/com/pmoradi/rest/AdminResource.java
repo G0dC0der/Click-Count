@@ -31,6 +31,9 @@ public class AdminResource {
             return Response.ok(data).build();
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).entity(new GenericMessage("Group '" + groupName + "' was not found.")).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new GenericMessage(e.getClass().getName() + ": " + e.getMessage())).build();
         }
     }
 
@@ -47,19 +50,25 @@ public class AdminResource {
             return Response.ok(new GenericMessage("Group '" + groupName + "' was successfully removed!")).build();
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).entity(new GenericMessage("Can't delete a group that doesn't exist.")).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new GenericMessage(e.getClass().getName() + ": " + e.getMessage())).build();
         }
     }
 
     @DELETE
     @Guarded(Role.MAINTAINER)
-    @Path("url/{groupName}/{urlName}/delete")
+    @Path("url/{groupName}/{alias}/delete")
     public Response deleteUrl(@PathParam("groupName") String groupName,
-                              @PathParam("urlName") String urlName) {
+                              @PathParam("alias") String alias) {
         try {
-            adminFacade.deleteURL(groupName, urlName);
-            return Response.ok(new GenericMessage("URL '" + urlName + "' from group '" + groupName + "' was successfully removed!")).build();
+            adminFacade.deleteURL(groupName, alias);
+            return Response.ok(new GenericMessage("Alias '" + alias + "' from group '" + groupName + "' was successfully removed!")).build();
         } catch (NotFoundException e) {
-            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("Url or group doesn't exist.")).build();
+            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("Alias or group doesn't exist.")).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new GenericMessage(e.getClass().getName() + ": " + e.getMessage())).build();
         }
     }
 
@@ -72,6 +81,9 @@ public class AdminResource {
             return Response.ok(new GenericMessage("User '" + user.getUsername() + "' was successfully added to the database!")).build();
         } catch (CredentialException e) {
             return Response.status(Status.FORBIDDEN).entity(new GenericMessage(e.getMessage())).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new GenericMessage(e.getClass().getName() + ": " + e.getMessage())).build();
         }
     }
 
@@ -84,6 +96,9 @@ public class AdminResource {
             return Response.ok(new GenericMessage("User '" + user.getUsername() + "' changed role to " + user.getRole() + "!")).build();
         } catch (NotFoundException e){
             return Response.status(Status.NOT_FOUND).entity(new GenericMessage("The given user doesn't exist.")).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new GenericMessage(e.getClass().getName() + ": " + e.getMessage())).build();
         }
     }
 
@@ -96,6 +111,9 @@ public class AdminResource {
             return Response.ok(new GenericMessage("User '" + user.getUsername() + "' successfully removed!")).build();
         } catch (NotFoundException e){
             return Response.status(Status.NOT_FOUND).entity(new GenericMessage("The given user doesn't exist.")).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new GenericMessage(e.getClass().getName() + ": " + e.getMessage())).build();
         }
     }
 }

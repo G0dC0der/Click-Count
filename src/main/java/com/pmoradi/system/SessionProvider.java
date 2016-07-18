@@ -4,5 +4,5 @@ import org.hibernate.Session;
 
 public interface SessionProvider {
 
-    Session newSession();
+    Session provide();
 }

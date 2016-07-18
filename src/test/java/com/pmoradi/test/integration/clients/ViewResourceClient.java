@@ -36,9 +36,9 @@ public class ViewResourceClient {
         return RestResponse.fromResponse(resp, GroupEntry.class, GenericMessage.class);
     }
 
-    public RestResponse<GroupEntry, GenericMessage> viewSingle(String urlName) {
+    public RestResponse<GroupEntry, GenericMessage> viewSingle(String alias) {
         Response resp = client.target(restUrl)
-                .path(urlName)
+                .path(alias)
                 .path("view")
                 .request(MediaType.APPLICATION_JSON)
                 .get();
@@ -46,10 +46,10 @@ public class ViewResourceClient {
         return RestResponse.fromResponse(resp, GroupEntry.class, GenericMessage.class);
     }
 
-    public RestResponse<GroupEntry, GenericMessage> viewSingle(String urlName, String groupName) {
+    public RestResponse<GroupEntry, GenericMessage> viewSingle(String alias, String groupName) {
         Response resp = client.target(restUrl)
                 .path(groupName)
-                .path(urlName)
+                .path(alias)
                 .path("view")
                 .request(MediaType.APPLICATION_JSON)
                 .get();

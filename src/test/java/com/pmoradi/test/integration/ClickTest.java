@@ -36,7 +36,7 @@ public class ClickTest {
     public void synchronousClicks() {
         List<AddInEntry> entries = Loop.create(Randomization.randomInt(200) + 200, Randomization::randomDataEntry);
         entries.forEach(entry -> assertTrue(dataClient.add(entry).isOk()));
-        entries.forEach(entry -> assertTrue(redirectClient.getLink(entry.getUrlName(), entry.getGroupName()).isRedirection()));
+        entries.forEach(entry -> assertTrue(redirectClient.getSourceURL(entry.getAlias(), entry.getGroupName()).isRedirection()));
 
         entries.forEach(entry -> {
             GroupView groupView = new GroupView();
@@ -53,7 +53,7 @@ public class ClickTest {
     public void asynchronousClicks() {
         List<AddInEntry> entries = Loop.create(Randomization.randomInt(200) + 200, Randomization::randomDataEntry);
         entries.parallelStream().forEach(entry -> assertTrue(dataClient.add(entry).isOk()));
-        entries.parallelStream().forEach(entry -> assertTrue(redirectClient.getLink(entry.getUrlName(), entry.getGroupName()).isRedirection()));
+        entries.parallelStream().forEach(entry -> assertTrue(redirectClient.getSourceURL(entry.getAlias(), entry.getGroupName()).isRedirection()));
 
         entries.parallelStream().forEach(entry -> {
             GroupView groupView = new GroupView();
@@ -70,14 +70,14 @@ public class ClickTest {
     public void uniqueClicks() throws InterruptedException {
         AddInEntry entry = Randomization.randomDataEntry();
         assertTrue(dataClient.add(entry).isOk());
-        assertTrue(redirectClient.getLink(entry.getUrlName(), entry.getGroupName()).isRedirection());
+        assertTrue(redirectClient.getSourceURL(entry.getAlias(), entry.getGroupName()).isRedirection());
 
         Thread.sleep(100);
 
         IntStream
                 .range(0, 100)
                 .parallel()
-                .forEach(i -> assertTrue(redirectClient.getLink(entry.getUrlName(), entry.getGroupName()).isRedirection()));
+                .forEach(i -> assertTrue(redirectClient.getSourceURL(entry.getAlias(), entry.getGroupName()).isRedirection()));
 
         GroupView groupView = new GroupView();
         groupView.setGroupName(entry.getGroupName());

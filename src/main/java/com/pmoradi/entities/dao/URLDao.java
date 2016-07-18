@@ -14,7 +14,7 @@ public class URLDao {
     }
 
     public void save(URL url){
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         session.getTransaction().begin();
         session.save(url);
         session.getTransaction().commit();
@@ -22,7 +22,7 @@ public class URLDao {
     }
 
     public void delete(URL url){
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         session.getTransaction().begin();
         session.remove(session.contains(url) ? url : session.merge(url));
         session.getTransaction().commit();
@@ -30,7 +30,7 @@ public class URLDao {
     }
 
     public void bulkDelete(String namespace) {
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         session.getTransaction().begin();
         Query query = session.createQuery("delete from URL u where u.namespace.name = :name");
         query.setParameter("name", namespace);
@@ -40,7 +40,7 @@ public class URLDao {
     }
 
     public URL findById(String namespace, String alias){
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         Query query = session.createQuery("from URL where alias = :alias and namespace.name = :name");
         query.setParameter("name", namespace);
         query.setParameter("alias", alias);
@@ -51,9 +51,9 @@ public class URLDao {
         return url;
     }
 
-    public String findLinkById(String namespace, String alias){
-        Session session = sessionProvider.newSession();
-        Query query = session.createQuery("select link from URL where alias = :alias and namespace.name = :name");
+    public String findSourceUrlById(String namespace, String alias){
+        Session session = sessionProvider.provide();
+        Query query = session.createQuery("select source from URL where alias = :alias and namespace.name = :name");
         query.setParameter("name", namespace);
         query.setParameter("alias", alias);
 
@@ -64,7 +64,7 @@ public class URLDao {
     }
 
     public void click(String namespace, String alias) {
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         session.getTransaction().begin();
 
         Query query  = session.createQuery("update URL as u set u.clicks = u.clicks + 1 where u.alias = :alias and u.namespace.name = :name");

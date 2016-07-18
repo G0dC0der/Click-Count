@@ -6,9 +6,9 @@
         <form name="addForm">
             <md-input-container class="md-block" flex-xs="95" flex-sm="95" flex="30">
                 <label>Source URL</label>
-                <input ng-model="addInData.link" name="link" required ng-disabled="loading">
-                <div ng-messages="addForm.link.$error" md-auto-hide="false">
-                    <div ng-message="addOutData.linkError">{{addOutData.linkError}}</div>
+                <input ng-model="addInData.sourceUrl" name="source" required ng-disabled="loading">
+                <div ng-messages="addForm.sourceUrl.$error" md-auto-hide="false">
+                    <div ng-message="addOutData.sourceUrlError">{{addOutData.sourceUrlError}}</div>
                 </div>
             </md-input-container>
 
@@ -24,7 +24,7 @@
                 <md-input-container class="md-block" flex-xs="95" flex-sm="95" flex="30">
                     <label>Group</label>
                     <input ng-model="addInData.groupName" name="groupName" ng-disabled="loading">
-                    <div ng-messages="addForm.urlName.$error" md-auto-hide="false">
+                    <div ng-messages="addForm.alias.$error" md-auto-hide="false">
                         <div ng-message="addOutData.groupError">{{addOutData.groupError}}</div>
                     </div>
                 </md-input-container>
@@ -32,7 +32,7 @@
                 <md-input-container class="md-block" flex-xs="95" flex-sm="95" flex="30">
                     <label>Password</label>
                     <input ng-model="addInData.password" name="password" type="password" ng-disabled="loading">
-                    <div ng-messages="addForm.urlName.$error" md-auto-hide="false">
+                    <div ng-messages="addForm.alias.$error" md-auto-hide="false">
                         <div ng-message="addOutData.passwordError">{{addOutData.passwordError}}</div>
                     </div>
                 </md-input-container>
@@ -41,15 +41,15 @@
                 <p>By default, the server will generate a randomized token.</p>
                 <md-input-container class="md-block" flex-xs="95" flex-sm="95" flex="30">
                     <label>Alias</label>
-                    <input ng-model="addInData.urlName" name="urlName" ng-disabled="loading">
-                    <div ng-messages="addForm.urlName.$error" md-auto-hide="false">
-                        <div ng-message="addOutData.urlError">{{addOutData.urlError}}</div>
+                    <input ng-model="addInData.alias" name="alias" ng-disabled="loading">
+                    <div ng-messages="addForm.alias.$error" md-auto-hide="false">
+                        <div ng-message="addOutData.aliasError">{{addOutData.aliasError}}</div>
                     </div>
                 </md-input-container>
             </div>
             <br ng-hide="advancedMode">
 
-            <md-button ng-disabled="loading || !addInData.link.length" ng-click="submitAdd()" class="md-raised add-button">Submit</md-button>
+            <md-button ng-disabled="loading || !addInData.sourceUrl.length" ng-click="submitAdd()" class="md-raised add-button">Submit</md-button>
             <md-progress-circular ng-show="loading" md-mode="indeterminate" class="add-loader"></md-progress-circular>
         </form>
     </div>

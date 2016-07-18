@@ -41,7 +41,7 @@ public class URL {
     @Id
     private String alias;
 
-    private String link;
+    private String source;
 
     private Long clicks = 0L;
 
@@ -50,9 +50,9 @@ public class URL {
     public URL() {
     }
 
-    public URL(String alias, String link, Long clicks, Long added) {
+    public URL(String alias, String source, Long clicks, Long added) {
         this.alias = alias;
-        this.link = link;
+        this.source = source;
         this.clicks = clicks;
         this.added = added;
     }
@@ -73,12 +73,12 @@ public class URL {
         this.alias = alias;
     }
 
-    public String getLink() {
-        return link;
+    public String getSource() {
+        return source;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public Long getClicks() {

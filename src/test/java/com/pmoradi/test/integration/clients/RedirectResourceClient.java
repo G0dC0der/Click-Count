@@ -25,7 +25,7 @@ public class RedirectResourceClient {
         this.client = ClientBuilder.newClient();
     }
 
-    public RestResponse<String, GenericMessage> getLink(String url) {
+    public RestResponse<String, GenericMessage> getSourceURL(String url) {
         Response resp = client.target(restUrl)
                 .path(url)
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
@@ -35,7 +35,7 @@ public class RedirectResourceClient {
         return parse(resp);
     }
 
-    public RestResponse<String, GenericMessage> getLink(String url, String group) {
+    public RestResponse<String, GenericMessage> getSourceURL(String url, String group) {
         Response resp = client.target(restUrl)
                 .path(group)
                 .path(url)

@@ -14,7 +14,7 @@ public class NamespaceDao {
     }
 
     public void save(Namespace namespace){
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         session.getTransaction().begin();
         session.save(namespace);
         session.getTransaction().commit();
@@ -22,14 +22,14 @@ public class NamespaceDao {
     }
 
     public void delete(Namespace namespace){
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         session.getTransaction().begin();
         session.remove(session.contains(namespace) ? namespace : session.merge(namespace));
         session.getTransaction().commit();
         session.close();
     }
     public Namespace findByName(String name, boolean eager){
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         Namespace namespace;
         if (eager) {
             namespace = session.find(Namespace.class, name);
@@ -44,7 +44,7 @@ public class NamespaceDao {
     }
 
     public Namespace findByCredentials(String name, String password) {
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
 
         Query query = session.createQuery("from Namespace where name = :name and password = :password");
         query.setParameter("name", name);

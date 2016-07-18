@@ -2,25 +2,25 @@ package com.pmoradi.rest.entries;
 
 public class UrlEntry {
 
-    private String urlName;
-    private String link;
+    private String alias;
+    private String sourceUrl;
     private Long addDate;
     private Long clicks;
 
-    public String getUrlName() {
-        return urlName;
+    public String getAlias() {
+        return alias;
     }
 
-    public void setUrlName(String urlName) {
-        this.urlName = urlName;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
-    public String getLink() {
-        return link;
+    public String getSourceUrl() {
+        return sourceUrl;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
     }
 
     public long getAddDate() {

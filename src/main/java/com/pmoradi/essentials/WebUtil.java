@@ -3,11 +3,8 @@ package com.pmoradi.essentials;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.Objects;
 import java.util.Random;
 
 public class WebUtil {
@@ -33,6 +30,10 @@ public class WebUtil {
             case "all":
             case "service":
             case "admin":
+            case "administrator":
+            case "maintainer":
+            case "trusted":
+            case "delete":
                 return true;
             default:
                 return false;

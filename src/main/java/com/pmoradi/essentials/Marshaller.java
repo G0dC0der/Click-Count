@@ -9,8 +9,8 @@ public class Marshaller {
 
     public static UrlEntry marshall(URL url) {
         UrlEntry urlEntry = new UrlEntry();
-        urlEntry.setUrlName(url.getAlias());
-        urlEntry.setLink(url.getLink());
+        urlEntry.setAlias(url.getAlias());
+        urlEntry.setSourceUrl(url.getSource());
         urlEntry.setAddDate(url.getAdded());
         urlEntry.setClicks(url.getClicks());
 

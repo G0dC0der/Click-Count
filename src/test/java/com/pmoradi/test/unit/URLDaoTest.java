@@ -21,7 +21,7 @@ public class URLDaoTest extends AbstractDaoTest{
         url.setNamespace(namespace);
         url.setAlias(Randomization.randomString());
         url.setAdded(System.currentTimeMillis());
-        url.setLink("google.se");
+        url.setSource("google.se");
         urlDao.save(url);
 
         urlDao.click(namespace.getName(), url.getAlias());

@@ -1,4 +1,4 @@
-function AddController($scope, $element, DataService) {
+function AddController($scope, DataService) {
     $scope.urls = [];
     $scope.addInData = {};
     $scope.addOutData = {};
@@ -26,6 +26,5 @@ function AddController($scope, $element, DataService) {
 
 angular.module('ClickCount').controller('AddController', [
     '$scope',
-    '$element',
     'DataService',
     AddController]);

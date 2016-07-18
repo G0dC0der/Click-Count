@@ -14,7 +14,7 @@ public class ClientDao {
     }
 
     public void save(Client client){
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         session.getTransaction().begin();
         session.save(client);
         session.getTransaction().commit();
@@ -22,7 +22,7 @@ public class ClientDao {
     }
 
     public void update(Client client){
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         session.getTransaction().begin();
         session.update(client);
         session.getTransaction().commit();
@@ -30,7 +30,7 @@ public class ClientDao {
     }
 
     public void delete(Client client){
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         session.getTransaction().begin();
         session.delete(client);
         session.getTransaction().commit();
@@ -38,7 +38,7 @@ public class ClientDao {
     }
 
     public Client findById(String identifier, String namespace, String alias){
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
 
         Query query = session.createQuery("from Client where identifier = :identifier and namespace = :namespace and alias = :alias");
         query.setParameter("identifier", identifier);
@@ -51,7 +51,7 @@ public class ClientDao {
     }
 
     public Client findByURL(String namespace, String alias){
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
 
         Query query = session.createQuery("from Client where namespace = :namespace and alias = :alias");
         query.setParameter("namespace", namespace);
@@ -63,7 +63,7 @@ public class ClientDao {
     }
 
     public void deleteAllExpired() {
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         session.getTransaction().begin();
         javax.persistence.Query query = session.createQuery("delete from Client c where c.expire < :expire");
         query.setParameter("expire", System.currentTimeMillis());

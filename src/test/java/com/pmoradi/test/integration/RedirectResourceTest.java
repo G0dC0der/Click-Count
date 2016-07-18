@@ -7,15 +7,8 @@ import com.pmoradi.test.integration.clients.DataResourceClient;
 import com.pmoradi.test.integration.clients.RedirectResourceClient;
 import com.pmoradi.test.integration.rest.RestResponse;
 import com.pmoradi.test.util.Randomization;
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -35,16 +28,16 @@ public class RedirectResourceTest {
     @Test
     public void validLinkWithDefaultGroup() {
         AddInEntry entry = new AddInEntry();
-        entry.setUrlName(Randomization.randomString());
-        entry.setLink("http://clickcount.se");
+        entry.setAlias(Randomization.randomString());
+        entry.setSourceUrl("http://clickcount.se");
 
         RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
-        RestResponse<String, GenericMessage> linkResp = redirectClient.getLink(entry.getUrlName());
+        RestResponse<String, GenericMessage> linkResp = redirectClient.getSourceURL(entry.getAlias());
         assertTrue(linkResp.isRedirection());
         assertNotNull(linkResp.successEntity);
-        assertEquals(entry.getLink(), linkResp.successEntity);
+        assertEquals(entry.getSourceUrl(), linkResp.successEntity);
     }
 
     @Test
@@ -54,21 +47,21 @@ public class RedirectResourceTest {
         RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
-        RestResponse<String, GenericMessage> linkResp = redirectClient.getLink(entry.getUrlName(), entry.getGroupName());
+        RestResponse<String, GenericMessage> linkResp = redirectClient.getSourceURL(entry.getAlias(), entry.getGroupName());
         assertTrue(linkResp.isRedirection());
         assertNotNull(linkResp.successEntity);
-        assertEquals(entry.getLink(), linkResp.successEntity);
+        assertEquals(entry.getSourceUrl(), linkResp.successEntity);
     }
 
     @Test
     public void invalidLinkWithDefaultGroup() {
-        RestResponse<String, GenericMessage> linkResp = redirectClient.getLink(Randomization.randomString());
+        RestResponse<String, GenericMessage> linkResp = redirectClient.getSourceURL(Randomization.randomString());
         assertTrue(linkResp.isClientError());
     }
 
     @Test
     public void invalidLinkWithRandomGroup() {
-        RestResponse<String, GenericMessage> linkResp = redirectClient.getLink(Randomization.randomString(), Randomization.randomString());
+        RestResponse<String, GenericMessage> linkResp = redirectClient.getSourceURL(Randomization.randomString(), Randomization.randomString());
         assertTrue(linkResp.isClientError());
     }
 
@@ -79,7 +72,7 @@ public class RedirectResourceTest {
         RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
-        RestResponse<String, GenericMessage> linkResp = redirectClient.getLink(Randomization.randomString(), entry.getGroupName());
+        RestResponse<String, GenericMessage> linkResp = redirectClient.getSourceURL(Randomization.randomString(), entry.getGroupName());
         assertTrue(linkResp.isClientError());
     }
 }

@@ -42,13 +42,13 @@ public class ViewResource {
     }
 
     @GET
-    @Path("{url}/view")
-    public Response viewSingle(@PathParam("url") String urlName) throws IOException {
-        urlName = WebUtil.shrink(urlName);
-        UrlEntry urlData = logic.getUrlData("default", urlName);
+    @Path("{alias}/view")
+    public Response viewSingle(@PathParam("alias") String alias) throws IOException {
+        alias = WebUtil.shrink(alias);
+        UrlEntry urlData = logic.getUrlData("default", alias);
 
         if(urlData == null) {
-            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("Alias not found: " + urlName)).build();
+            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("Alias not found: " + alias)).build();
         } else {
             GroupEntry groupEntry = new GroupEntry();
             groupEntry.setGroupName("default");
@@ -59,15 +59,15 @@ public class ViewResource {
     }
 
     @GET
-    @Path("{group}/{url}/view")
+    @Path("{group}/{alias}/view")
     public Response viewSingle(@PathParam("group") String groupName,
-                               @PathParam("url")   String urlName) throws IOException {
+                               @PathParam("alias")   String alias) throws IOException {
         groupName = WebUtil.shrink(groupName);
-        urlName = WebUtil.shrink(urlName);
-        UrlEntry urlData = logic.getUrlData(groupName, urlName);
+        alias = WebUtil.shrink(alias);
+        UrlEntry urlData = logic.getUrlData(groupName, alias);
 
         if(urlData == null) {
-            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found:" + groupName + "/" + urlName)).build();
+            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found:" + groupName + "/" + alias)).build();
         } else {
             urlData.setClicks(null);
 

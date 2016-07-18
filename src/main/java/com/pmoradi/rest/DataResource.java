@@ -29,18 +29,18 @@ public class DataResource {
     @Path("add")
     public Response addURL(AddInEntry in) {
         final AddOutEntry out = new AddOutEntry();
-        String urlName = WebUtil.shrink(in.getUrlName());
-        String link = WebUtil.shrink(in.getLink());
+        String alias = WebUtil.shrink(in.getAlias());
+        String sourceUrl = WebUtil.shrink(in.getSourceUrl());
         String groupName = WebUtil.shrink(in.getGroupName());
         String password = in.getPassword() == null ? "" : in.getPassword();
 
-        if (urlName.isEmpty()) {
-            urlName = WebUtil.randomUrl();
+        if (alias.isEmpty()) {
+            alias = WebUtil.randomUrl();
         } else {
-            if (WebUtil.isReserved(urlName)) {
-                out.setUrlError("The url can not be equal to a reserved word.");
-            } else if (!WebUtil.validUrl(urlName)) {
-                out.setUrlError("URL contains illegal characters. Use A-Z a-z 0-9 -_");
+            if (WebUtil.isReserved(alias)) {
+                out.setAliasError("The url can not be equal to a reserved word.");
+            } else if (!WebUtil.validUrl(alias)) {
+                out.setAliasError("URL contains illegal characters. Use A-Z a-z 0-9 -_");
             }
         }
 
@@ -54,14 +54,14 @@ public class DataResource {
             out.setPasswordError("Password must be used along with group.");
         }
 
-        if (link.isEmpty()) {
-            out.setLinkError("The source URL may not be empty.");
+        if (sourceUrl.isEmpty()) {
+            out.setSourceUrlError("The source URL may not be empty.");
         } else {
-            if (!WebUtil.isProtocolBased(link)) {
-                link = "http://" + link;
+            if (!WebUtil.isProtocolBased(sourceUrl)) {
+                sourceUrl = "http://" + sourceUrl;
             }
-            if (!WebUtil.exists(link)) {
-                out.setLinkError("The source URL does not exist or responded with a non-ok status.");
+            if (!WebUtil.exists(sourceUrl)) {
+                out.setSourceUrlError("The source URL does not exist or responded with a non-ok status.");
             }
         }
 
@@ -69,18 +69,21 @@ public class DataResource {
             try {
                 String url;
                 if (groupName.isEmpty()) {
-                    logic.addUrl(urlName, link);
-                    url = logic.constructRedirectURL(urlName);
+                    logic.addUrl(alias, sourceUrl);
+                    url = logic.constructRedirectURL(alias);
 
                 } else {
-                    logic.addUrl(urlName, link, groupName, password);
-                    url = logic.constructRedirectURL(groupName, urlName);
+                    logic.addUrl(alias, sourceUrl, groupName, password);
+                    url = logic.constructRedirectURL(groupName, alias);
                 }
                 return Response.ok(new GenericMessage(url)).build();
             } catch (UrlUnavailableException e) {
-                out.setUrlError(e.getMessage());
+                out.setAliasError(e.getMessage());
             } catch (CredentialException e) {
                 out.setGroupError(e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new GenericMessage(e.getClass().getName() + ": " + e.getMessage())).build();
             }
         }
 

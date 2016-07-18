@@ -30,7 +30,7 @@ public class SecureStrings {
         return sb.toString();
     }
 
-    public static final String getSalt(){
-        return "CLICKERZ";
+    public static String getSalt(){
+        return "kingmoradis";
     }
 }

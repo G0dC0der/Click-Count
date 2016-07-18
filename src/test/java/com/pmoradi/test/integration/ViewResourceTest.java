@@ -81,11 +81,11 @@ public class ViewResourceTest {
         String url = urls.get(0);
         String link = links.get(0);
 
-        dataEntry.setUrlName(url);
-        dataEntry.setLink(link);
+        dataEntry.setAlias(url);
+        dataEntry.setSourceUrl(link);
         assertTrue(dataClient.add(dataEntry).isOk());
 
-        RestResponse<String, GenericMessage> redirectResp = redirectClient.getLink(url, dataEntry.getGroupName());
+        RestResponse<String, GenericMessage> redirectResp = redirectClient.getSourceURL(url, dataEntry.getGroupName());
         assertTrue(redirectResp.isRedirection());
         assertEquals(link, redirectResp.successEntity);
 
@@ -100,8 +100,8 @@ public class ViewResourceTest {
 
         UrlEntry urlEntry = resultGroupEntry.getUrls()[0];
 
-        assertEquals(urls.get(0), urlEntry.getUrlName());
-        assertEquals(links.get(0), urlEntry.getLink());
+        assertEquals(urls.get(0), urlEntry.getAlias());
+        assertEquals(links.get(0), urlEntry.getSourceUrl());
         assertEquals(1, urlEntry.getClicks().longValue());
 
         Calendar createDate = Calendar.getInstance();
@@ -133,11 +133,11 @@ public class ViewResourceTest {
 
         final int size = Randomization.randomInt(10) + 10;
         for (int i = 0; i < size; i++) {
-            RestResponse<String, GenericMessage> reResp = redirectClient.getLink(entry.getUrlName(), entry.getGroupName());
+            RestResponse<String, GenericMessage> reResp = redirectClient.getSourceURL(entry.getAlias(), entry.getGroupName());
             assertTrue(reResp.isRedirection());
         }
 
-        RestResponse<GroupEntry, GenericMessage> resp = viewClient.viewSingle(entry.getUrlName(), entry.getGroupName());
+        RestResponse<GroupEntry, GenericMessage> resp = viewClient.viewSingle(entry.getAlias(), entry.getGroupName());
         UrlEntry urlEntry = resp.successEntity.getUrls()[0];
         assertNull(urlEntry.getClicks());
     }
@@ -145,15 +145,15 @@ public class ViewResourceTest {
     @Test
     public void viewSingleWithDefaultGroupShowClicks() {
         AddInEntry entry = new AddInEntry();
-        entry.setUrlName(Randomization.randomString());
-        entry.setLink("http://google.se");
+        entry.setAlias(Randomization.randomString());
+        entry.setSourceUrl("http://google.se");
         RestResponse<GenericMessage, AddOutEntry> resp = dataClient.add(entry);
         assertTrue(resp.isOk());
 
-        RestResponse<String, GenericMessage> reResp = redirectClient.getLink(entry.getUrlName());
+        RestResponse<String, GenericMessage> reResp = redirectClient.getSourceURL(entry.getAlias());
         assertTrue(reResp.isRedirection());
 
-        RestResponse<GroupEntry, GenericMessage> viewResp = viewClient.viewSingle(entry.getUrlName());
+        RestResponse<GroupEntry, GenericMessage> viewResp = viewClient.viewSingle(entry.getAlias());
         UrlEntry urlEntry = viewResp.successEntity.getUrls()[0];
         assertEquals(1, urlEntry.getClicks().longValue());
     }
@@ -163,30 +163,30 @@ public class ViewResourceTest {
         AddInEntry entry = Randomization.randomDataEntry();
         assertTrue(dataClient.add(entry).isOk());
 
-        RestResponse<GroupEntry, GenericMessage> viewResp = viewClient.viewSingle(entry.getUrlName(), entry.getGroupName());
+        RestResponse<GroupEntry, GenericMessage> viewResp = viewClient.viewSingle(entry.getAlias(), entry.getGroupName());
         assertTrue(viewResp.isOk());
         assertEquals(entry.getGroupName(), viewResp.successEntity.getGroupName());
         assertEquals(1, viewResp.successEntity.getUrls().length);
 
         UrlEntry urlEntry = viewResp.successEntity.getUrls()[0];
-        assertEquals(entry.getUrlName(), urlEntry.getUrlName());
-        assertEquals(entry.getLink(), urlEntry.getLink());
+        assertEquals(entry.getAlias(), urlEntry.getAlias());
+        assertEquals(entry.getSourceUrl(), urlEntry.getSourceUrl());
     }
 
     @Test
     public void viewSingleWithDefaultGroup(){
         AddInEntry entry = new AddInEntry();
-        entry.setUrlName(Randomization.randomString());
-        entry.setLink("http://clickcount.se");
+        entry.setAlias(Randomization.randomString());
+        entry.setSourceUrl("http://clickcount.se");
         assertTrue(dataClient.add(entry).isOk());
 
-        RestResponse<GroupEntry, GenericMessage> viewResp = viewClient.viewSingle(entry.getUrlName());
+        RestResponse<GroupEntry, GenericMessage> viewResp = viewClient.viewSingle(entry.getAlias());
         assertTrue(viewResp.isOk());
         assertEquals("default", viewResp.successEntity.getGroupName());
         assertEquals(1, viewResp.successEntity.getUrls().length);
 
         UrlEntry urlEntry = viewResp.successEntity.getUrls()[0];
-        assertEquals(entry.getUrlName(), urlEntry.getUrlName());
-        assertEquals(entry.getLink(), urlEntry.getLink());
+        assertEquals(entry.getAlias(), urlEntry.getAlias());
+        assertEquals(entry.getSourceUrl(), urlEntry.getSourceUrl());
     }
 }

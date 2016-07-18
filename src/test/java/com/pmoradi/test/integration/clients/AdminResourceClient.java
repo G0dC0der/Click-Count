@@ -65,7 +65,7 @@ public class AdminResourceClient {
     public RestResponse<GenericMessage, GenericMessage> deleteUrl(String groupName, String urlName) {
         Response resp = client.target(restUrl)
                 .path("admin")
-                .path("group")
+                .path("url")
                 .path(groupName)
                 .path(urlName)
                 .path("delete")

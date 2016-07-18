@@ -16,7 +16,7 @@ public class CollaboratorDao {
     }
 
     public Collaborator findByName(String username) {
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         Query query = session.createQuery("from Collaborator where username = :username");
         query.setParameter("username", username);
 
@@ -27,7 +27,7 @@ public class CollaboratorDao {
     }
 
     public void deleteByName(String username) {
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         session.getTransaction().begin();
         Query query = session.createQuery("delete from Collaborator where username = :username");
         query.setParameter("username", username);
@@ -37,7 +37,7 @@ public class CollaboratorDao {
     }
 
     public void save(Collaborator user) {
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         session.getTransaction().begin();
         session.persist(user);
         session.getTransaction().commit();
@@ -45,7 +45,7 @@ public class CollaboratorDao {
     }
 
     public void updateRole(String username, Role newRole) {
-        Session session = sessionProvider.newSession();
+        Session session = sessionProvider.provide();
         session.getTransaction().begin();
         Query query = session.createQuery("update Collaborator set role = :role where username = :username");
         query.setParameter("role", newRole);

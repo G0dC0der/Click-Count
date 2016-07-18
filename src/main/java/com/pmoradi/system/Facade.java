@@ -56,7 +56,7 @@ public class Facade {
         defaultNamespace = namespaceDAO.findByName("default", false);
     }
 
-    public void addUrl(String urlName, String link, String groupName, String password) throws UrlUnavailableException, CredentialException {
+    public void addUrl(String alias, String sourceUrl, String groupName, String password) throws UrlUnavailableException, CredentialException {
         Namespace namespace = namespaceDAO.findByName(groupName, false);
         String hash = SecureStrings.md5(password + SecureStrings.getSalt());
 
@@ -69,8 +69,8 @@ public class Facade {
 
         URL url = new URL();
         url.setNamespace(namespace);
-        url.setAlias(urlName);
-        url.setLink(link);
+        url.setAlias(alias);
+        url.setSource(sourceUrl);
         url.setClicks(0L);
         url.setAdded(System.currentTimeMillis());
 
@@ -81,14 +81,14 @@ public class Facade {
         }
     }
 
-    public void addUrl(String urlName, String link) throws UrlUnavailableException {
-        URL url = urlDAO.findById("default", urlName);
+    public void addUrl(String alias, String sourceUrl) throws UrlUnavailableException {
+        URL url = urlDAO.findById("default", alias);
         if (url != null)
             throw new UrlUnavailableException("The alias for the default group is already in use.");
 
         url = new URL();
-        url.setAlias(urlName);
-        url.setLink(link);
+        url.setAlias(alias);
+        url.setSource(sourceUrl);
         url.setAdded(System.currentTimeMillis());
         url.setClicks(0L);
         url.setNamespace(defaultNamespace);
@@ -100,17 +100,17 @@ public class Facade {
         }
     }
 
-    public String getLinkAndClick(String identifier, String groupName, String urlName) {
-        String link = urlDAO.findLinkById(groupName, urlName);
+    public String getSourceUrlAndClick(String identifier, String groupName, String alias) {
+        String link = urlDAO.findSourceUrlById(groupName, alias);
         if (link != null) {
-            executorService.submit(()-> click(identifier, groupName, urlName));
+            executorService.submit(()-> click(identifier, groupName, alias));
             return link;
         }
         return null;
     }
 
-    public UrlEntry getUrlData(String groupName, String urlName) {
-        URL url = urlDAO.findById(groupName, urlName);
+    public UrlEntry getUrlData(String groupName, String alias) {
+        URL url = urlDAO.findById(groupName, alias);
         return url != null ? Marshaller.marshall(url) : null;
     }
 
@@ -128,31 +128,31 @@ public class Facade {
                 .toString();
     }
 
-    public String constructRedirectURL(String groupName, String urlName) {
+    public String constructRedirectURL(String groupName, String alias) {
         return UriBuilder
                 .fromPath(app.getRestPath())
                 .path(groupName)
-                .path(urlName)
+                .path(alias)
                 .build()
                 .toString();
     }
 
-    private void click(String identifier, String groupName, String urlName){
-        Client client = clientDAO.findById(identifier, groupName, urlName);
+    private void click(String identifier, String groupName, String alias){
+        Client client = clientDAO.findById(identifier, groupName, alias);
         if (client == null) {
             client = new Client();
             client.setIdentifier(identifier);
             client.setNamespace(groupName);
-            client.setAlias(urlName);
+            client.setAlias(alias);
             client.setExpire(System.currentTimeMillis() + CLICK_DELAY);
 
             clientDAO.save(client);
-            urlDAO.click(groupName, urlName);
+            urlDAO.click(groupName, alias);
         } else if (client.getExpire() < System.currentTimeMillis()){
             client.setExpire(System.currentTimeMillis() + CLICK_DELAY);
 
             clientDAO.update(client);
-            urlDAO.click(groupName, urlName);
+            urlDAO.click(groupName, alias);
         }
     }
 }

@@ -20,6 +20,8 @@ class InjectFactory {
         try {
             Properties props = new Properties();
             props.load(properties);
+            String restPath =  props.getProperty("restUrl");
+            String domain =  props.getProperty("domain");
 
             return new Factory<Application>() {
                 @Override
@@ -27,12 +29,12 @@ class InjectFactory {
                     return new Application() {
                         @Override
                         public String getRestPath() {
-                            return props.getProperty("restUrl");
+                            return restPath;
                         }
 
                         @Override
                         public String getDomain() {
-                            return props.getProperty("domain");
+                            return domain;
                         }
                     };
                 }

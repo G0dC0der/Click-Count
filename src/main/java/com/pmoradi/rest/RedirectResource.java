@@ -4,7 +4,6 @@ import com.pmoradi.essentials.WebUtil;
 import com.pmoradi.rest.entries.GenericMessage;
 import com.pmoradi.system.Facade;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -27,30 +26,30 @@ public class RedirectResource {
     private HttpServletRequest request;
 
     @GET
-    @Path("{url}")
-    public Response redirect(@PathParam("url") String urlName) {
-        urlName = WebUtil.shrink(urlName);
-        String link = logic.getLinkAndClick(request.getRemoteAddr(), "default", urlName.toLowerCase());
+    @Path("{alias}")
+    public Response redirect(@PathParam("alias") String alias) {
+        alias = WebUtil.shrink(alias);
+        String link = logic.getSourceUrlAndClick(request.getRemoteAddr(), "default", alias.toLowerCase());
 
         if(link != null) {
             return Response.seeOther(UriBuilder.fromPath(link).build()).build();
         } else {
-            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found: " + urlName)).build();
+            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found: " + alias)).build();
         }
     }
 
     @GET
-    @Path("{group}/{url}")
+    @Path("{group}/{alias}")
     public Response redirect(@PathParam("group") String groupName,
-                             @PathParam("url") String urlName) {
+                             @PathParam("alias") String alias) {
         groupName = WebUtil.shrink(groupName);
-        urlName = WebUtil.shrink(urlName);
-        String link = logic.getLinkAndClick(request.getRemoteAddr(), groupName, urlName);
+        alias = WebUtil.shrink(alias);
+        String link = logic.getSourceUrlAndClick(request.getRemoteAddr(), groupName, alias);
 
         if(link != null) {
             return Response.seeOther(UriBuilder.fromPath(link).build()).build();
         } else {
-            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found: " + groupName + "/" + urlName)).build();
+            return Response.status(Status.NOT_FOUND).entity(new GenericMessage("URL not found: " + groupName + "/" + alias)).build();
         }
     }
 }

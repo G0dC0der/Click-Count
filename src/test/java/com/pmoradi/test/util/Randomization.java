@@ -2,7 +2,6 @@ package com.pmoradi.test.util;
 
 import com.pmoradi.rest.entries.AddInEntry;
 import com.pmoradi.rest.entries.GroupView;
-import com.pmoradi.rest.entries.UrlEditEntry;
 
 import java.util.Random;
 
@@ -31,17 +30,8 @@ public class Randomization {
     public static AddInEntry randomDataEntry() {
         AddInEntry entry = new AddInEntry();
         entry.setGroupName(randomString());
-        entry.setUrlName(randomString());
-        entry.setLink("http://clickcount.se");
-        entry.setPassword(randomString());
-
-        return entry;
-    }
-
-    public static UrlEditEntry randomUrlEditEntry() {
-        UrlEditEntry entry = new UrlEditEntry();
-        entry.setGroupName(randomString());
-        entry.setUrlName(randomString());
+        entry.setAlias(randomString());
+        entry.setSourceUrl("http://clickcount.se");
         entry.setPassword(randomString());
 
         return entry;

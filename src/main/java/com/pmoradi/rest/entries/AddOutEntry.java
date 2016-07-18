@@ -2,22 +2,22 @@ package com.pmoradi.rest.entries;
 
 public class AddOutEntry {
 
-    private String urlError, linkError, groupError, passwordError;
+    private String aliasError, sourceUrlError, groupError, passwordError;
 
-    public String getUrlError() {
-        return urlError;
+    public String getAliasError() {
+        return aliasError;
     }
 
-    public void setUrlError(String urlError) {
-        this.urlError = urlError;
+    public void setAliasError(String aliasError) {
+        this.aliasError = aliasError;
     }
 
-    public String getLinkError() {
-        return linkError;
+    public String getSourceUrlError() {
+        return sourceUrlError;
     }
 
-    public void setLinkError(String linkError) {
-        this.linkError = linkError;
+    public void setSourceUrlError(String sourceUrlError) {
+        this.sourceUrlError = sourceUrlError;
     }
 
     public String getGroupError() {
@@ -37,6 +37,6 @@ public class AddOutEntry {
     }
 
     public boolean containErrors() {
-        return urlError != null || linkError != null || passwordError != null || groupError != null;
+        return aliasError != null || sourceUrlError != null || passwordError != null || groupError != null;
     }
 }
